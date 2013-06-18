@@ -1,0 +1,7 @@
+---
+type: compile_html
+target: widget.html
+include:
+  - font
+  - css
+  - js

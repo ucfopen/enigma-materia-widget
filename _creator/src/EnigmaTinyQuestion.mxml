@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="75" height="75" backgroundAlpha="0.0">
+<mx:Canvas id="main" mouseDown="mouseDown();questionMouseDown()"
+	creationComplete="checkStatus()" mouseUp="mouseUp()"
+	doubleClickEnabled="true" mouseOut="mouseOut()" mouseOver="mouseOver()"
+	backgroundColor="#D1D7E1" borderStyle="solid" borderThickness="3"
+	borderColor="#16222A" left="3" top="3" bottom="3" right="3">
+	<mx:Label styleName="questionTileText"
+		text="{questionNumber}"
+		fontWeight="bold"
+		textAlign="center" color="#000000" height="50" verticalCenter="0"
+		width="50" horizontalCenter="0"/>
+<mx:Script>
+	<![CDATA[
+		import mx.controls.Alert;
+		[Bindable]
+		protected var questionNumber:String = "";
+		public override function set data(value:Object):void
+		{
+			super.data = value;
+			if(data != null)
+			{
+				questionNumber = data.options.index;
+			}
+		}
+		private function checkStatus():void {
+			if (data.questions.text != '[Empty]' || data.answers.length >= 1)  {
+				main.setStyle("backgroundColor", "#FFFFFF");
+			}
+		}
+		private function mouseOver():void {
+			main.setStyle("backgroundColor", "#FDFFDC");
+		}
+		private function mouseOut():void {
+			main.setStyle("backgroundColor", "#D1D7E1");
+			checkStatus();
+		}
+		private function mouseDown():void {
+			main.setStyle("backgroundColor", "#4A5A9B");
+		}
+		private function mouseUp():void {
+			main.setStyle("backgroundColor", "#FDFFDC");
+		}
+		private function questionMouseDown():void {
+			//Alert.show("[EDIT QUESTION MENU...]");
+			dispatchEvent(new EnigmaEvents(EnigmaEvents.CATEGORY_QUESTION_MOUSE_DOWN, {question:data.options.index}, true));
+		}
+		public function dragOver():void {
+			main.setStyle("backgroundColor", "#FF0000");
+		}
+	]]>
+</mx:Script>
+</mx:Canvas>
+</mx:Canvas>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>HTML Widget Engine</title>
+		<meta charset="utf-8" />
+		<style type="text/css"></style>
+		<script type="text/javascript" src="js/raphael-min.js"></script>
+		<script type="text/javascript" src="/js/materia.require.js"></script>
+		<link rel="stylesheet/less" type="text/css" href="css/widget.less">
+		<script type="text/javascript">
+			require(['enginecore', 'score', 'underscore', 'less', 'cs!js/widget'], function(util) {
+				Materia.Engine.start(Enigma.Engine);
+			});
+		</script>
+	</head>
+	<body>
+
+<script type="text/template" id="t-board"><div class="screen board">
+	<header class="header">
+		<h1><span><%= title %></span></h1>
+		<div id="scorebox" class="score" role="status">
+			<center>
+			<span class="hidden">Score:</span>
+			<span class="value">0</span>
+			<div class="remaining">remaining</div>
+			</center>
+		</div>
+		<div class="menu off"></div>
+	</header>
+	<section class="gameboard">
+		<!-- categories -->
+		<% for(var i in categories){ var cat = categories[i]; %>
+			<section class="category" data-id="<%= i %>">
+				<div class="title">
+					<%= cat.name %>
+					<div class="arrow-right"></div>
+				</div>
+				<!-- questions -->
+				<% for(var q in cat.items) { var question = cat.items[q]; %>
+					<div role="button" title="<%= cat.name %> question #<%= parseInt(q, 10)+1 %>: Unanswered" class="question unanswered" data-id="<%= question.id %>" ><%= parseInt(q, 10)+1 %></div>
+				<% } %>
+			</section>
+		<% } %>
+	</section>
+</div>
+</script>
+
+<script type="text/template" id="t-question-page"><div class="screen question">
+	<section class="question-popup" data-id="<%= id %>">
+			<h1>Question <%= index %> in "<%= category %>"</h1>
+			<div class="question-text">
+				<%= question %>
+			</div>
+			<div class="answers">
+				<ul>
+					<% for(var i in answers){ %>
+						<li>
+							<label for="answer-<%= i %>">
+								<svg class="fancy-button" height="20px" width="20px" pxxmlns="http://www.w3.org/2000/svg" version="1.1">
+									<circle cx="10" cy="10" r="7" stroke="rgb(36, 55, 75)" stroke-width="2" fill="#FFF"/>
+									<circle class ="button-checked" cx="10" cy="10" r="3" stroke="rgb(36, 55, 75)" stroke-width="2" fill="rgb(36, 55, 75)"/>
+								</svg>
+								<input type="radio" id="answer-<%= i %>" value="<%= answers[i].id %>" name="group1"/>
+								<p><%= answers[i].text %></p>
+							</label>
+						</li>
+					<% } %>
+
+				</ul>
+			</div>
+			<div class="menu">
+				<button class="button return">Return</button>
+				<button class="button submit" disabled>Submit Final Answer</button>
+			</div>
+
+	</section>
+</div>
+</script>
+
+<script type="text/template" id="t-finish-notice"><section class="notice">
+		<center>
+		<div id="scorebox_final" class="score" role="status">
+			<center>
+			<span class="hidden">Score:</span>
+			<span class="value"></span>
+			<span class="percent">%</span>
+			<div class="percent-wrong"></div>
+			</center>
+		</div>
+		</center>
+		<h1>All Questions Answered</h1>
+		<button>Submit for Review</button>
+	</section>
+</script>
+	</body>
+</html>

@@ -1,0 +1,37 @@
+---
+general:
+  name: Enigma
+  group: Materia
+  height: 548
+  width: 750
+  in_catalog: Yes
+  is_editable: Yes
+  is_playable: Yes
+  is_qset_encrypted: Yes
+  is_answer_encrypted: Yes
+  is_storage_enabled: No
+  api_version: 2
+files:
+  creator: swf/enigma-creator.swf
+  player: widget.html
+  flash_version: 0
+score:
+  is_scorable: Yes
+  score_module: EnigmaGS
+  score_type: SERVER
+meta_data:
+  features:
+    - Customizable
+    - Scorable
+  supported_data:
+    - Multiple Choice
+  about: >
+    Enigma is a Jeopardy-like online study
+    and quiz tool for reviewing subject
+    matter, concepts, and principles.
+    Questions are separated into categorical
+    rows.
+  excerpt: >
+    A Jeopardy-like study and quiz tool.
+    Questions are separated into categorical
+    rows.
