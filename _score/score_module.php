@@ -66,12 +66,12 @@ class Score_Modules_EnigmaGS extends Score_Module
 		if ($this->total_questions > 0)
 		{
 			$points = $this->verified_score + $global_mod * $this->total_questions;
-			$this->calculated_percent = round($points / $this->total_questions);
+			$this->calculated_percent = $points / $this->total_questions;
 		}
 		else
 		{
 			$points = 100 + $this->verified_score + $global_mod;
-			$this->calculated_percent = round($points);
+			$this->calculated_percent = $points;
 		}
 		if ($this->calculated_percent < 0) $this->calculated_percent = 0;
 	}
