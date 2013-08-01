@@ -13,9 +13,23 @@ Namespace('Enigma').Engine = do ->
 	_correctQuestions = 0
 	_incorrectQuestions = 0
 	_finalScore = 0
-
-	# Cache commonly used elements.
 	$remainingQuestions = null
+
+	checkMark = """
+		<span class="correct mark" hidden>
+			<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+				<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
+			</svg>
+		</span>
+		"""
+
+	xMark = """
+		<span class="wrong mark" hidden>
+			<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+				<path stroke="#cc0000" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+			</svg>
+		</span>
+		"""
 
 	# Pie data.
 	_paper = null
@@ -53,7 +67,7 @@ Namespace('Enigma').Engine = do ->
 				question.answers = _shuffle(question.answers) if _qset.options.randomize
 				_totalQuestions++
 				_questions[question.id] = question
-		_$board.find('.question').on 'click', _onBoardQuestionClick
+		_$board.on 'click', '.question', _onBoardQuestionClick
 		$('body').append _$board
 
 	# Changes the data displayed in the score-pie.
@@ -63,24 +77,28 @@ Namespace('Enigma').Engine = do ->
 			setTimeout ->
 				$remainingQuestions.addClass('numberExit')
 			, 600
+
+			# Remove old number.
 			setTimeout ->
 				$remainingQuestions
 					.removeClass('numberExit')
-					.css('transform': 'rotateX(90deg)')
+					.css('transform', 'rotateX(90deg)')
 					.html(_totalQuestions-_answeredQuestions)
 					.addClass('numberEnter')
 			, 900
+
+			# Add new number.
 			setTimeout ->
 				$remainingQuestions
 					.removeClass('numberEnter')
-					.css('transform': 'rotateX(0deg)')
+					.css('transform', 'rotateX(0deg)')
 			, 1200
 
 		# Eliminate weird offsets for high and low numbers.
 		if _totalQuestions-_answeredQuestions > 9
-			$remainingQuestions.css 'right': '28px'
+			$remainingQuestions.css 'right', '28px'
 		else
-			$remainingQuestions.css 'right': '44px'
+			$remainingQuestions.css 'right', '44px'
 
 	# Updates the correct/incorrect pie slices.
 	_animatePie = (ms) ->
@@ -141,6 +159,7 @@ Namespace('Enigma').Engine = do ->
 	_onBoardQuestionClick = (e) ->
 		# Set the current state.
 		_$currentQuestionSquare = $(e.target)
+		console.log _$currentQuestionSquare
 		_currentCat = _categories[_$currentQuestionSquare.parent('.category').data('id')]
 		_currentQuestion = _questions[_$currentQuestionSquare.data('id')]
 		_currentQuestionIndex = parseInt _$currentQuestionSquare.html(), 10
@@ -154,8 +173,10 @@ Namespace('Enigma').Engine = do ->
 			category: _currentCat.name
 			question: _currentQuestion.questions[0].text
 
+		qStyle = $question[0].children[0].style
+
 		# Set up the button listeners.
-		$question.find('.button.return').on 'click', ->
+		$question.on 'click', '.return', ->
 			_closeQuestion()
 			setTimeout ->
 				_data[0] = _correctQuestions
@@ -166,7 +187,7 @@ Namespace('Enigma').Engine = do ->
 			, 150
 			_updatePieData()
 
-		$question.find('.button.submit').on 'click', _submitAnswer
+		$question.on 'click', '.submit', _submitAnswer
 		$question.find('.answers input').on 'click', (e) ->
 			if not $(e.target).parent().parent('li').hasClass 'selected'
 				$('.button-checked').fadeOut(100)
@@ -175,8 +196,15 @@ Namespace('Enigma').Engine = do ->
 			$(e.target).parent().parent('li').addClass 'selected'
 			$question.find('.button.submit').prop 'disabled', false
 
+		# Add the current question popup to the board.
 		_$board.hide()
 		$('body').append $question
+
+		# Fade in the question popup.
+		setTimeout ->
+			qStyle.opacity = 1
+			qStyle.margin = '10px'
+		, 5
 
 	# Answer submitted by user.
 	_submitAnswer = ->
@@ -184,38 +212,29 @@ Namespace('Enigma').Engine = do ->
 		chosenAnswer = $chosenRadio.val()
 		answer = _checkAnswer _currentQuestion, chosenAnswer
 
-		Materia.Score.submitQuestionForScoring _currentQuestion.id, answer.text
+		# Materia.Score.submitQuestionForScoring _currentQuestion.id, answer.text
 		_scores.push answer.score
 		_updateScore()
 
 		# Update the question square.
 		newTitle = "#{_currentCat.name} question  ##{_currentQuestionIndex} "
 
+		# Add a check if the user is correct.
 		if answer.score == 100
-			$chosenRadio.parents('li').prepend """
-			<span class="correct mark" hidden>
-				<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-					<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
-				</svg>
-			</span>
-			"""
+			$chosenRadio.parents('li').prepend checkMark
 			$('.correct').fadeIn()
 			_$currentQuestionSquare
 				.addClass('correct')
-				.html('&#x2714;') # checkmark
+				.html('&#x2714;')
 				.attr('title', "#{newTitle} Correct")
+
+		# Otherwise, add an X.
 		else
-			$chosenRadio.parents('li').prepend """
-			<span class="wrong mark" hidden>
-				<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-					<path stroke="#cc0000" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
-				</svg>
-			</span>
-			"""
+			$chosenRadio.parents('li').prepend xMark
 			$('.wrong').fadeIn()
 			_$currentQuestionSquare
 			.addClass('wrong')
-			.html('X') # incorrect X
+			.html('X')
 			.attr('title', "#{newTitle} Wrong")
 
 		# Update the radio list and buttons.
@@ -236,25 +255,23 @@ Namespace('Enigma').Engine = do ->
 		_$board.hide();
 		$('body').append $finish
 
-		# Decide what information to display based upon the user's score.
+		# Adjust HTML depending on user results.
+		scorebox = document.getElementById('scorebox_final')
+		# The user has answered something correctly.
 		if _finalScore != 0
-			$('#scorebox_final .value').html _finalScore
+			scorebox.children[1].innerHTML = _finalScore
+			# The user has full credit.
 			if _finalScore is 100
-				$('#scorebox_final .value').css 'top': '14px', 'right': '38px'
-				$('#scorebox_final .percent').css 'top': '51px', 'right': '18px'
+				scorebox.children[1].className = 'value all-correct'
+				scorebox.children[2].className = 'percent all-correct'
+			# The user has partial credit.
 			else
-				$('#scorebox_final .percent-wrong').html (100 - _finalScore) + '% wrong'
+				scorebox.children[3].innerHTML = (100 - _finalScore) + '% wrong'
+		# The user has answered everything incorrectly.
 		else
-			$('#scorebox_final .value').html(_finalScore).css
-				'color': '#b33434'
-				'font-size': '70px'
-				'top': '10px'
-			$('#scorebox_final .percent').css
-				'color': '#b33434'
-				'font-size': '30px'
-				'top': '54px'
-				'right': '22px'
-
+			scorebox.children[1].innerHTML = _finalScore
+			scorebox.children[1].className = 'value all-wrong'
+			scorebox.children[2].className = 'percent all-wrong'
 
 		# Draw the final score-pie.
 		_paper2 = new Raphael('scorebox_final', '100%', '100%')
