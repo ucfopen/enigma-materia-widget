@@ -174,6 +174,12 @@ html, body {
 				   -moz-transition: 200ms;
 				    -ms-transition: 200ms;
 				     -o-transition: 200ms;
+				&.wrong, &.correct {
+					-webkit-transform: none;
+					   -moz-transform: none;
+					    -ms-transform: none;
+					     -o-transform: none;
+				}
 			}
 			&.correct {
 				font-size: 80px;
@@ -183,9 +189,9 @@ html, body {
 			}
 			&.wrong {
 				font-size: 100px;
-				color: #cc0000;
+				color: #AC3434;
 				background: #cf8c92;
-				border: 3px solid #cc0000;
+				border: 3px solid #AC3434;
 			}
 			@-moz-document url-prefix() {
 				.question&.wrong {padding: 5px;}
@@ -380,7 +386,8 @@ html, body {
 		font-weight: bold;
 		&:hover {
 			background: rgb(178, 217, 255);
-			color: #fff;
+			color: #4187c9;
+			border-color: #4187c9;
 		}
 	}
 	#scorebox_final {
