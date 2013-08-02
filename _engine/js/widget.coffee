@@ -26,7 +26,7 @@ Namespace('Enigma').Engine = do ->
 	xMark = """
 		<span class="wrong mark" hidden>
 			<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-				<path stroke="#cc0000" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+				<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
 			</svg>
 		</span>
 		"""
@@ -58,6 +58,10 @@ Namespace('Enigma').Engine = do ->
 
 	# Draw the main board.
 	_drawBoard = (title) ->
+		document.oncontextmenu = -> false                  # Disables right click.
+		document.addEventListener 'mousedown', (e) ->      
+			if e.button is 2 then false else true          # Disables right click.
+
 		tBoard = _.template $('#t-board').html()
 		_$board = $(tBoard title: title, categories:_qset.items )
 		# Make an array of each category, questions, and count the questions.
@@ -121,7 +125,7 @@ Namespace('Enigma').Engine = do ->
 
 		# Data and fills arrays: correct, incorrect
 		_data = [0.00001, 0.00001]
-		_fills = ['rgb(42, 240, 177)', 'rgb(179, 52, 52)']
+		_fills = ['rgb(42, 240, 177)', '#AC3434']
 
 		for i in [0..1]
 			_total += _data[i]
@@ -159,7 +163,6 @@ Namespace('Enigma').Engine = do ->
 	_onBoardQuestionClick = (e) ->
 		# Set the current state.
 		_$currentQuestionSquare = $(e.target)
-		console.log _$currentQuestionSquare
 		_currentCat = _categories[_$currentQuestionSquare.parent('.category').data('id')]
 		_currentQuestion = _questions[_$currentQuestionSquare.data('id')]
 		_currentQuestionIndex = parseInt _$currentQuestionSquare.html(), 10
@@ -212,7 +215,7 @@ Namespace('Enigma').Engine = do ->
 		chosenAnswer = $chosenRadio.val()
 		answer = _checkAnswer _currentQuestion, chosenAnswer
 
-		# Materia.Score.submitQuestionForScoring _currentQuestion.id, answer.text
+		Materia.Score.submitQuestionForScoring _currentQuestion.id, answer.text
 		_scores.push answer.score
 		_updateScore()
 
