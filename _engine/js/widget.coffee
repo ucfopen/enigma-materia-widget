@@ -1,53 +1,47 @@
 Namespace('Enigma').Engine = do ->
-	_qset = null
-	_currentCat = null
-	_currentQuestion = null
+	_qset                   = null
+	_currentCat             = null
+	_currentQuestion        = null
 	_$currentQuestionSquare = null
-	_currentQuestionIndex = null
-	_$board = null
-	_categories = {}
-	_questions = {}
-	_scores = []
-	_totalQuestions = 0
-	_answeredQuestions = 0
-	_correctQuestions = 0
-	_incorrectQuestions = 0
-	_finalScore = 0
-	$remainingQuestions = null
-
-	checkMark = """
-		<span class="correct mark" hidden>
-			<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-				<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
-			</svg>
-		</span>
-		"""
-
-	xMark = """
-		<span class="wrong mark" hidden>
-			<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-				<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
-			</svg>
-		</span>
-		"""
+	_currentQuestionIndex   = null
+	_$board                 = null
+	_categories             = {}
+	_questions              = {}
+	_scores                 = []
+	_totalQuestions         = 0
+	_answeredQuestions      = 0
+	_correctQuestions       = 0
+	_incorrectQuestions     = 0
+	_finalScore             = 0
+	_$remainingQuestions    = null
+	_checkMark              = '''<span class="correct mark" hidden>
+									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
+									</svg>
+								</span>'''
+	_xMark                  = '''<span class="wrong mark" hidden>
+									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+										<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+									</svg>
+								</span>'''
 
 	# Pie data.
-	_paper = null
+	_paper  = null
 	_paper2 = null
-	_data = null
-	_total = null
-	_paths = null
+	_data   = null
+	_total  = null
+	_paths  = null
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	start = (instance, qset, version = '1') ->
 		_qset = qset
 		_drawBoard(instance.name)
-		_cacheVariables()
 		_paper = new Raphael('scorebox', '100%', '100%')
+		_cacheVariables()
 		_drawPie(_paper)
 
 	_cacheVariables = ->
-		$remainingQuestions = $('.header .score .value')
+		_$remainingQuestions = $('.header .score .value')
 
 	# Shuffle any array.
 	_shuffle = (a) ->
@@ -77,14 +71,14 @@ Namespace('Enigma').Engine = do ->
 	# Changes the data displayed in the score-pie.
 	_updatePieData = ->
 		# If the number of remaining questions has changed, update!
-		if _totalQuestions-_answeredQuestions != Number($remainingQuestions.html())
+		if _totalQuestions-_answeredQuestions != Number(_$remainingQuestions.html())
 			setTimeout ->
-				$remainingQuestions.addClass('numberExit')
+				_$remainingQuestions.addClass('numberExit')
 			, 600
 
 			# Remove old number.
 			setTimeout ->
-				$remainingQuestions
+				_$remainingQuestions
 					.removeClass('numberExit')
 					.css('transform', 'rotateX(90deg)')
 					.html(_totalQuestions-_answeredQuestions)
@@ -93,16 +87,16 @@ Namespace('Enigma').Engine = do ->
 
 			# Add new number.
 			setTimeout ->
-				$remainingQuestions
+				_$remainingQuestions
 					.removeClass('numberEnter')
 					.css('transform', 'rotateX(0deg)')
 			, 1200
 
 		# Eliminate weird offsets for high and low numbers.
 		if _totalQuestions-_answeredQuestions > 9
-			$remainingQuestions.css 'right', '28px'
+			_$remainingQuestions.css 'right', '28px'
 		else
-			$remainingQuestions.css 'right', '44px'
+			_$remainingQuestions.css 'right', '44px'
 
 	# Updates the correct/incorrect pie slices.
 	_animatePie = (ms) ->
@@ -115,7 +109,7 @@ Namespace('Enigma').Engine = do ->
 
 	_drawPie = (_paper_num) ->
 		# Initialize the remaining question counter.
-		$remainingQuestions.html(_totalQuestions-_answeredQuestions)
+		_$remainingQuestions.html(_totalQuestions-_answeredQuestions)
 
 		# This wil be the outer grey circle.
 		_paper_num.circle(60, 60, 60).attr 'fill': '#444', 'stroke-width': 0
@@ -224,7 +218,7 @@ Namespace('Enigma').Engine = do ->
 
 		# Add a check if the user is correct.
 		if answer.score == 100
-			$chosenRadio.parents('li').prepend checkMark
+			$chosenRadio.parents('li').prepend _checkMark
 			$('.correct').fadeIn()
 			_$currentQuestionSquare
 				.addClass('correct')
@@ -233,7 +227,7 @@ Namespace('Enigma').Engine = do ->
 
 		# Otherwise, add an X.
 		else
-			$chosenRadio.parents('li').prepend xMark
+			$chosenRadio.parents('li').prepend _xMark
 			$('.wrong').fadeIn()
 			_$currentQuestionSquare
 			.addClass('wrong')
@@ -312,7 +306,7 @@ Namespace('Enigma').Engine = do ->
 	_closeQuestion = ->
 		$('.screen.question').remove()
 		_$board.show()
-		_drawFinishScreen() if _scores.length ==_totalQuestions
+		_drawFinishScreen() if _scores.length == _totalQuestions
 
 	_end = ->
 		Materia.Engine.end yes
