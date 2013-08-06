@@ -4,11 +4,10 @@
 		<title>HTML Widget Engine</title>
 		<meta charset="utf-8" />
 		<style type="text/css"></style>
-		<script type="text/javascript" src="js/raphael-min.js"></script>
 		<script type="text/javascript" src="/js/materia.require.js"></script>
 		<link rel="stylesheet/less" type="text/css" href="css/widget.less">
 		<script type="text/javascript">
-			require(['enginecore', 'score', 'underscore', 'less', 'cs!js/widget'], function(util) {
+			require(['enginecore', 'score', 'underscore', 'less', 'js/raphael-min', 'cs!js/widget'], function(util) {
 				Materia.Engine.start(Enigma.Engine);
 			});
 		</script>
@@ -65,7 +64,6 @@
 							</label>
 						</li>
 					<% } %>
-
 				</ul>
 			</div>
 			<div class="menu">
