@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>test Creator</title>
+		<meta charset='utf-8' />
+		<style type='text/css'></style>
+		<script type='text/javascript' src='/js/materia.require.js'></script>
+		<link rel='stylesheet' type='text/css' href='css/creator.css'>
+		<script type='text/javascript'>
+			require(['creatorcore', 'js/creator'], function(util) {
+				Materia.CreatorCore.start(test.Creator);
+			});
+		</script>
+	</head>
+	<body>
+		<div id='modal'></div>
+		<header>
+			<div>
+				<label>Widget Title:</label>
+				<div>
+					<input type='text' id='title'/>
+				</div>
+			</div>
+			<div>
+				<label>Randomize Answer Order:</label>
+				<input type='checkbox' id='randomize'/>
+			</div>
+		</header>
+		<section>
+			<div id='question_container'></div>
+			<div id='add_category_button'>
+				Click Here To Add Another Category
+			</div>
+		</section>
+
+		<!-- templates -->
+		<div class='template category'>
+			<button class='delete'></button>
+			<div class='cat_label'>
+				<textarea>New Category</textarea>
+			</div>
+			<button class='add'></button>
+		</div>
+		<div class='template question'>
+			<button class='delete'></button>
+			<span class='question_text'></span>
+		</div>
+		<div class='template question_window'>
+			<h1>Question:</h1>
+			<textarea></textarea>
+			<h1>Answers:</h1>
+			<div class='answer_area'>
+				<ol type='A'>
+				</ol>
+				<div class='add_answer'>Click Here To Add An Answer</div>
+			</div>
+			<button value='cancel'>Cancel</button>
+			<button value='done'>Done</button>
+		</div>
+		<div class='template answer'>
+			<input type='text' class='answer_text'/>
+			<input type='checkbox' class='answer_correct'/>
+			<input type='text' class='answer_value'/>
+			<button class='answer_remove'></button>
+			<div class='answer_feedback'>
+				<span class='feedback_icon'></span>
+				<input type='text' class='feedback_text'/>
+			</div>
+		</div>
+		<!-- /templates -->
+	</body>
+</html>

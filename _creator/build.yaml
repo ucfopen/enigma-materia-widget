@@ -1,11 +1,12 @@
 ---
-type: compile_swf
-sdk_version: 3.6.0
-flash_version: 10.2.0
-app_class: src/Creator.mxml
-target: swf/enigma-creator.swf
-sources:
-  - src/
-  - engine_src/src/
-libs:
-  - libs/
+## What kind of widget your widget is (compile_html or compile_flash)
+type: compile_html
+
+# The location of your engine 
+target: creator.html
+
+# What assets to include with your engine
+include:
+  - font
+  - css
+  - js
