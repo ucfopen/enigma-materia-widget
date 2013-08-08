@@ -65,7 +65,7 @@ Namespace('Enigma').Engine = do ->
 				question.answers = _shuffle(question.answers) if _qset.options.randomize
 				_totalQuestions++
 				_questions[question.id] = question
-		_$board.on 'click', '.question', _onBoardQuestionClick
+		_$board.on 'click', _onBoardQuestionClick
 		$('body').append _$board
 
 	# Changes the data displayed in the score-pie.
@@ -157,6 +157,10 @@ Namespace('Enigma').Engine = do ->
 	_onBoardQuestionClick = (e) ->
 		# Set the current state.
 		_$currentQuestionSquare = $(e.target)
+
+		if !_$currentQuestionSquare.hasClass('unanswered')
+			return
+
 		_currentCat = _categories[_$currentQuestionSquare.parent('.category').data('id')]
 		_currentQuestion = _questions[_$currentQuestionSquare.data('id')]
 		_currentQuestionIndex = parseInt _$currentQuestionSquare.html(), 10
@@ -240,7 +244,7 @@ Namespace('Enigma').Engine = do ->
 		$('.button.return').addClass 'highlight'
 		$('.answers ul').addClass('answered');
 		$chosenRadio.parents('li').append("<span class=\"feedback\"><strong>Feedback:</strong> #{answer.feedback}</span>") if answer.feedback?.length > 0
-		_$currentQuestionSquare.removeClass('unanswered').off 'click'
+		_$currentQuestionSquare.removeClass('unanswered')
 
 	# Draw the final screen that transitions to the Score Screen
 	_drawFinishScreen = ->
