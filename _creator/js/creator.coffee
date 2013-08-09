@@ -59,7 +59,6 @@ Namespace('test').Creator = do ->
 		$('#add_category_button').click -> _addCategory()
 
 		if _qset?
-			_trace _qset
 			$('#randomize').prop 'checked', _qset.options.randomize
 			categories = _qset.items
 			_addCategory category for category in categories
@@ -86,7 +85,11 @@ Namespace('test').Creator = do ->
 		$('#question_container').append newCat
 
 	_addQuestion = (category, question=null) ->
+		#create a new question element and default its pertinent data
 		newQ = _qTemplate.clone()
+		$.data(newQ[0], 'question', '')
+		$.data(newQ[0], 'answers', [])
+
 		newQ.find('.delete').click () ->
 			addBtn = $(this).parent().siblings('.add')
 			addBtn.show() if !$(addBtn).is(':visible')
@@ -95,32 +98,70 @@ Namespace('test').Creator = do ->
 			_changeQuestion this unless $(this).hasClass('dim')
 
 		if question?
-			_trace 'QUESTION: ', question
 			$.data(newQ[0], 'question', question.questions[0].text)
 			$.data(newQ[0], 'answers', question.answers)
 
 		$(category).find('.add').before newQ
 
 	_changeQuestion = (q) ->
-		_trace q
-		_trace $.data(q)
 		$('.selected').removeClass 'selected'
 		$(q).addClass 'selected'
 		$('.question:not(.selected)').addClass 'dim'
 		qWindow = $(_qWindowTemplate).clone()
 
-		$(qWindow).find('button').click () ->
-			if $(this).val() is 'cancel'
-				#remove question with no answers, otherwise just close window
-				$(q).remove()
-			else
-				#validate info, save changes
+		$(qWindow).find('#question_text').val $.data(q, 'question')
+		answers = $.data(q, 'answers')
+
+		_addAnswer $(qWindow).find('#add_answer'), a for a in answers
+
+		$('#cancel').click () ->
+			#remove question with no answers, otherwise just close window
+			$(q).remove() if $.data(q, 'answers').length is 0
+		$('#done').click () ->
+			#validate info, save changes
+			#validation:
+			#	question text must be set
+			#	all answer texts must be set
+			#		automatically remove empty answers?
+			#	must have at least one correct answer
+			#	at least one correct answer must have 100% value
+			if $('#question_text').val() is ''
+				alert 'You can not have an empty question!'
+				return
+			new_answers = $('.answer')
+			_trace 'Answers:', new_answers
 
 			$('#modal').hide()
 			$(qWindow).remove()
 
+		$(qWindow).find('#add_answer').click () ->
+			_addAnswer this
+
 		$('body').append qWindow
 		$('#modal').show()
+
+	_addAnswer = (loc, a=null) ->
+		answer = $(_aTemplate).clone()
+		answer.find('.answer_feedback').hide()
+
+		answer.focus () ->
+			$(answer).find('.answer_feedback').slideDown()
+		answer.blur () ->
+			$(answer).find('.answer_feedback').hide()
+		answer.find('answer_remove').click () ->
+			answer.remove()
+
+		if a?
+			$(answer).find('.answer_text').val a.text
+			value = a.value
+			if parseInt(value) > 0
+				$(answer).find('.answer_value').val value+'%'
+				$(answer).find('.answer_correct').prop 'checked', true
+			if a.options.feedback isnt ''
+				$(answer).find('.feedback_text').val a.options.feedback
+				$(answer).find('.answer_feedback').show()
+
+		$(loc).before answer
 
 	_buildSaveData = ->
 		okToSave = false

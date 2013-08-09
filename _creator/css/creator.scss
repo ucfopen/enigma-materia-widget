@@ -194,26 +194,25 @@ button {
 	}
 
 	.answer_area {
+		background-color: #fff;
 		height: 240px;
+		margin: 0;
+		padding: 0;
 		width: 442px;
 		overflow-y: auto;
 	}
 
-	li {
-		background-color: #fff;
-
-		&:nth-child(2) {
-			background-color: #eaeaea;
-		}
-	}
-
 	div {
-		height: 40px;
+		min-height: 40px;
 		margin: 0 auto;
-		padding: 0;
+		padding: 5px 0 0;
 	}
 
 	.add_answer {
+		background-color: #c9c9c9;
+		height: 40px;
+		line-height: 40px;
+		margin-bottom: 20px;
 		text-align: center;
 	}
 }
@@ -233,9 +232,35 @@ button {
 	z-index: 50;
 }
 
-.answer_area {
-	background-color: #fff;
-	height: 440px;
-	overflow-y: auto;
-	width: 240px;
+.answer {
+
+	&:nth-child(even) {
+		background-color: #eaeaea;
+	}
+
+	.answer_text {
+		height: 30px;
+		margin: 0;
+		padding: 0;
+		width: 280px;
+	}
+	.answer_value {
+		height: 22px;
+		text-align: center;
+		width: 45px;
+	}
+	.answer_feedback {
+		display: block;
+	}
+	.answer_remove {
+		background-image: url('../_assets/trashcan.png');
+		display: inline-block;
+		height: 14px;
+		width: 13px;
+	}
+	.feedback_text {
+		background-color: #fffecb;
+		height: 30px;
+		width: 386px;
+	}
 }

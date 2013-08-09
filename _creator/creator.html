@@ -47,24 +47,22 @@
 		</div>
 		<div class='template question_window'>
 			<h1>Question:</h1>
-			<textarea></textarea>
+			<textarea id='question_text'></textarea>
 			<h1>Answers:</h1>
-			<div class='answer_area'>
-				<ol type='A'>
-				</ol>
-				<div class='add_answer'>Click Here To Add An Answer</div>
+			<div id='answer_area' class='answer_area'>
+				<div id='add_answer' class='add_answer'>Click Here To Add An Answer</div>
 			</div>
-			<button value='cancel'>Cancel</button>
-			<button value='done'>Done</button>
+			<button id='cancel'>Cancel</button>
+			<button id='done'>Done</button>
 		</div>
 		<div class='template answer'>
 			<input type='text' class='answer_text'/>
 			<input type='checkbox' class='answer_correct'/>
-			<input type='text' class='answer_value'/>
-			<button class='answer_remove'></button>
+			<input type='text' class='answer_value' value='0%'/>
+			<span class='answer_remove'></span>
 			<div class='answer_feedback'>
 				<span class='feedback_icon'></span>
-				<input type='text' class='feedback_text'/>
+				<input type='text' class='feedback_text' placeholder='Click Here to Add Feedback For This Answer'/>
 			</div>
 		</div>
 		<!-- /templates -->
