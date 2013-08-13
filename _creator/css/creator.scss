@@ -112,6 +112,16 @@ button {
 	vertical-align: top;
 	width: 92px;
 
+	div {
+		color: #000;
+		font-size: 12px;
+		margin: 40px 0 0;
+		padding: 0;
+		text-align: center;
+		white-space: pre-line;
+		width: 100%;
+	}
+
 	button {
 		position: absolute;
 		right: 0;
@@ -233,6 +243,7 @@ button {
 }
 
 .answer {
+	overflow: hidden;
 
 	&:nth-child(even) {
 		background-color: #eaeaea;
@@ -250,7 +261,8 @@ button {
 		width: 45px;
 	}
 	.answer_feedback {
-		display: block;
+		overflow: hidden;
+		display: none;
 	}
 	.answer_remove {
 		background-image: url('../_assets/trashcan.png');
