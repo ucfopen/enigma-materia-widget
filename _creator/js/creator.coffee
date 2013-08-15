@@ -1,4 +1,4 @@
-Namespace('test').Creator = do ->
+Namespace('Enigma').Creator = do ->
 	_widget  = null # holds widget data
 	_qset    = null # Keep tack of the current qset
 	_title   = null # hold on to this instance's title
@@ -8,6 +8,7 @@ Namespace('test').Creator = do ->
 	_qTemplate = null
 	_qWindowTemplate = null
 	_aTemplate = null
+	_letters = ['A','B','C','D','E','F','G','H','I','J']
 
 	initNewWidget = (widget, baseUrl) ->
 		_buildDisplay 'New Enigma Widget', widget
@@ -21,11 +22,11 @@ Namespace('test').Creator = do ->
 		else
 			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
 
-	onSaveComplete = (title, widget, qset, version) ->
-		_trace 'save complete!', title, widget, qset, version
+	onSaveComplete = (title, widget, qset, version) -> true
 
 	onQuestionImportComplete = (questions) ->
-		_trace 'questions are here!', questions
+		$('#import_area').show()
+		_addQuestion $('#import_question_area')[0], question for question in questions
 
 	# Enigma does not support media
 	onMediaImportComplete = (media) -> null
@@ -58,6 +59,8 @@ Namespace('test').Creator = do ->
 
 		$('#add_category_button').click -> _addCategory()
 
+		$('#import_hide').click -> $('#import_area').hide()
+
 		if _qset?
 			$('#randomize').prop 'checked', _qset.options.randomize
 			categories = _qset.items
@@ -65,6 +68,10 @@ Namespace('test').Creator = do ->
 
 	_buildSaveData = ->
 		okToSave = false
+
+		_qset = {}
+		_qset.options = {}
+
 		# update our values
 		_title = $('#title').val()
 		_qset.options.randomize = $('#randomize').prop 'checked'
@@ -104,12 +111,34 @@ Namespace('test').Creator = do ->
 			$(this).addClass 'active'
 
 		newCat.find('.add').click () ->
-			numKids = $(this).parent().children().length
-			unless numKids > 8
-				$(this).hide() if numKids is 8
+			numQs = newCat.find('.question').length
+			unless numQs > 5
+				if numQs is 5
+					$(this).hide()
+					newCat.droppable 'disable'
 				_addQuestion $(this).parent()
 		newCat.find('.delete').click ->
 			$(this).parent().remove()
+		newCat.droppable {
+			hoverClass: 'drop_target',
+			drop: (event, ui) ->
+				numQs = newCat.find('.question').length
+				unless numQs > 5
+					if numQs is 5
+						newCat.find('.add').hide()
+						newCat.droppable 'disable'
+					unless ui.draggable.closest('#import_question_area').length > 0
+						ui.draggable.parent().find('.add').show()
+						ui.draggable.parent().droppable 'enable'
+					newCat.find('.add').before ui.draggable
+				else
+					newCat.find('.add').hide()
+				newCat.find('.add_line').remove()
+			over: (event, ui) -> newCat.find('.add').before $('<div class="add_line"></div>') unless $(this).parent().children().length > 8
+			out: (event, ui) -> newCat.find('.add_line').remove()
+
+		}
+		newCat.droppable 'enable'
 
 		if category?
 			newCat.find('textarea').val(category.name)
@@ -126,10 +155,20 @@ Namespace('test').Creator = do ->
 
 		newQ.find('.delete').click () ->
 			addBtn = $(this).parent().siblings('.add')
-			addBtn.show() if !$(addBtn).is(':visible')
+			if !addBtn.is(':visible')
+				addBtn.show()
+				addBtn.parent().droppable 'enable'
 			$(this).parent().remove()
 		newQ.click () ->
-			_changeQuestion this unless $(this).hasClass('dim')
+			_changeQuestion this unless $(this).hasClass('dim') or $(this).closest('#import_question_area').length > 0 or $(this).hasClass('dragging')
+		newQ.draggable {
+			revert: 'invalid',
+			helper: 'clone',
+			appendTo: 'body',
+			opacity: 0.75,
+			start: (event, ui) -> newQ.addClass('dragging')
+			stop: (event, ui) -> newQ.removeClass('dragging')
+		}
 
 		$(category).find('.add').before newQ
 
@@ -198,7 +237,8 @@ Namespace('test').Creator = do ->
 					'text': text,
 					'value': value,
 					'options':{
-						'feedback': feedback
+						'feedback': feedback,
+						'letter': $(na).find('.letter').text
 					}
 				})
 
@@ -219,9 +259,11 @@ Namespace('test').Creator = do ->
 
 		$(qWindow).find('#add_answer').click () ->
 			_addAnswer this
+			_resetLetters()
 
 		$('body').append qWindow
 		$('#modal').show()
+		_resetLetters()
 
 	_addAnswer = (loc, a=null) ->
 		answer = $(_aTemplate).clone()
@@ -236,8 +278,10 @@ Namespace('test').Creator = do ->
 				previously_selected.removeClass('answer_selected')
 				answer.addClass('answer_selected')
 				answer.find('.answer_feedback').slideDown()
-		answer.find('answer_remove').click () ->
+		answer.find('.answer_remove').click () ->
 			answer.remove()
+			$('#add_answer').show()
+			_resetLetters()
 
 		answer.find('.answer_correct').click () ->
 			if $(this).prop 'checked'
@@ -275,6 +319,15 @@ Namespace('test').Creator = do ->
 
 		$.data(answer[0], 'original', original)
 		$(loc).before answer
+
+		num_answers = $('.answer').length
+		if num_answers is 10
+			$('#add_answer').hide()
+
+	_resetLetters = ->
+		answers = $('.answer')
+		for answer, i in answers
+			$(answer).find('.letter').text _letters[i]
 
 	_trace = ->
 		if console? && console.log?
