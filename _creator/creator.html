@@ -7,8 +7,10 @@
 		<script type='text/javascript' src='/js/materia.require.js'></script>
 		<link rel='stylesheet' type='text/css' href='css/creator.css'>
 		<script type='text/javascript'>
-			require(['creatorcore', 'js/creator'], function(util) {
-				Materia.CreatorCore.start(test.Creator);
+			require(['jquery', 'creatorcore', 'js/creator'], function(util) {
+				require(['js/jquery-ui-1.10.3.custom.min'], function(util) {
+					Materia.CreatorCore.start(Enigma.Creator);
+				});
 			});
 		</script>
 	</head>
@@ -26,11 +28,18 @@
 				<input type='checkbox' id='randomize'/>
 			</div>
 		</header>
-		<section>
+		<section id='main_area'>
 			<div id='question_container'></div>
 			<div id='add_category_button'>
 				Click Here To Add Another Category
 			</div>
+		</section>
+		<section class = 'import_area' id='import_area'>
+			<h1>Imported Questions</h1>
+			<div id='import_question_area'>
+				<span class='add'></span>
+			</div>
+			<button id='import_hide'>Hide</button>
 		</section>
 
 		<!-- templates -->
@@ -55,7 +64,8 @@
 			<button id='cancel'>Cancel</button>
 			<button id='done'>Done</button>
 		</div>
-		<div class='template answer'>
+		<div class='template answer' data-letter="0">
+			<span class='letter'></span>
 			<input type='text' class='answer_text'/>
 			<input type='checkbox' class='answer_correct'/>
 			<input type='text' class='answer_value' value='0%'/>
