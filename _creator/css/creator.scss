@@ -375,6 +375,18 @@ h1 {
 	.add {
 		display: none;
 	}
+
+	&>button {
+		background-color: #ddd;
+		background: -webkit-linear-gradient(top, #c4c7cc, #717580);
+		background: -moz-linear-gradient(top, #c4c7cc, #717580);
+		background: -ms-linear-gradient(top, #c4c7cc, #717580);
+		background: -o-linear-gradient(top, #c4c7cc, #717580);
+		background-repeat: repeat-x;
+		border-radius:         3px;
+		-moz-border-radius:    3px;
+		-webkit-border-radius: 3px;
+	}
 }
 
 .tutorial {
