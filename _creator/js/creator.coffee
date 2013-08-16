@@ -8,13 +8,21 @@ Namespace('Enigma').Creator = do ->
 	_qTemplate = null
 	_qWindowTemplate = null
 	_aTemplate = null
-	_letters = ['A','B','C','D','E','F','G','H','I','J']
+
+	# reference for question answer lists
+	_letters = ['A','B','C','D','E','F','G','H','I','J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+
+	# strings containing tutorial texts, boolean for tutorial mode
+	_helper1 = 'To get started, create a new category by clicking on the Add Category row...'
+	_helper2 = 'Each category can have a maximum of six questions. You can add questions by clicking on the plus (+) button.'
+	_helper3 = 'After you have added questions, you can drag-and-drop them to reposition their order. You can also drag them to other categories. Click questions to edit. To remove questions, click the \'X\' button at the top right corner of the question.'
+	_help = false
 
 	initNewWidget = (widget, baseUrl) ->
+		_help = true
 		_buildDisplay 'New Enigma Widget', widget
 
-	initExistingWidget = (title, widget, qset, version, baseUrl) ->
-		_buildDisplay title, widget, qset, version
+	initExistingWidget = (title, widget, qset, version, baseUrl) -> _buildDisplay title, widget, qset, version
 
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
@@ -57,9 +65,18 @@ Namespace('Enigma').Creator = do ->
 			$('.template.answer').remove()
 			_aTemplate.removeClass('template')
 
-		$('#add_category_button').click -> _addCategory()
+		$('#add_category_button').click ->
+			if $('.step1').length > 0
+				$('.step1').remove()
+				tutorial2 = $('<div class=\'tutorial step2\'>'+_helper2+'</div>')
+				$('body').append tutorial2
+			_addCategory()
 
 		$('#import_hide').click -> $('#import_area').hide()
+
+		if _help
+			tutorial1 = $('<div class=\'tutorial step1\'>'+_helper1+'</div>')
+			$('body').append tutorial1
 
 		if _qset?
 			$('#randomize').prop 'checked', _qset.options.randomize
@@ -69,8 +86,13 @@ Namespace('Enigma').Creator = do ->
 	_buildSaveData = ->
 		okToSave = false
 
-		_qset = {}
+		#qset = {}
+		if !_qset?
+			_qset = {}
 		_qset.options = {}
+		_qset.assets = []
+		_qset.rand = false
+		_qset.name = ''
 
 		# update our values
 		_title = $('#title').val()
@@ -82,12 +104,15 @@ Namespace('Enigma').Creator = do ->
 
 		categories = $('.category')
 
+		cid = 0
+
 		for c in categories
 			category = _process c
+			category.assets = []
+			category.options = {cid: cid++}
 			items.push category
 
 		_qset.items = items
-
 		okToSave
 
 	_process = (c) ->
@@ -97,20 +122,25 @@ Namespace('Enigma').Creator = do ->
 		items = []
 		questions = c.find('.question')
 		for q in questions
-			question = $.data(q)
+			question = $.data q
+			delete question['uiDraggable']
 			items.push question
 
 		category.items = items
-
 		category
 
 	_addCategory = (category) ->
 		newCat = $(_catTemplate).clone()
-		$(newCat).click () ->
+		newCat.click () ->
 			$('.active').removeClass 'active'
 			$(this).addClass 'active'
+		newCat.find('textarea').focus () -> this.select()
 
 		newCat.find('.add').click () ->
+			if $('.step2').length > 0
+				$('.step2').remove()
+				tutorial3 = $('<div class=\'tutorial step3\'>'+_helper3+'</div>')
+				$('body').append tutorial3
 			numQs = newCat.find('.question').length
 			unless numQs > 5
 				if numQs is 5
@@ -152,6 +182,9 @@ Namespace('Enigma').Creator = do ->
 		newQ = _qTemplate.clone()
 		$.data(newQ[0], 'questions', [{text: ''}])
 		$.data(newQ[0], 'answers', [])
+		$.data(newQ[0], 'assets', [])
+		$.data(newQ[0], 'id', '')
+		$.data(newQ[0], 'type', 'MC')
 
 		newQ.find('.delete').click () ->
 			addBtn = $(this).parent().siblings('.add')
@@ -162,6 +195,7 @@ Namespace('Enigma').Creator = do ->
 		newQ.click () ->
 			_changeQuestion this unless $(this).hasClass('dim') or $(this).closest('#import_question_area').length > 0 or $(this).hasClass('dragging')
 		newQ.draggable {
+			distance: 5,
 			revert: 'invalid',
 			helper: 'clone',
 			appendTo: 'body',
@@ -227,7 +261,7 @@ Namespace('Enigma').Creator = do ->
 				t_comp = text == original.text
 				v_comp = parseInt(value) == parseInt(original.value)
 				f_comp = original.feedback == feedback
-				if original.id < 0 or original_question isnt qWindow.find('#question_text').val()
+				if original.id is '' or original_question isnt qWindow.find('#question_text').val()
 					changed++
 				else
 					changed++ unless t_comp and v_comp and f_comp
@@ -256,10 +290,15 @@ Namespace('Enigma').Creator = do ->
 			$('#modal').hide()
 			$('.dim').removeClass 'dim'
 			$(qWindow).remove()
+			if $('.step3').length > 0
+				$('.step3').remove()
 
 		$(qWindow).find('#add_answer').click () ->
-			_addAnswer this
-			_resetLetters()
+			if $('.answer').length is _letters.length
+				alert 'You already have the maximum number of answers for this question!'
+			else
+				_addAnswer this
+				_resetLetters()
 
 		$('body').append qWindow
 		$('#modal').show()
@@ -267,7 +306,7 @@ Namespace('Enigma').Creator = do ->
 
 	_addAnswer = (loc, a=null) ->
 		answer = $(_aTemplate).clone()
-		original = {id: -1, text: '', value: 0, feedback: ''}
+		original = {id: '', text: '', value: 0, feedback: ''}
 
 		# these tweens don't seem to be working yet, figure them out
 		answer.click () ->

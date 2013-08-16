@@ -68,7 +68,7 @@ button {
 	background-repeat: no-repeat;
 	border: none;
 
-	&:hover {
+	&.delete:hover, &.add:hover {
 		cursor: pointer;
 
 		filter: brightness(500%);
@@ -270,6 +270,18 @@ button {
 		margin-bottom: 20px;
 		text-align: center;
 	}
+
+	button {
+		background-color: #ddd;
+		background: -webkit-linear-gradient(top, #c4c7cc, #717580);
+		background: -moz-linear-gradient(top, #c4c7cc, #717580);
+		background: -ms-linear-gradient(top, #c4c7cc, #717580);
+		background: -o-linear-gradient(top, #c4c7cc, #717580);
+		background-repeat: repeat-x;
+		border-radius:         3px;
+		-moz-border-radius:    3px;
+		-webkit-border-radius: 3px;
+	}
 }
 
 .template {
@@ -362,5 +374,45 @@ h1 {
 
 	.add {
 		display: none;
+	}
+}
+
+.tutorial {
+	background-color: #5c7b9c;
+	border: 2px solid #000;
+	-moz-border-radius:    5px;
+	-webkit-border-radius: 5px;
+	border-radius:         5px;
+	font-family: "Lucida Grande", "Verdana", sans-serif;
+	font-size: 24px;
+	padding: 15px;
+	position: absolute;
+
+	&.step1 {
+		height: 90px;
+		left: 20%;
+		top: 500px;
+		width: 315px;
+
+		&:before {
+			background-image: url('../_assets/arrow.png');
+			bottom: 122px;
+			content: "";
+			height: 286px;
+			left: 100px;
+			position: absolute;
+			width: 299px;
+		}
+	}
+
+	&.step2, &.step3 {
+		bottom: 0;
+		height: 90px;
+		right: 0;
+		width: 650px;
+	}
+
+	&.step3 {
+		height: 140px;
 	}
 }
