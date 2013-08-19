@@ -174,7 +174,7 @@ Namespace('Enigma').Engine = do ->
 			category: _currentCat.name
 			question: _currentQuestion.questions[0].text
 
-		qStyle = $question[0].children[0].style
+		qStyle = $question[0].children[0]
 
 		# Set up the button listeners.
 		$question.on 'click', '.return', ->
@@ -203,8 +203,7 @@ Namespace('Enigma').Engine = do ->
 
 		# Fade in the question popup.
 		setTimeout ->
-			qStyle.opacity = 1
-			qStyle.margin = '10px'
+			qStyle.className = 'question-popup shown'
 		, 5
 
 	# Answer submitted by user.
