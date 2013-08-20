@@ -83,6 +83,15 @@ Namespace('Enigma').Creator = do ->
 			categories = _qset.items
 			_addCategory category for category in categories
 
+		$('#question_container').sortable {
+			containment: 'parent',
+			distance: 5,
+			helper: 'clone',
+			items: '.category'
+		}
+		$('#question_container').droppable()
+		$('#question_container').droppable 'enable'
+
 	_buildSaveData = ->
 		okToSave = false
 
@@ -146,7 +155,7 @@ Namespace('Enigma').Creator = do ->
 				if numQs is 5
 					$(this).hide()
 					newCat.droppable 'disable'
-				_addQuestion $(this).parent()
+				_addQuestion newCat
 		newCat.find('.delete').click ->
 			$(this).parent().remove()
 		newCat.droppable {
@@ -164,9 +173,10 @@ Namespace('Enigma').Creator = do ->
 				else
 					newCat.find('.add').hide()
 				newCat.find('.add_line').remove()
-			over: (event, ui) -> newCat.find('.add').before $('<div class="add_line"></div>') unless $(this).parent().children().length > 8
+			over: (event, ui) ->
+				unless ui.draggable.hasClass '.category' or $(this).parent().children().length > 8
+					newCat.find('.add').before $('<div class="add_line"></div>')
 			out: (event, ui) -> newCat.find('.add_line').remove()
-
 		}
 		newCat.droppable 'enable'
 
@@ -176,6 +186,8 @@ Namespace('Enigma').Creator = do ->
 			_addQuestion newCat, question for question in questions
 
 		$('#question_container').append newCat
+		$('#question_container').sortable 'refresh'
+		newCat.find('textarea').focus()
 
 	_addQuestion = (category, question=null) ->
 		#create a new question element and default its pertinent data
@@ -293,14 +305,17 @@ Namespace('Enigma').Creator = do ->
 			if $('.step3').length > 0
 				$('.step3').remove()
 
-		$(qWindow).find('#add_answer').click () ->
+		qWindow.find('#add_answer').click () ->
 			if $('.answer').length is _letters.length
 				alert 'You already have the maximum number of answers for this question!'
 			else
 				_addAnswer this
 				_resetLetters()
+		qWindow.find('#add_answer').keyup () ->
+			$(this).click() if event.which is 13 or event.which is 32
 
 		$('body').append qWindow
+		qWindow.find('#question_text').focus()
 		$('#modal').show()
 		_resetLetters()
 
@@ -308,15 +323,6 @@ Namespace('Enigma').Creator = do ->
 		answer = $(_aTemplate).clone()
 		original = {id: '', text: '', value: 0, feedback: ''}
 
-		# these tweens don't seem to be working yet, figure them out
-		answer.click () ->
-			previously_selected = $('.answer_selected')
-			unless previously_selected[0] is answer[0]
-				if previously_selected.find('.feedback_text').val() is ''
-					previously_selected.find('.answer_feedback').slideUp()
-				previously_selected.removeClass('answer_selected')
-				answer.addClass('answer_selected')
-				answer.find('.answer_feedback').slideDown()
 		answer.find('.answer_remove').click () ->
 			answer.remove()
 			$('#add_answer').show()
@@ -358,12 +364,13 @@ Namespace('Enigma').Creator = do ->
 
 		$.data(answer[0], 'original', original)
 		$(loc).before answer
-
-		num_answers = $('.answer').length
-		if num_answers is 10
-			$('#add_answer').hide()
+		answer.find('.answer_text').focus()
 
 	_resetLetters = ->
+		num_answers = $('.answer').length
+		if num_answers is _letters.length
+			$('#add_answer').hide()
+
 		answers = $('.answer')
 		for answer, i in answers
 			$(answer).find('.letter').text _letters[i]
