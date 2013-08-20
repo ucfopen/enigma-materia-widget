@@ -18,7 +18,6 @@ files:
 score:
   is_scorable: Yes
   score_module: EnigmaGS
-  score_type: SERVER
 meta_data:
   features:
     - Customizable
