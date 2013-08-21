@@ -47,6 +47,7 @@ Namespace('Enigma').Creator = do ->
 
 		$('#title').val _title
 
+		# enable the category/question area so that categories can be drag-sorted
 		$('#question_container').sortable {
 			containment: 'parent',
 			distance: 5,
@@ -56,7 +57,7 @@ Namespace('Enigma').Creator = do ->
 		$('#question_container').droppable()
 		$('#question_container').droppable 'enable'
 
-		#fill the template objects
+		# fill the template objects
 		unless _catTemplate
 			_catTemplate = $('.template.category')
 			$('.template.category').remove()
@@ -75,6 +76,7 @@ Namespace('Enigma').Creator = do ->
 			_aTemplate.removeClass('template')
 
 		$('#add_category_button').click ->
+			# remove tutorial steps if creating a new widget
 			if $('.step1').length > 0
 				$('.step1').remove()
 				tutorial2 = $('<div class=\'tutorial step2\'>'+_helper2+'</div>')
@@ -95,7 +97,7 @@ Namespace('Enigma').Creator = do ->
 	_buildSaveData = ->
 		okToSave = false
 
-		#qset = {}
+		# create new qset object if we don't already have one, set default values regardless
 		if !_qset?
 			_qset = {}
 		_qset.options = {}
@@ -114,7 +116,6 @@ Namespace('Enigma').Creator = do ->
 		categories = $('.category')
 
 		cid = 0
-
 		for c in categories
 			category = _process c
 			category.assets = []
@@ -124,6 +125,7 @@ Namespace('Enigma').Creator = do ->
 		_qset.items = items
 		okToSave
 
+	# get each category's data from the appropriate page elements
 	_process = (c) ->
 		c = $(c)
 		category = {name: '', items: []}
@@ -143,21 +145,25 @@ Namespace('Enigma').Creator = do ->
 		newCat.click () ->
 			$('.active').removeClass 'active'
 			$(this).addClass 'active'
+		# select the category's text when the text area is focused
 		newCat.find('textarea').focus () -> this.select()
 
 		newCat.find('.add').click () ->
+			# remove tutorial steps if creating a new widget
 			if $('.step2').length > 0
 				$('.step2').remove()
 				tutorial3 = $('<div class=\'tutorial step3\'>'+_helper3+'</div>')
 				$('body').append tutorial3
+			# only add another question if there are less than six already
 			numQs = newCat.find('.question').length
 			unless numQs > 5
 				if numQs is 5
 					$(this).hide()
 					newCat.droppable 'disable'
 				_addQuestion newCat
-		newCat.find('.delete').click ->
-			$(this).parent().remove()
+
+		newCat.find('.delete').click -> newCat.remove()
+
 		newCat.droppable {
 			hoverClass: 'drop_target',
 			drop: (event, ui) ->
@@ -166,8 +172,9 @@ Namespace('Enigma').Creator = do ->
 					if numQs is 5
 						newCat.find('.add').hide()
 						newCat.droppable 'disable'
+					# re-enable question adding on the dropped question's original category
 					unless ui.draggable.closest('#import_question_area').length > 0
-						ui.draggable.parent().find('.add').show()
+						ui.draggable.siblings('.add').show()
 						ui.draggable.parent().droppable 'enable'
 					newCat.find('.add').before ui.draggable
 				else
@@ -190,7 +197,7 @@ Namespace('Enigma').Creator = do ->
 		newCat.find('textarea').focus()
 
 	_addQuestion = (category, question=null) ->
-		#create a new question element and default its pertinent data
+		# create a new question element and default its pertinent data
 		newQ = _qTemplate.clone()
 		$.data(newQ[0], 'questions', [{text: ''}])
 		$.data(newQ[0], 'answers', [])
@@ -228,6 +235,7 @@ Namespace('Enigma').Creator = do ->
 		else
 			$(newQ).click()
 
+	# open the question edit window, populate it with info based on the clicked question's data
 	_changeQuestion = (q) ->
 		$('.selected').removeClass 'selected'
 		$(q).addClass 'selected'
@@ -237,18 +245,19 @@ Namespace('Enigma').Creator = do ->
 		qWindow.find('#question_text').val $.data(q).questions[0].text
 		answers = $.data(q, 'answers')
 
+		# store the original question data so we can check it for any changes later
 		original_question = $.data(q).questions[0].text
 
 		_addAnswer $(qWindow).find('#add_answer'), a for a in answers
 
 		qWindow.find('#cancel').click () ->
-			#remove question with no answers, otherwise just close window
+			# remove question with no answers, otherwise just close window
 			$(q).remove() if $.data(q, 'answers').length is 0
 			$('#modal').hide()
 			$('.dim').removeClass 'dim'
 			$(qWindow).remove()
 		qWindow.find('#done').click () ->
-			#validate info, save changes
+			# validate info, save changes
 			if $('#question_text').val() is ''
 				alert 'You can not have a blank question!'
 				return
@@ -258,11 +267,11 @@ Namespace('Enigma').Creator = do ->
 			changed = 0
 			answer_elements = $('.answer')
 
+			# check all answers for any changes and to make sure we can save at all
 			for na in answer_elements
 				original = $.data na, 'original'
 
 				text = $(na).find('.answer_text').val()
-				# automatically remove empty answers instead?
 				if text is ''
 					alert 'You can not have a blank answer!'
 					return
@@ -334,7 +343,7 @@ Namespace('Enigma').Creator = do ->
 			else
 				answer.find('.answer_value').val '0%'
 
-		#need a function in here somewhere to make sure all numbers given are between 0 and 100
+		# constrain all typed values to 0 or 100, then add a % to the end
 		answer.find('.answer_value').blur () ->
 			value = parseInt $(this).val()
 			if isNaN value
@@ -343,6 +352,7 @@ Namespace('Enigma').Creator = do ->
 				$(this).val '100%'
 			else
 				$(this).val value+'%'
+		# spoof an unfocus, then reclick when pressing enter
 		answer.find('.answer_value').keyup () ->
 			if event.which is 13
 				this.blur()
@@ -366,6 +376,7 @@ Namespace('Enigma').Creator = do ->
 		$(loc).before answer
 		answer.find('.answer_text').focus()
 
+	# change each answer's letter based on how many there are
 	_resetLetters = ->
 		num_answers = $('.answer').length
 		if num_answers is _letters.length
