@@ -47,6 +47,15 @@ Namespace('Enigma').Creator = do ->
 
 		$('#title').val _title
 
+		$('#question_container').sortable {
+			containment: 'parent',
+			distance: 5,
+			helper: 'clone',
+			items: '.category'
+		}
+		$('#question_container').droppable()
+		$('#question_container').droppable 'enable'
+
 		#fill the template objects
 		unless _catTemplate
 			_catTemplate = $('.template.category')
@@ -82,15 +91,6 @@ Namespace('Enigma').Creator = do ->
 			$('#randomize').prop 'checked', _qset.options.randomize
 			categories = _qset.items
 			_addCategory category for category in categories
-
-		$('#question_container').sortable {
-			containment: 'parent',
-			distance: 5,
-			helper: 'clone',
-			items: '.category'
-		}
-		$('#question_container').droppable()
-		$('#question_container').droppable 'enable'
 
 	_buildSaveData = ->
 		okToSave = false
