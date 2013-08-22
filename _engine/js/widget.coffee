@@ -10,8 +10,7 @@ Namespace('Enigma').Engine = do ->
 	_scores                 = []
 	_totalQuestions         = 0
 	_answeredQuestions      = 0
-	_correctQuestions       = 0
-	_incorrectQuestions     = 0
+	_currentScore           = 0
 	_finalScore             = 0
 	_$remainingQuestions    = null
 	_checkMark              = '''<span class="correct mark" hidden>
@@ -19,6 +18,7 @@ Namespace('Enigma').Engine = do ->
 										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
 									</svg>
 								</span>'''
+	_partialMark            = '''<span class="partial mark" hidden></span>'''
 	_xMark                  = '''<span class="wrong mark" hidden>
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
 										<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
@@ -102,10 +102,18 @@ Namespace('Enigma').Engine = do ->
 	_animatePie = (ms) ->
 		start = 270
 
-		for i in [0..1]
-			_val = (_data[i] * 100 * 3.6 - 0.001) / _totalQuestions
-			_paths[i].animate 'segment': [60, 60, 60, start, start += _val], ms or 1000, 'bounce'
-			_paths[i].angle = start - _val / 2
+		percAnswered = _answeredQuestions / _totalQuestions
+
+		correctAngle   = (_currentScore * 3.6 - 0.0001) * percAnswered
+		incorrectAngle = ((100 - _currentScore) * 3.6 - 0.0001) * percAnswered
+
+		# correct pie slice values:
+		_paths[0].animate 'segment': [60, 60, 60, start, start += correctAngle], ms or 1000, 'bounce'
+		_paths[0].angle = start - correctAngle / 2
+
+		# incorrect pie slice values:
+		_paths[1].animate 'segment': [60, 60, 60, start, start += incorrectAngle], ms or 1000, 'bounce'
+		_paths[1].angle = start - incorrectAngle / 2
 
 	_drawPie = (_paper_num) ->
 		# Initialize the remaining question counter.
@@ -113,16 +121,6 @@ Namespace('Enigma').Engine = do ->
 
 		# This wil be the outer grey circle.
 		_paper_num.circle(60, 60, 60).attr 'fill': '#444', 'stroke-width': 0
-
-		_total = 0
-		_start = 270
-
-		# Data and fills arrays: correct, incorrect
-		_data = [0.00001, 0.00001]
-		_fills = ['rgb(42, 240, 177)', '#AC3434']
-
-		for i in [0..1]
-			_total += _data[i]
 
 		# We can gather the slice's attributes into a Raphael method.
 		_paper_num.customAttributes.segment = (x, y, r, a1, a2) ->
@@ -137,14 +135,12 @@ Namespace('Enigma').Engine = do ->
 		_paths = _paper_num.set()
 
 		# Give the slices their attributes and starting values.
+		_fills = ['rgb(42, 240, 177)', '#AC3434']
 		for i in [0..1]
-			_val = 360 / _total * _data[i]
-			do (i, _val) ->
-				_paths.push _paper_num.path().attr
-					'segment': [60, 60, 1, _start, _start+_val]
-					'fill': _fills[i]
-					'stroke-width': 0
-			_start += _val
+			_paths.push _paper_num.path().attr
+				'segment': [60, 60, 1, 270, 270]
+				'fill': _fills[i]
+				'stroke-width': 0
 
 		# This will be the inner grey circle.
 		_paper_num.circle(60, 60, 50).attr 'fill': '#333', 'stroke-width': 0
@@ -180,11 +176,7 @@ Namespace('Enigma').Engine = do ->
 		$question.on 'click', '.return', ->
 			_closeQuestion()
 			setTimeout ->
-				_data[0] = _correctQuestions
-				_data[1] = _incorrectQuestions
-				for i in [0..1]
-					_total += _data[i]
-					_animatePie()
+				_animatePie()
 			, 150
 			_updatePieData()
 
@@ -229,14 +221,22 @@ Namespace('Enigma').Engine = do ->
 				.html('&#x2714;')
 				.attr('title', "#{newTitle} Correct")
 
-		# Otherwise, add an X.
-		else
+		else if answer.score == 0
 			$chosenRadio.parents('li').prepend _xMark
 			$('.wrong').fadeIn()
 			_$currentQuestionSquare
 			.addClass('wrong')
 			.html('X')
 			.attr('title', "#{newTitle} Wrong")
+
+		else
+			$chosenRadio.parents('li').prepend _partialMark
+			$('.partial').html(answer.score + '%').fadeIn()
+			_$currentQuestionSquare
+				.addClass('correct')
+				.addClass('partial')
+				.html(answer.score + '%')
+				.attr('title', "#{newTitle} Correct")
 
 		# Update the radio list and buttons.
 		$(".answers input[type='radio']").prop 'disabled', true
@@ -281,18 +281,13 @@ Namespace('Enigma').Engine = do ->
 	# Update the score on the main screen
 	_updateScore = ->
 		_answeredQuestions++
-		_finalScore = 0
-		_correctQuestions = 0
-		_incorrectQuestions = 0
 
+		total = 0
 		for i in [0.._scores.length - 1]
-			if _scores[i] is 100
-				_finalScore += 100
-				_correctQuestions++
-			else
-				_incorrectQuestions++
+			total += _scores[i]
 
-		_finalScore = Math.round _finalScore/_totalQuestions
+		_currentScore = Math.round total / _answeredQuestions
+		_finalScore   = Math.round total / _totalQuestions
 
 	# Check the value of the chosen answer
 	_checkAnswer = (question, answerId) ->
