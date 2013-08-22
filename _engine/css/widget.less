@@ -194,6 +194,9 @@ html, body {
 				background: #cf8c92;
 				border: 3px solid #AC3434;
 			}
+			&.partial {
+				font-size: 30px;
+			}
 			@-moz-document url-prefix() {
 				.question&.wrong {padding: 5px;}
 			}
@@ -310,6 +313,14 @@ html, body {
 					&.correct {
 						margin: -2px 0 0 0;
 						color:#4187c9;
+					}
+					&.partial {
+						margin: 10px 0 0 -2px;
+						color:#3777b4;
+						font-size: 13px;
+						font-family: Helvetica, Arial, sans;
+						font-weight: bold;
+						line-height: 0;
 					}
 					&.wrong {
 						color:#cc0000;
