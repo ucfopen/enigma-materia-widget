@@ -259,7 +259,7 @@ Namespace('Enigma').Creator = do ->
 		qWindow.find('#done').click () ->
 			# validate info, save changes
 			if $('#question_text').val() is ''
-				alert 'You can not have a blank question!'
+				Materia.CreatorCore.alert 'Blank Question', 'You can not have a blank question!'
 				return
 
 			valid_answers = false
@@ -273,7 +273,7 @@ Namespace('Enigma').Creator = do ->
 
 				text = $(na).find('.answer_text').val()
 				if text is ''
-					alert 'You can not have a blank answer!'
+					Materia.CreatorCore.alert 'Blank Answer', 'You can not have a blank answer!'
 					return
 				value = parseInt($(na).find('.answer_value').val())
 				valid_answers = true if value is 100
@@ -298,7 +298,7 @@ Namespace('Enigma').Creator = do ->
 				})
 
 			if not valid_answers
-				alert 'You must have at least one correct answer worth 100% credit!'
+				Materia.CreatorCore.alert 'No Correct Answer', 'You must have at least one correct answer worth 100% credit!'
 				return
 			$.data(q, 'questions', [{text:$('#question_text').val()}])
 			if changed > 0
@@ -316,7 +316,7 @@ Namespace('Enigma').Creator = do ->
 
 		qWindow.find('#add_answer').click () ->
 			if $('.answer').length is _letters.length
-				alert 'You already have the maximum number of answers for this question!'
+				Materia.CreatorCore.alert 'Maximum Answers', 'You already have the maximum number of answers for this question!'
 			else
 				_addAnswer this
 				_resetLetters()
