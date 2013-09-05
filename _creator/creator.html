@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>test Creator</title>
+		<meta charset='utf-8' />
+		<style type='text/css'></style>
+		<script type='text/javascript' src='/js/materia.require.js'></script>
+		<link rel='stylesheet' type='text/css' href='css/creator.css'>
+		<script type='text/javascript'>
+			require(['jquery', 'creatorcore', 'js/creator'], function(util) {
+				require(['js/jquery-ui-1.10.3.custom.min'], function(util) {
+					Materia.CreatorCore.start(Enigma.Creator);
+				});
+			});
+		</script>
+	</head>
+	<body>
+		<div id='modal'></div>
+		<header>
+			<div>
+				<label>Widget Title:</label>
+				<div>
+					<input type='text' id='title'/>
+				</div>
+			</div>
+			<div>
+				<label>Randomize Answer Order:</label>
+				<input type='checkbox' id='randomize'/>
+			</div>
+		</header>
+		<section id='main_area'>
+			<div id='question_container'></div>
+			<div id='add_category_button'>
+				Click Here To Add Another Category
+			</div>
+		</section>
+		<section class = 'import_area' id='import_area'>
+			<h1>Imported Questions</h1>
+			<div id='import_question_area'>
+				<span class='add'></span>
+			</div>
+			<button id='import_hide'>Hide</button>
+		</section>
+
+		<!-- templates -->
+		<div class='template category'>
+			<button class='delete'></button>
+			<div class='cat_label'>
+				<textarea placeholder='New Category'></textarea>
+			</div>
+			<button class='add'></button>
+		</div>
+		<div class='template question'>
+			<button class='delete'></button>
+			<div class='question_text'></div>
+		</div>
+		<div class='template question_window'>
+			<h1>Question:</h1>
+			<textarea id='question_text'></textarea>
+			<h1>Answers:</h1>
+			<div id='answer_area' class='answer_area'>
+				<div id='add_answer' class='add_answer' tabindex=0>Click Here To Add An Answer</div>
+			</div>
+			<button id='cancel'>Cancel</button>
+			<button id='done'>Done</button>
+		</div>
+		<div class='template answer' data-letter="0">
+			<span class='letter'></span>
+			<input type='text' class='answer_text'/>
+			<input type='checkbox' class='answer_correct'/>
+			<input type='text' class='answer_value' value='0%'/>
+			<span class='answer_remove'></span>
+			<div class='answer_feedback'>
+				<span class='feedback_icon'></span>
+				<input type='text' class='feedback_text' placeholder='Click Here to Add Feedback for This Answer (Optional)'/>
+			</div>
+		</div>
+		<!-- /templates -->
+	</body>
+</html>
