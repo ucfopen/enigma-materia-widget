@@ -12,13 +12,12 @@ general:
   is_storage_enabled: No
   api_version: 2
 files:
-  creator: swf/enigma-creator.swf
+  creator: creator.html
   player: widget.html
   flash_version: 0
 score:
   is_scorable: Yes
   score_module: EnigmaGS
-  score_type: SERVER
 meta_data:
   features:
     - Customizable

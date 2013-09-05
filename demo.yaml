@@ -8,6 +8,7 @@ qset:
         name: Animated TV
         items:
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -39,6 +40,7 @@ qset:
             options:
               index: 1
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -68,6 +70,7 @@ qset:
             options:
               index: 2
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -104,6 +107,7 @@ qset:
         name: Sitcoms
         items:
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -133,6 +137,7 @@ qset:
             options:
               index: 1
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -162,6 +167,7 @@ qset:
             options:
               index: 2
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -198,6 +204,7 @@ qset:
         name: Game Shows
         items:
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -229,6 +236,7 @@ qset:
             options:
               index: 1
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
@@ -258,6 +266,7 @@ qset:
             options:
               index: 2
           - 
+            materiaType: question
             id: null
             type: MC
             questions:
