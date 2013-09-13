@@ -39,6 +39,8 @@ Namespace('Enigma').Engine = do ->
 		_paper = new Raphael('scorebox', '100%', '100%')
 		_cacheVariables()
 		_drawPie(_paper)
+		# once everything is drawn, set the height of the player
+		Materia.Engine.setHeight()
 
 	_cacheVariables = ->
 		_$remainingQuestions = $('.header .score .value')
@@ -310,4 +312,5 @@ Namespace('Enigma').Engine = do ->
 		Materia.Engine.end yes
 
 	#public
+	manualResize: true
 	start: start
