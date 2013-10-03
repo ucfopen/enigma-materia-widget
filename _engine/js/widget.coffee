@@ -293,14 +293,14 @@ Namespace('Enigma').Engine = do ->
 	# Check the value of the chosen answer
 	_checkAnswer = (question, answerId) ->
 		for answer in question.answers
-			if answer.id == answerId
+			if String(answer.id) == String(answerId)
 				return {
 					score: parseInt(answer.value, 10)
 					text: answer.text
 					feedback: answer.options.feedback
 				}
 
-		throw Error 'Submitted answer not in this questions'
+		throw Error 'Submitted answer not in this question'
 
 	# Close a Question screen to return to the main board
 	_closeQuestion = ->
