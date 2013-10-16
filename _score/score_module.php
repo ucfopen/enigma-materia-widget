@@ -37,7 +37,7 @@ class Score_Modules_EnigmaGS extends Score_Module
 			$q = $this->questions[$log->item_id];
 			foreach ($q->answers as $answer)
 			{
-				if ($log->text == $answer['text']) return $answer['value'];
+				if (trim($log->text) == trim($answer['text'])) return $answer['value'];
 			}
 		}
 
