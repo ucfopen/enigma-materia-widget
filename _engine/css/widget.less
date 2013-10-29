@@ -23,14 +23,14 @@
 }
 
 ::-webkit-scrollbar {
-   -webkit-appearance: none;
-   width: 7px;
+	-webkit-appearance: none;
+	width: 7px;
 }
 
 ::-webkit-scrollbar-thumb {
-   border-radius: 0;
-   background-color: rgba(0,0,0,.5);
-   -webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
+	border-radius: 0;
+	background-color: rgba(0,0,0,.5);
+	-webkit-box-shadow: 0 0 1px rgba(255,255,255,.5);
 }
 
 html {
@@ -70,7 +70,7 @@ html, body {
 	background: -o-linear-gradient(top,  @blue 0%,@dblue 100%);
 	background: -ms-linear-gradient(top,  @blue 0%,@dblue 100%);
 	background: linear-gradient(to bottom,  @blue 0%,@dblue 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@blue', endColorstr='@dblue',GradientType=0 );
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='@{blue}', endColorstr='@{dblue}',GradientType=0 );
 
 	h1 {
 		line-height: 90px;
@@ -115,6 +115,11 @@ html, body {
 			top: 34px;
 			right: 25px;
 			font-size: 15px;
+		}
+		svg {
+			// override raphael setting overflow to hidden
+			// so full circle will show up in IE9
+			overflow: visible !important;
 		}
 	}
 	.menu {
