@@ -13,7 +13,7 @@ general:
   api_version: 2
 files:
   creator: creator.html
-  player: widget.html
+  player: player.html
   flash_version: 0
 score:
   is_scorable: Yes

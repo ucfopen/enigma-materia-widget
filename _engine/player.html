@@ -1,16 +1,30 @@
 <!DOCTYPE html>
-<html>
+<!-- INJECTS IE CLASSES ONTO HTML TAG -->
+<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
+<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
 	<head>
-		<title>HTML Widget Engine</title>
+		<title>Enigma Widget Player</title>
 		<meta charset="utf-8" />
-		<style type="text/css"></style>
-		<script type="text/javascript" src="/js/materia.require.js"></script>
-		<link rel="stylesheet/less" type="text/css" href="css/widget.less">
-		<script type="text/javascript">
-			require(['enginecore', 'score', 'underscore', 'less', 'js/raphael-min', 'cs!js/widget'], function(util) {
-				Materia.Engine.start(Enigma.Engine);
-			});
-		</script>
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" type="text/css" href="player.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/materia.enginecore.js"></script>
+		<script type="text/javascript" src="/js/materia.score.js"></script>
+
+		<!-- OPTIONAL MATERIA JAVASCRIPT -->
+		<!-- <script type="text/javascript" src="/js/materia.storage.manager.js"></script> -->
+		<!-- <script type="text/javascript" src="/js/materia.storage.table.js"></script> -->
+
+		<!-- YOUR PREREQUISITES -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
+
+		<!-- MAIN PLAYER SCRIPT -->
+		<script src="player.js"></script>
 	</head>
 	<body>
 
@@ -88,5 +102,12 @@
 		<button>Submit for Review</button>
 	</section>
 </script>
+
+
+<!-- INITIALIZE -->
+<script type="text/javascript">
+	Materia.Engine.start(Enigma.Engine);
+</script>
+
 	</body>
 </html>

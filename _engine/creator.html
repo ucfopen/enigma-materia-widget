@@ -1,18 +1,24 @@
 <!DOCTYPE html>
-<html>
+<!-- INJECTS IE CLASSES ONTO HTML TAG -->
+<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
+<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
 	<head>
-		<title>test Creator</title>
-		<meta charset='utf-8' />
-		<style type='text/css'></style>
-		<script type='text/javascript' src='/js/materia.require.js'></script>
-		<link rel='stylesheet' type='text/css' href='css/creator.css'>
-		<script type='text/javascript'>
-			require(['jquery', 'creatorcore', 'js/creator'], function(util) {
-				require(['js/jquery-ui-1.10.3.custom.min'], function(util) {
-					Materia.CreatorCore.start(Enigma.Creator);
-				});
-			});
-		</script>
+		<title>Enigma Widget Creator</title>
+		<meta charset="utf-8" />
+
+		<!-- STYLESHEETS -->
+		<link rel="stylesheet" type="text/css" href="creator.css">
+
+		<!-- REQUIRED MATERIA JAVASCRIPT -->
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/js/materia.creatorcore.js"></script>
+
+		<!-- YOUR PREREQUISITES -->
+		<script type="text/javascript" src="jquery-ui-1.10.3.custom.min.js"></script>
+
+		<!-- MAIN CREATOR SCRIPT -->
+		<script src="creator.js"></script>
 	</head>
 	<body>
 		<div id='modal'></div>
@@ -42,7 +48,7 @@
 			<button id='import_hide'>Hide</button>
 		</section>
 
-		<!-- templates -->
+		<!-- TEMPLATES -->
 		<div class='template category'>
 			<button class='delete'></button>
 			<div class='cat_label'>
@@ -75,6 +81,12 @@
 				<input type='text' class='feedback_text' placeholder='Click Here to Add Feedback for This Answer (Optional)'/>
 			</div>
 		</div>
-		<!-- /templates -->
+		<!-- END TEMPLATES -->
+
+<!-- INITIALIZE -->
+<script type="text/javascript">
+	Materia.CreatorCore.start(Enigma.Creator);
+</script>
+
 	</body>
 </html>
