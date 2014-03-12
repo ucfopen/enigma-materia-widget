@@ -9,37 +9,41 @@
 
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" type="text/css" href="creator.css">
+		<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700' rel='stylesheet' type='text/css'>
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script type="text/javascript" src="/js/materia.creatorcore.js"></script>
 
 		<!-- YOUR PREREQUISITES -->
-		<script type="text/javascript" src="jquery-ui-1.10.3.custom.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular.min.js"></script>
 
 		<!-- MAIN CREATOR SCRIPT -->
 		<script src="creator.js"></script>
 	</head>
-	<body>
+	<body ng-cloak ng-controller='enigmaCreatorCtrl'>
 		<div id='modal'></div>
-		<header>
-			<div>
-				<label>Widget Title:</label>
-				<div>
-					<input type='text' id='title'/>
+		<div id='header'>
+			<div class='logo'></div>
+			<h1 id='title' ng-bind='title'></h1>
+			<div class='center'><span ng-bind='qset.items.length'></span> Questions</div>
+			<div class='right'>
+				Randomize Answer Order
+				<input type='checkbox' id='randomize' ng-model='qset.options.randomize'/>
+				<label for='randomize' class='checktoggle'></label>
+			</div>
+		</div>
+		<div id='board'>
+			<div class='category' ng-repeat='category in range(4)' style='opacity:{{ qset.items[category] ? 1 : 0.1 }}'>
+				<button class='delete'></button>
+				<div class='cat_label'>
+					<textarea placeholder='New Category'></textarea>
+				</div>
+				<div class='question' ng-repeat='index in range(6)'>
+					{{$index}}
 				</div>
 			</div>
-			<div>
-				<label>Randomize Answer Order:</label>
-				<input type='checkbox' id='randomize'/>
-			</div>
-		</header>
-		<section id='main_area'>
-			<div id='question_container'></div>
-			<div id='add_category_button'>
-				Click Here To Add Another Category
-			</div>
-		</section>
+		</div>
 		<section class = 'import_area' id='import_area'>
 			<h1>Imported Questions</h1>
 			<div id='import_question_area'>
@@ -47,6 +51,18 @@
 			</div>
 			<button id='import_hide'>Hide</button>
 		</section>
+		<div id='backgroundcover'></div>
+		<div class='box intro'>
+			<img src='assets/creator_example.png'>
+			<h1>Enigma</h1>
+			<p>Create a gameboard of multiple choice questions</p>
+			<p>Questions are organized by categories.</p>
+			<p>Each question is worth the same amount.</p>
+			<hr>
+			<b>Start by giving your Enigma widget a title</b><br>
+			<input type='text' placeholder='My enigma widget' autofocus='1'>
+			<input type='button' value='Get Started'>
+		</div>
 
 		<!-- TEMPLATES -->
 		<div class='template category'>
@@ -82,11 +98,11 @@
 			</div>
 		</div>
 		<!-- END TEMPLATES -->
-
-<!-- INITIALIZE -->
-<script type="text/javascript">
-	Materia.CreatorCore.start(Enigma.Creator);
-</script>
+		<!-- INITIALIZE -->
+		<script type="text/javascript">
+			angular.bootstrap(document, ['enigmaCreator']);
+			Materia.CreatorCore.start(Enigma.Creator);
+		</script>
 
 	</body>
 </html>
