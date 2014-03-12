@@ -1,26 +1,55 @@
+###
+
+Materia
+It's a thing
+
+Widget	: Enigma, Creator
+Authors	: Jonathan Warner
+Updated	: 3/14
+
+###
+
+EnigmaCreator = angular.module('enigmaCreator', [])
+
+EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
+	$scope.title = ''
+	$scope.qset = {}
+
+
+	$scope.range = (n) -> [0...n]
+]
+
 Namespace('Enigma').Creator = do ->
-	_widget  = null # holds widget data
 	_qset    = null # Keep tack of the current qset
 	_title   = null # hold on to this instance's title
-	_version = null # holds the qset version, allows you to change your widget to support old versions of your own code
-	# variables to contain templates for various page elements
-	_catTemplate = null
-	_qTemplate = null
-	_qWindowTemplate = null
-	_aTemplate = null
+
+	_scope = {}
 
 	# reference for question answer lists
 	_letters = ['A','B','C','D','E','F','G','H','I','J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-	# strings containing tutorial texts, boolean for tutorial mode
-	_helper1 = 'To get started, create a new category by clicking on the Add Category row...'
-	_helper2 = 'Each category can have a maximum of six questions. You can add questions by clicking on the plus (+) button.'
-	_helper3 = 'After you have added questions, you can drag-and-drop them to reposition their order. You can also drag them to other categories. Click questions to edit. To remove questions, click the \'X\' button at the top right corner of the question.'
-	_help = false
-
 	initNewWidget = (widget, baseUrl) ->
-		_help = true
-		_buildDisplay 'New Enigma Widget', widget
+		_scope = angular.element($('body')).scope()
+		_scope.$apply ->
+			_scope.title = 'New enigma widget'
+			_scope.qset =
+				items: [
+					{items: [
+						5,4,3,2
+					]},
+					{items: [
+						5,4,3,2
+					]}
+				]
+				options:
+					randomize: true
+
+		#$('#backgroundcover, .intro').addClass 'show'
+
+		$('.intro input[type=button]').click ->
+			$('#backgroundcover, .intro').removeClass 'show'
+			_title = $('.intro input[type=text]').val()
+			
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) -> _buildDisplay title, widget, qset, version
 
@@ -42,7 +71,6 @@ Namespace('Enigma').Creator = do ->
 	_buildDisplay = (title = 'Default test Title', widget, qset, version) ->
 		_version = version
 		_qset    = qset
-		_widget  = widget
 		_title   = title
 
 		$('#title').val _title
@@ -393,7 +421,7 @@ Namespace('Enigma').Creator = do ->
 	#public
 	initNewWidget: initNewWidget
 	initExistingWidget: initExistingWidget
-	onSaveClicked:onSaveClicked
-	onMediaImportComplete:onMediaImportComplete
-	onQuestionImportComplete:onQuestionImportComplete
-	onSaveComplete:onSaveComplete
+	onSaveClicked: onSaveClicked
+	onMediaImportComplete: onMediaImportComplete
+	onQuestionImportComplete: onQuestionImportComplete
+	onSaveComplete: onSaveComplete
