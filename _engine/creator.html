@@ -26,7 +26,7 @@
 		<div id='header'>
 			<div class='logo'></div>
 			<h1 id='title' ng-bind='title'></h1>
-			<div class='center'><span ng-bind='qset.items.length'></span> Questions</div>
+			<div class='center'>{{numQuestions()}} Questions</div>
 			<div class='right'>
 				Randomize Answer Order
 				<input type='checkbox' id='randomize' ng-model='qset.options.randomize'/>
@@ -34,13 +34,29 @@
 			</div>
 		</div>
 		<div id='board'>
-			<div class='category' ng-repeat='category in range(4)' style='opacity:{{ qset.items[category] ? 1 : 0.1 }}'>
+			<div class='category' ng-repeat='category in qset.items'>
 				<button class='delete'></button>
-				<div class='cat_label'>
-					<textarea placeholder='New Category'></textarea>
+				<div class='label' style='opacity:{{ category.name ? 1 : 0.1 }}'>
+					<textarea placeholder='New Category' ng-model='category.name'></textarea>
 				</div>
-				<div class='question' ng-repeat='index in range(6)'>
-					{{$index}}
+				<div class='question' ng-repeat='question in category.items' ng-click='editQuestion(category,question)' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
+			</div>
+			<div id='question_editor' style='top: {{(curCategory.index+1) * 125}}px' ng-show='curQuestion'>
+				<div class='title'>Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
+
+				<textarea ng-model='curQuestion.questions[0].text' placeholder='Enter your question here'></textarea>
+
+				<div class='questions'>
+					<div ng-repeat='answer in curQuestion.answers'>
+						<textarea ng-model='answer.text' placeholder='Enter an answer choice'></textarea>
+						<textarea ng-model='answer.options.feedback' placeholder='Enter optional feedback'></textarea>
+						<input type='checkbox' id='qtoggle{{$index}}' ng-model='answer.options.correct'/>
+						<label for='qtoggle{{$index}}' class='checktoggle correctness'></label>
+					</div>
+				</div>
+				<div class='controls'>
+					<a href='javascript:;' ng-click='deleteQuestion(curQuestion.index)'>Delete</a>
+					<input type='button' value='Close' ng-click='editComplete()'>
 				</div>
 			</div>
 		</div>

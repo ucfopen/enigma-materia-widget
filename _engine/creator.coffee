@@ -15,6 +15,15 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.title = ''
 	$scope.qset = {}
 
+	$scope.curQuestion = false
+	$scope.curCategory = false
+
+	$scope.numQuestions = ->
+		i = 0
+		for category in $scope.qset.items
+			for question in category.items
+				i++	if question.used
+		i
 
 	$scope.range = (n) -> [0...n]
 ]
@@ -33,23 +42,65 @@ Namespace('Enigma').Creator = do ->
 		_scope.$apply ->
 			_scope.title = 'New enigma widget'
 			_scope.qset =
-				items: [
-					{items: [
-						5,4,3,2
-					]},
-					{items: [
-						5,4,3,2
-					]}
-				]
+				items: []
 				options:
 					randomize: true
+			_scope.editQuestion = _editQuestion
+			_scope.editComplete = _editComplete
+			_scope.deleteQuestion = _deleteQuestion
+			_buildScaffold()
 
 		#$('#backgroundcover, .intro').addClass 'show'
 
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
 			_title = $('.intro input[type=text]').val()
+	
+	_newQuestion = (i) ->
+		questions: [
+			text: ''
+		]
+		answers: [
+			{
+			text: ''
+			options:
+				feedback: ''
+			},
+			{
+			text: ''
+			options:
+				feedback: ''
+			}
+		]
+		used: 0
+		index: i
+
+	_buildScaffold = ->
+		i = 0
+		while _scope.qset.items.length < 5
+			_scope.qset.items.push
+				items: []
+				used: 0
+				index: i
+			i++
+			console.log 'added'
+		for category in _scope.qset.items
+			i = 0
+			while category.items.length < 6
+				category.items.push _newQuestion(i)
+				i++
+				console.log 'added q'
 			
+	_editQuestion = (category,question) ->
+		_scope.curQuestion = question
+		_scope.curCategory = category
+		question.used = true
+	
+	_editComplete = -> _scope.curQuestion = false
+	
+	_deleteQuestion = (i) ->
+		_scope.qset.items[_scope.curCategory.index].items[_scope.curQuestion.index] = _newQuestion(i)
+		_scope.curQuestion = false
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) -> _buildDisplay title, widget, qset, version
 
