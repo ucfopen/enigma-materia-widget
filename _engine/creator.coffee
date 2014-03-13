@@ -48,6 +48,9 @@ Namespace('Enigma').Creator = do ->
 			_scope.editQuestion = _editQuestion
 			_scope.editComplete = _editComplete
 			_scope.deleteQuestion = _deleteQuestion
+			_scope.addAnswer = _addAnswer
+			_scope.deleteAnswer = (index) ->
+				_scope.curQuestion.answers.splice(index,1)
 			_buildScaffold()
 
 		#$('#backgroundcover, .intro').addClass 'show'
@@ -57,17 +60,23 @@ Namespace('Enigma').Creator = do ->
 			_title = $('.intro input[type=text]').val()
 	
 	_newQuestion = (i) ->
+		type: 'MC'
+		id: ''
 		questions: [
 			text: ''
 		]
 		answers: [
 			{
+			id: ''
 			text: ''
+			value: -1
 			options:
 				feedback: ''
 			},
 			{
+			id: ''
 			text: ''
+			value: -1
 			options:
 				feedback: ''
 			}
@@ -90,6 +99,13 @@ Namespace('Enigma').Creator = do ->
 				category.items.push _newQuestion(i)
 				i++
 				console.log 'added q'
+	
+	_addAnswer = ->
+		_scope.curQuestion.answers.push
+			text: ''
+			value: -1
+			options:
+				feedback: ''
 			
 	_editQuestion = (category,question) ->
 		_scope.curQuestion = question
@@ -106,9 +122,10 @@ Namespace('Enigma').Creator = do ->
 
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
-			Materia.CreatorCore.save _title, _qset
+			Materia.CreatorCore.save _scope.title, _scope.qset
 		else
 			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
+		_buildScaffold()
 
 	onSaveComplete = (title, widget, qset, version) -> true
 
@@ -174,34 +191,29 @@ Namespace('Enigma').Creator = do ->
 			_addCategory category for category in categories
 
 	_buildSaveData = ->
-		okToSave = false
+		okToSave = true
 
-		# create new qset object if we don't already have one, set default values regardless
-		if !_qset?
-			_qset = {}
-		_qset.options = {}
-		_qset.assets = []
-		_qset.rand = false
-		_qset.name = ''
+		i = 0
+		console.log _scope.qset
+		while i < _scope.qset.items.length
+			if not _scope.qset.items[i].name
+				_scope.qset.items.splice(i,1)
+				i--
 
-		# update our values
-		_title = $('#title').val()
-		_qset.options.randomize = $('#randomize').prop 'checked'
-		okToSave = true if _title? && _title!= ''
+			j = 0
+			while j < _scope.qset.items[i].items.length
+				if not _scope.qset.items[i].items[j].questions[0].text
+					_scope.qset.items[i].items.splice(j,1)
+					j--
+				j++
 
-		items = []
-		_qset.options.randomize = $('#randomize').prop 'checked'
+			for question in _scope.qset.items[i].items
+				for answer in question.answers
+					if answer.value == -1
+						answer.value = if answer.options.correct then 100 else 0
 
-		categories = $('.category')
+			i++
 
-		cid = 0
-		for c in categories
-			category = _process c
-			category.assets = []
-			category.options = {cid: cid++}
-			items.push category
-
-		_qset.items = items
 		okToSave
 
 	# get each category's data from the appropriate page elements
@@ -407,7 +419,7 @@ Namespace('Enigma').Creator = do ->
 		$('#modal').show()
 		_resetLetters()
 
-	_addAnswer = (loc, a=null) ->
+	_addAnswerOld = (loc, a=null) ->
 		answer = $(_aTemplate).clone()
 		original = {id: '', text: '', value: 0, feedback: ''}
 
