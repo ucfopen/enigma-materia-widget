@@ -609,7 +609,6 @@ input[type=checkbox]:checked + label.checktoggle {
 	position: absolute;
 	left: 0px;
 	right: 0px;
-	height: 300px;
 	border: solid 4px #fff;
 	background: #3b4657;
 	top: 0px;
@@ -631,13 +630,38 @@ input[type=checkbox]:checked + label.checktoggle {
 		padding: 6px;
 		width: 703px;
 
+		a {
+			color: #188eed;
+		}
+
+		.controls {
+			display: inline-block;
+			position:relative;
+			top: 10px;
+
+			a {
+				position:relative;
+				color: #222;
+				display: block;
+				font-size: 11px;
+				text-align: center;
+				top: -15px;
+			}
+		}
+
 		textarea {
-			width: 228px;
-			margin-right: 15px;
+			width: 264px;
+			margin-right: 10px;
+		}
+
+		.delete {
+			vertical-align: top;
+			margin-top: 16px;
 		}
 
 		label {
 			top: -20px;
+			left: -10px;
 
 			&:before {
 				content: 'WRONG';
@@ -656,7 +680,7 @@ input[type=checkbox]:checked + label.checktoggle {
 			}
 		}
 	}
-	div.controls {
+	&>div.controls {
 		float: right;
 		vertical-align: bottom;
 
