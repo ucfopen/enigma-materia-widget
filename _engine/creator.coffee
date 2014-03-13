@@ -32,14 +32,9 @@ Namespace('Enigma').Creator = do ->
 	# reference for question answer lists
 	_letters = ['A','B','C','D','E','F','G','H','I','J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
-	initNewWidget = (widget, baseUrl) ->
+	_initScope = ->
 		_scope = angular.element($('body')).scope()
 		_scope.$apply ->
-			_scope.title = 'New enigma widget'
-			_scope.qset =
-				items: []
-				options:
-					randomize: true
 			_scope.editQuestion = (category,question) ->
 				_scope.curQuestion = question
 				_scope.curCategory = category
@@ -52,6 +47,16 @@ Namespace('Enigma').Creator = do ->
 				_scope.curQuestion.answers.push _newAnswer()
 			_scope.deleteAnswer = (index) ->
 				_scope.curQuestion.answers.splice(index,1)
+
+
+	initNewWidget = (widget, baseUrl) ->
+		_initScope()
+		_scope.$apply ->
+			_scope.title = 'New enigma widget'
+			_scope.qset =
+				items: []
+				options:
+					randomize: true
 			_buildScaffold()
 
 		#$('#backgroundcover, .intro').addClass 'show'
@@ -59,6 +64,16 @@ Namespace('Enigma').Creator = do ->
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
 			_scope.title = $('.intro input[type=text]').val()
+
+	initExistingWidget = (title, widget, qset, version, baseUrl) ->
+		_initScope()
+
+		_scope.$apply ->
+			_scope.title = title
+			_scope.qset = qset
+		_scope.$apply ->
+			_buildScaffold()
+
 
 	_newAnswer = ->
 		id: ''
@@ -97,8 +112,6 @@ Namespace('Enigma').Creator = do ->
 			for question in category.items
 				question.index = i++
 	
-	initExistingWidget = (title, widget, qset, version, baseUrl) -> _buildDisplay title, widget, qset, version
-
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
 			Materia.CreatorCore.save _scope.title, _scope.qset
