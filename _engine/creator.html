@@ -38,7 +38,7 @@
 				<div class='label' style='opacity:{{ category.name ? 1 : 0.1 }}'>
 					<textarea placeholder='New Category' ng-model='category.name'></textarea>
 				</div>
-				<div class='question' ng-repeat='question in category.items' ng-click='editQuestion(category,question)' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
+				<div class='question' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
 			</div>
 			<div id='question_editor' style='top: {{(curCategory.index+1) * 125}}px' ng-show='curQuestion'>
 				<div class='title'>Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
@@ -51,9 +51,14 @@
 						<textarea ng-model='answer.options.feedback' placeholder='Enter optional feedback'></textarea>
 
 						<div class='controls'>
-							<input type='checkbox' id='qtoggle{{$index}}' ng-model='answer.options.correct'/>
-							<label for='qtoggle{{$index}}' class='checktoggle correctness'><span></span></label>
-							<a href='javascript:;'>Set percentage</a>
+							<div ng-show='!answer.options.custom'>
+								<input type='checkbox' id='qtoggle{{$index}}' ng-model='answer.options.correct'/>
+								<label for='qtoggle{{$index}}' class='checktoggle correctness'><span></span></label>
+								<a href='javascript:;' ng-click='answer.options.custom = true'>Set percentage</a>
+							</div>
+							<div class='text' ng-show='answer.options.custom'>
+								<input type='text' ng-model='answer.value' ng-blur=''>%
+							</div>
 						</div>
 						<button class='delete' ng-click='deleteAnswer($index)'></button>
 					</div>

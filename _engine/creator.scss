@@ -64,11 +64,12 @@ a {
 }
 
 #board {
-	width: 750px;
+	width: 730px;
 	background: #2f3845;
 	margin: auto;
 	position:relative;
 	display: block;
+	padding-left: 20px;
 }
 
 #add_category_button {
@@ -659,6 +660,33 @@ input[type=checkbox]:checked + label.checktoggle {
 		.delete {
 			vertical-align: top;
 			margin-top: 16px;
+		}
+
+		.text {
+			border-radius: 30px;
+			top: -55px;
+			left: 10px;
+			position: relative;
+			width: 70px;
+			font-size: 15px;
+
+			padding: 6px 8px;
+			border: solid 1px #999;
+
+			color: #333;
+			background: #fff;
+
+			text-align: center;
+
+			margin-right: 20px;
+
+			input {
+				border: none;
+				width: 30px;
+				font-size: 15px;
+				text-align: right;
+				outline: none;
+			}
 		}
 
 		label {
