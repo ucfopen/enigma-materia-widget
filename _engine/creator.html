@@ -65,13 +65,6 @@
 				</div>
 			</div>
 		</div>
-		<section class = 'import_area' id='import_area'>
-			<h1>Imported Questions</h1>
-			<div id='import_question_area'>
-				<span class='add'></span>
-			</div>
-			<button id='import_hide'>Hide</button>
-		</section>
 		<div id='backgroundcover'></div>
 		<div class='box intro'>
 			<img src='assets/creator_example.png'>
@@ -85,40 +78,6 @@
 			<input type='button' value='Get Started'>
 		</div>
 
-		<!-- TEMPLATES -->
-		<div class='template category'>
-			<button class='delete'></button>
-			<div class='cat_label'>
-				<textarea placeholder='New Category'></textarea>
-			</div>
-			<button class='add'></button>
-		</div>
-		<div class='template question'>
-			<button class='delete'></button>
-			<div class='question_text'></div>
-		</div>
-		<div class='template question_window'>
-			<h1>Question:</h1>
-			<textarea id='question_text'></textarea>
-			<h1>Answers:</h1>
-			<div id='answer_area' class='answer_area'>
-				<div id='add_answer' class='add_answer' tabindex=0>Click Here To Add An Answer</div>
-			</div>
-			<button id='cancel'>Cancel</button>
-			<button id='done'>Done</button>
-		</div>
-		<div class='template answer' data-letter="0">
-			<span class='letter'></span>
-			<input type='text' class='answer_text'/>
-			<input type='checkbox' class='answer_correct'/>
-			<input type='text' class='answer_value' value='0%'/>
-			<span class='answer_remove'></span>
-			<div class='answer_feedback'>
-				<span class='feedback_icon'></span>
-				<input type='text' class='feedback_text' placeholder='Click Here to Add Feedback for This Answer (Optional)'/>
-			</div>
-		</div>
-		<!-- END TEMPLATES -->
 		<!-- INITIALIZE -->
 		<script type="text/javascript">
 			angular.bootstrap(document, ['enigmaCreator']);
