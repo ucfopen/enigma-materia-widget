@@ -650,8 +650,10 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		textarea {
-			width: 264px;
+			width: 260px;
+			height: 60px;
 			margin-right: 10px;
+			font-size: 14px;
 		}
 
 		.delete {
@@ -660,23 +662,49 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		label {
-			top: -20px;
+			top: -25px;
 			left: -10px;
+			background: #be3434;
+			border-radius: 30px;
+			overflow: hidden;
+			padding-top: 9px;
+			padding-bottom: 8px;
 
 			&:before {
-				content: 'WRONG';
 				transition: all ease 0.25s;
-				background: #be3434;
-				padding: 5px 7px;
-				margin: -5px;
-				width: 30px;
-				display: inline-block;
+				padding: 2px 2px;
+				width: 15px;
+				height: 15px;
+				background: #fff;
+				border-radius: 30px;
+				content: '';
+				top: -4px;
+				left: 5px;
+				position: relative;
+			}
+			span {
+				font-size: 10px;
+				position:relative;
+				top: 2px;
+				left: 20px;
+
+				&:before {
+					position: absolute;
+					content: 'WRONG';
+				}
 			}
 		}
 		input[type=checkbox]:checked + label.checktoggle {
+			background: #70be34;
+			position:relative;
 			&:before {
-				content: 'CORRECT';
-				background: #70be34;
+				margin-left: 57px;
+			}
+			span {
+				&:before {
+					content: 'CORRECT';
+					left: -80px;
+				}
 			}
 		}
 	}
