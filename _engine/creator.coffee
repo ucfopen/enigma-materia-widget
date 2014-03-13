@@ -35,11 +35,23 @@ Namespace('Enigma').Creator = do ->
 	_initScope = ->
 		_scope = angular.element($('body')).scope()
 		_scope.$apply ->
-			_scope.editQuestion = (category,question) ->
-				_scope.curQuestion = question
-				_scope.curCategory = category
-				question.used = true
-			_scope.editComplete = -> _scope.curQuestion = false
+			_scope.editQuestion = (category,question,$index) ->
+				if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
+					_scope.curQuestion = question
+					_scope.curCategory = category
+					question.used = true
+			_scope.editComplete = ->
+				for answer in _scope.curQuestion.answers
+					answer.value = parseInt(answer.value,10)
+
+					if answer.options.custom
+						if answer.value == 100 or answer.value == 0
+							answer.options.custom = false
+							answer.options.correct = if answer.value == 100 then true else false
+					else
+						answer.value = if answer.options.correct then 100 else 0
+				_scope.curQuestion = false
+				
 			_scope.deleteQuestion = (i) ->
 				_scope.qset.items[_scope.curCategory.index].items[_scope.curQuestion.index] = _newQuestion(i)
 				_scope.curQuestion = false
@@ -47,7 +59,9 @@ Namespace('Enigma').Creator = do ->
 				_scope.curQuestion.answers.push _newAnswer()
 			_scope.deleteAnswer = (index) ->
 				_scope.curQuestion.answers.splice(index,1)
-
+			_scope.toggleAnswer = (answer) ->
+				answer.value = if answer.value is 100 then 0 else 100
+				answer.options.custom = false
 
 	initNewWidget = (widget, baseUrl) ->
 		_initScope()
@@ -78,9 +92,11 @@ Namespace('Enigma').Creator = do ->
 	_newAnswer = ->
 		id: ''
 		text: ''
-		value: -1
+		value: 0
 		options:
 			feedback: ''
+			custom: false
+			correct: false
 	
 	_newQuestion = (i=0) ->
 		type: 'MC'
@@ -144,11 +160,6 @@ Namespace('Enigma').Creator = do ->
 					_scope.qset.items[i].items.splice(j,1)
 					j--
 				j++
-
-			for question in _scope.qset.items[i].items
-				for answer in question.answers
-					if answer.value == -1
-						answer.value = if answer.options.correct then 100 else 0
 			i++
 
 		okToSave
