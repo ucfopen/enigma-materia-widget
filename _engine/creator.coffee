@@ -19,6 +19,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.curCategory = false
 
 	$scope.numQuestions = ->
+		if !$scope.qset.items?
+			return 0
 		i = 0
 		for category in $scope.qset.items
 			for question in category.items
@@ -40,6 +42,10 @@ Namespace('Enigma').Creator = do ->
 					_scope.curQuestion = question
 					_scope.curCategory = category
 					question.used = true
+				setTimeout ->
+					$('#question_text').focus()
+				,0
+
 			_scope.editComplete = ->
 				for answer in _scope.curQuestion.answers
 					answer.value = parseInt(answer.value,10)
@@ -62,6 +68,11 @@ Namespace('Enigma').Creator = do ->
 			_scope.toggleAnswer = (answer) ->
 				answer.value = if answer.value is 100 then 0 else 100
 				answer.options.custom = false
+			_scope.newCategory = (index,category) ->
+				$('#category_'+index).focus()
+				category.isEditing = true
+		_scope.$watch ->
+			_buildScaffold()
 
 	initNewWidget = (widget, baseUrl) ->
 		_initScope()
@@ -119,6 +130,11 @@ Namespace('Enigma').Creator = do ->
 		i = 0
 		for category in _scope.qset.items
 			category.index = i++
+
+		if _scope.qset.items[i-1].name
+			_scope.qset.items.push
+				items: []
+				used: 0
 
 		for category in _scope.qset.items
 			i = 0
