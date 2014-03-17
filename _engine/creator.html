@@ -35,15 +35,20 @@
 		</div>
 		<div id='board'>
 			<div class='category' ng-repeat='category in qset.items'>
-				<div class='label' style='opacity:{{ category.name ? 1 : 0.1 }}'>
-					<textarea placeholder='New Category' ng-model='category.name'></textarea>
+				<div class='label' style='opacity:{{ (category.name || category.isEditing) ? 1 : 0.1 }}'>
+					<textarea placeholder='New Category' ng-model='category.name' id='category_{{$index}}' ng-focus='category.isEditing=true' ng-blur='category.isEditing=false'></textarea>
 				</div>
-				<div class='question' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
+				<button ng-show='!category.name && !category.isEditing' class='add'></button>
+				<div ng-show='!category.name && !category.isEditing' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
+				<div class='questionholder' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})'>
+					<div class='question' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
+					<button ng-show='!question.questions[0].text && category.name && ($index == 0 || category.items[$index-1].questions[0].text)' class='add'></button>
+				</div>
 			</div>
 			<div id='question_editor' style='top: {{(curCategory.index+1) * 125}}px' ng-show='curQuestion'>
 				<div class='title'>Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
-				<textarea ng-model='curQuestion.questions[0].text' placeholder='Enter your question here'></textarea>
+				<textarea ng-model='curQuestion.questions[0].text' placeholder='Enter your question here' id='question_text' autofocus></textarea>
 
 				<div class='questions'>
 					<div ng-repeat='answer in curQuestion.answers'>
