@@ -17,6 +17,7 @@
 
 		<!-- YOUR PREREQUISITES -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular.min.js"></script>
+		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular-animate.min.js"></script>
 
 		<!-- MAIN CREATOR SCRIPT -->
 		<script src="creator.js"></script>
@@ -46,7 +47,7 @@
 					<button ng-show='!question.questions[0].text && category.name && ($index == 0 || category.items[$index-1].questions[0].text)' class='add'></button>
 				</div>
 			</div>
-			<div id='question_editor' style='top: {{(curCategory.index+1) * 125}}px' ng-show='curQuestion'>
+			<div id='question_editor' style='top: {{(curCategory.index+1) * 124}}px' class='q{{curQuestion.index+1}}' ng-show='curQuestion'>
 				<div class='title'>Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
 				<textarea ng-model='curQuestion.questions[0].text' placeholder='Enter your question here' id='question_text' autofocus></textarea>
@@ -93,7 +94,7 @@
 		</div>
 		<div class='box title'>
 			<b>Give your Enigma widget a title</b><br>
-			<input type='text' placeholder='My enigma widget' autofocus='1' ng-model='title'>
+			<input type='text' placeholder='My enigma widget' ng-model='title'>
 			<input type='button' value='Done'>
 		</div>
 

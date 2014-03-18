@@ -475,7 +475,84 @@ input[type=checkbox]:checked + label.checktoggle {
 	top: 0px;
 	padding: 10px;
 	z-index: 2;
-	
+
+	-webkit-transition: top 0.25s ease;
+	-webkit-animation: bloop 0.2s;
+
+	&:after, &:before {
+		bottom: 100%;
+		left: 50%;
+		border: solid transparent;
+		content: " ";
+		height: 0;
+		width: 0;
+		position: absolute;
+		pointer-events: none;
+	}
+
+	&:after {
+		border-color: rgba(213, 0, 0, 0);
+		border-bottom-color: #3b4657;
+		border-width: 20px;
+		margin-left: -200px;
+		-webkit-transition: all 0.2s ease;
+	}
+	&:before {
+		border-color: rgba(255, 255, 255, 0);
+		border-bottom-color: #fff;
+		border-width: 26px;
+		margin-left: -206px;
+		-webkit-transition: all 0.2s ease;
+	}
+
+	&.q1:after {
+		margin-left: -200px;
+	}
+
+	&.q1:before {
+		margin-left: -206px;
+	}
+
+	&.q2:after {
+		margin-left: -100px;
+	}
+
+	&.q2:before {
+		margin-left: -106px;
+	}
+
+	&.q3:after {
+		margin-left: 0px;
+	}
+
+	&.q3:before {
+		margin-left: -6px;
+	}
+
+	&.q4:after {
+		margin-left: 98px;
+	}
+
+	&.q4:before {
+		margin-left: 92px;
+	}
+
+	&.q5:after {
+		margin-left: 198px;
+	}
+
+	&.q5:before {
+		margin-left: 192px;
+	}
+
+	&.q6:after {
+		margin-left: 298px;
+	}
+
+	&.q6:before {
+		margin-left: 292px;
+	}
+
 	.title {
 		font-weight: 700;
 	}
@@ -689,6 +766,15 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 	100% {
 		transform: translate(0px,0px);
+	}
+}
+
+@keyframes bloop {
+	0% {
+		transform: scale(1.1);
+	}
+	100% {
+		transform: scale(1);
 	}
 }
 
