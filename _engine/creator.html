@@ -26,6 +26,7 @@
 		<div id='header'>
 			<div class='logo'></div>
 			<h1 id='title' ng-bind='title'></h1>
+			<a href='javascript:;'>Edit...</a>
 			<div class='center'>{{numQuestions()}} Questions</div>
 			<div class='right'>
 				Randomize Answer Order
@@ -35,8 +36,8 @@
 		</div>
 		<div id='board'>
 			<div class='category' ng-repeat='category in qset.items'>
-				<div class='label' style='opacity:{{ (category.name || category.isEditing) ? 1 : 0.1 }}'>
-					<textarea placeholder='New Category' ng-model='category.name' id='category_{{$index}}' ng-focus='category.isEditing=true' ng-blur='category.isEditing=false'></textarea>
+				<div class='label' style='opacity:{{ (($index == 0 && step == 1) || category.name || category.isEditing) ? 1 : 0.1 }}'>
+					<textarea ng-model='category.name' id='category_{{$index}}' ng-focus='category.isEditing=true' ng-blur='category.isEditing=false' ng-keydown='updateCategory()'></textarea>
 				</div>
 				<button ng-show='!category.name && !category.isEditing' class='add'></button>
 				<div ng-show='!category.name && !category.isEditing' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
@@ -74,6 +75,9 @@
 					<input type='button' value='Close' ng-click='editComplete()'>
 				</div>
 			</div>
+			<div class='arrow_box' id='first_cat' ng-show='step == 1'>Click here to create your first category</div>
+			<div class='arrow_box' id='second_cat' ng-show='step == 2'>Now name this category</div>
+			<div class='arrow_box' id='third_cat' ng-show='step == 3'>Click here to add your first question</div>
 		</div>
 		<div id='backgroundcover'></div>
 		<div class='box intro'>
