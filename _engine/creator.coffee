@@ -42,9 +42,11 @@ Namespace('Enigma').Creator = do ->
 					_scope.curQuestion = question
 					_scope.curCategory = category
 					question.used = true
-				setTimeout ->
-					$('#question_text').focus()
-				,0
+					setTimeout ->
+						$('#question_text').focus()
+					,0
+
+					_scope.step = 4 if _scope.step is 3
 
 			_scope.editComplete = ->
 				for answer in _scope.curQuestion.answers
@@ -71,8 +73,18 @@ Namespace('Enigma').Creator = do ->
 			_scope.newCategory = (index,category) ->
 				$('#category_'+index).focus()
 				category.isEditing = true
+				_scope.step = 2 if _scope.step is 1
+			_scope.updateCategory = ->
+				setTimeout ->
+					_scope.$apply ->
+						_scope.step = 3 if _scope.step is 2
+				,0
 		_scope.$watch ->
-			_buildScaffold()
+			if _scope.qset.items[_scope.qset.items.length-1].name
+				_scope.qset.items.push
+					items: []
+					used: 0
+				_buildScaffold()
 
 	initNewWidget = (widget, baseUrl) ->
 		_initScope()
@@ -84,11 +96,13 @@ Namespace('Enigma').Creator = do ->
 					randomize: true
 			_buildScaffold()
 
-		#$('#backgroundcover, .intro').addClass 'show'
+		$('#backgroundcover, .intro').addClass 'show'
 
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
-			_scope.title = $('.intro input[type=text]').val()
+			_scope.$apply ->
+				_scope.title = $('.intro input[type=text]').val() or _scope.title
+				_scope.step = 1
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		_initScope()
@@ -130,11 +144,6 @@ Namespace('Enigma').Creator = do ->
 		i = 0
 		for category in _scope.qset.items
 			category.index = i++
-
-		if _scope.qset.items[i-1].name
-			_scope.qset.items.push
-				items: []
-				used: 0
 
 		for category in _scope.qset.items
 			i = 0
