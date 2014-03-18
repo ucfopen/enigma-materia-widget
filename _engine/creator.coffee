@@ -37,6 +37,12 @@ Namespace('Enigma').Creator = do ->
 	_initScope = ->
 		_scope = angular.element($('body')).scope()
 		_scope.$apply ->
+			_scope.changeTitle = ->
+				$('#backgroundcover, .title').addClass 'show'
+				$('.title input[type=text]').focus()
+				$('.title input[type=button]').click ->
+					$('#backgroundcover, .title').removeClass 'show'
+
 			_scope.editQuestion = (category,question,$index) ->
 				if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 					_scope.curQuestion = question

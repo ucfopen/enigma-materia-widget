@@ -1,8 +1,10 @@
 /* Standardize padding in all browsers */
+* {
+	user-select: none;
+}
 html, body, div {
 	margin: 0;
 	padding: 0;
-	user-select: none;
 }
 
 input, textarea {
@@ -84,11 +86,10 @@ $green: #70bd34;
 		font-size: 14px;
 	}
 	.center {
-		text-align: center;
-		left: 0px;
-		right: 0px;
 		position:absolute;
-		margin-top: 8px;
+		margin-left: -10px;;
+		left: 50%;
+		top: 22px;
 	}
 
 	h1 {
@@ -100,12 +101,18 @@ $green: #70bd34;
 		margin-top: 3px;
 		float: left;
 	}
-	a {
+	div.link {
 		float: left;
-		font-size: 11px;
+		cursor: pointer;
+		margin: 5px;
+		margin-top: 5px;
+		padding: 10px;
+		display: inline-block;
+		vertical-align: baseline;
+		z-index: 99;
+		font-size: 12px;
 		color: #ccc;
-		margin-top: 16px;
-		margin-left: 10px;
+		text-decoration: underline;
 	}
 }
 
