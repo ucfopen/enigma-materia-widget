@@ -26,7 +26,7 @@
 		<div id='header'>
 			<div class='logo'></div>
 			<h1 id='title' ng-bind='title'></h1>
-			<a href='javascript:;'>Edit...</a>
+			<div class='link' ng-click='changeTitle()'>Edit...</div>
 			<div class='center'>{{numQuestions()}} Questions</div>
 			<div class='right'>
 				Randomize Answer Order
@@ -90,6 +90,11 @@
 			<b>Start by giving your Enigma widget a title</b><br>
 			<input type='text' placeholder='My enigma widget' autofocus='1'>
 			<input type='button' value='Get Started'>
+		</div>
+		<div class='box title'>
+			<b>Give your Enigma widget a title</b><br>
+			<input type='text' placeholder='My enigma widget' autofocus='1' ng-model='title'>
+			<input type='button' value='Done'>
 		</div>
 
 		<!-- INITIALIZE -->
