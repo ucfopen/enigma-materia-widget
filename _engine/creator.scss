@@ -5,6 +5,11 @@ html, body, div {
 	user-select: none;
 }
 
+input, textarea {
+	outline: none;
+	resize: none;
+}
+
 html {
 	min-height: 100%;
 }
@@ -201,161 +206,9 @@ button {
 	}
 }
 
-.question_window {
-	background: #31394b;
-	color: #000;
-	-moz-border-radius:    3px;
-	-webkit-border-radius: 3px;
-	border-radius:         3px;
-	border: 3px solid #e0e0e0;
-	height: 428px;
-	position: absolute;
-	top: 100px;
-	left: 30%;
-	padding: 10px 0 0 10px;
-	width: 464px;
-	z-index: 100;
-
-	textarea {
-		height: 60px;
-		resize: none;
-		width: 442px;
-	}
-
-	.answer_area {
-		background-color: #fff;
-		height: 240px;
-		margin: 0;
-		padding: 0;
-		width: 442px;
-		overflow-y: auto;
-	}
-
-	div {
-		min-height: 40px;
-		margin: 0 auto;
-		padding: 5px 0 0;
-	}
-
-	.add_answer {
-		background-color: #c9c9c9;
-		height: 40px;
-		line-height: 40px;
-		margin-bottom: 20px;
-		text-align: center;
-	}
-
-	button {
-		background-color: #ddd;
-		background-repeat: repeat-x;
-		border-radius:         3px;
-		-moz-border-radius:    3px;
-		-webkit-border-radius: 3px;
-	}
-}
-
-.template {
-	display: none;
-}
-
-#modal {
-	background-color: rgba(0, 0, 0, .5);
-	display: none;
-	height: 100%;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 100%;
-	z-index: 50;
-}
-
-.answer {
-	overflow: hidden;
-
-	&:nth-child(even) {
-		background-color: #eaeaea;
-	}
-
-	.letter, .feedback_icon {
-		display: inline-block;
-		min-height: 13px;
-		width: 40px;
-		text-align: center;
-	}
-
-	.answer_text {
-		height: 30px;
-		margin: 0;
-		padding: 0;
-		width: 280px;
-	}
-	.answer_value {
-		background-color: rgba(0,0,0,0);
-		border: none;
-		height: 22px;
-		text-align: center;
-		width: 45px;
-	}
-	.answer_remove {
-		background-image: url('assets/ecks.png');
-		display: inline-block;
-		height: 24px;
-		vertical-align: text-bottom;
-		width: 24px;
-		&:hover {
-			background-image: url('assets/ecks-h.png');
-		}
-	}
-	.feedback_icon {
-		background-image: url('assets/feedback_icon.png');
-		background-position: center;
-		background-repeat: no-repeat;
-	}
-	.feedback_text {
-		background-color: #fffecb;
-		height: 30px;
-		width: 365px;
-	}
-}
-
 h1 {
 	color: #fff;
 	font-size: 16px;
-}
-
-.import_area {
-	background: #333;
-	-moz-border-radius:    5px;
-	-webkit-border-radius: 5px;
-	border-radius:         5px;
-	border: 1px solid #b7babc;
-	display: none;
-	margin: 10px;
-	padding: 0 10px 10px;
-
-	&>div {
-		border: 1px solid #b7babc;
-		height: 125px;
-		margin: 0;
-		overflow-x: auto;
-		white-space: nowrap;
-	}
-
-	.add {
-		display: none;
-	}
-
-	&>button {
-		background-color: #ddd;
-		background: -webkit-linear-gradient(top, #c4c7cc, #717580);
-		background: -moz-linear-gradient(top, #c4c7cc, #717580);
-		background: -ms-linear-gradient(top, #c4c7cc, #717580);
-		background: -o-linear-gradient(top, #c4c7cc, #717580);
-		background-repeat: repeat-x;
-		border-radius:         3px;
-		-moz-border-radius:    3px;
-		-webkit-border-radius: 3px;
-	}
 }
 
 #backgroundcover {
@@ -622,15 +475,19 @@ input[type=checkbox]:checked + label.checktoggle {
 
 	textarea {
 		display: inline-block;
-		width: 710px;
+		width: 699px;
 		height: 40px;
 		margin: 7px 0px;
+		border: solid 4px #697296;
+		padding: 5px;
+		font-size: 13px;
 	}
 	.questions {
 		display: block;
 		background: #fff;
-		padding: 6px;
-		width: 703px;
+		padding: 8px;
+		width: 693px;
+		border: solid 4px #697296;
 
 		a {
 			color: #188eed;
@@ -652,10 +509,11 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		textarea {
-			width: 260px;
+			width: 250px;
 			height: 60px;
 			margin-right: 10px;
 			font-size: 14px;
+			border: solid 1px #999;
 		}
 
 		.delete {
@@ -671,7 +529,7 @@ input[type=checkbox]:checked + label.checktoggle {
 			width: 70px;
 			font-size: 15px;
 
-			padding: 6px 8px;
+			padding: 5px 8px;
 			border: solid 1px #999;
 
 			color: #333;
@@ -679,7 +537,11 @@ input[type=checkbox]:checked + label.checktoggle {
 
 			text-align: center;
 
-			margin-right: 20px;
+			margin-top: 4px;
+			margin-bottom: -8px;
+			margin-right: 22px;
+
+			vertical-align: top;
 
 			input {
 				border: none;
@@ -687,6 +549,7 @@ input[type=checkbox]:checked + label.checktoggle {
 				font-size: 15px;
 				text-align: right;
 				outline: none;
+				margin: 0px;
 			}
 		}
 
@@ -708,7 +571,7 @@ input[type=checkbox]:checked + label.checktoggle {
 				border-radius: 30px;
 				content: '';
 				top: -4px;
-				left: 5px;
+				left: 8px;
 				position: relative;
 			}
 			span {
@@ -727,12 +590,12 @@ input[type=checkbox]:checked + label.checktoggle {
 			background: #70be34;
 			position:relative;
 			&:before {
-				margin-left: 57px;
+				margin-left: 50px;
 			}
 			span {
 				&:before {
 					content: 'CORRECT';
-					left: -80px;
+					left: -75px;
 				}
 			}
 		}
