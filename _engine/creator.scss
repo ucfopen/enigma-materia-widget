@@ -87,7 +87,7 @@ $green: #70bd34;
 	}
 	.center {
 		position:absolute;
-		margin-left: -10px;;
+		margin-left: -50px;;
 		left: 50%;
 		top: 22px;
 	}
@@ -474,10 +474,17 @@ input[type=checkbox]:checked + label.checktoggle {
 	background: #3b4657;
 	top: 0px;
 	padding: 10px;
-	z-index: 2;
+	z-index: -1;
+	opacity: 0;
 
-	-webkit-transition: top 0.25s ease;
-	-webkit-animation: bloop 0.2s;
+	-webkit-transition: all 0.25s ease;
+
+	&.show {
+		opacity: 1;
+		z-index: 2;
+		-webkit-animation: bloop 0.2s;
+
+	}
 
 	&:after, &:before {
 		bottom: 100%;
