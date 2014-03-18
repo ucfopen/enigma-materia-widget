@@ -37,6 +37,13 @@ Namespace('Enigma').Creator = do ->
 	_initScope = ->
 		_scope = angular.element($('body')).scope()
 		_scope.$apply ->
+			_scope.editCategory = (category) ->
+				category.isEditing = true
+				_scope.curQuestion = false
+
+			_scope.stopCategory = (category) ->
+				category.isEditing = false
+
 			_scope.changeTitle = ->
 				$('#backgroundcover, .title').addClass 'show'
 				$('.title input[type=text]').focus()
