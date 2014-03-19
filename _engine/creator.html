@@ -37,14 +37,14 @@
 		</div>
 		<div id='board'>
 			<div class='category' ng-repeat='category in qset.items'>
-				<div class='label' style='opacity:{{ (($index == 0 && step == 1) || category.name || category.isEditing) ? 1 : 0.1 }}'>
-					<textarea ng-model='category.name' id='category_{{$index}}' ng-disabled='!($index == 0 || qset.items[$index-1].name)' ng-focus='editCategory(category)' ng-blur='stopCategory(category)' ng-keydown='updateCategory()'></textarea>
+				<div class='label' style='opacity:{{ categoryOpacity(category,$index) }}'>
+					<textarea ng-model='category.name' id='category_{{$index}}' ng-disabled='!categoryEnabled(category,$index)' ng-focus='editCategory(category)' ng-blur='stopCategory(category)' ng-keydown='updateCategory()'></textarea>
 				</div>
-				<button ng-show='!category.name && !category.isEditing && ($index == 0 || qset.items[$index-1].name)' class='add'></button>
-				<div ng-show='!category.name && !category.isEditing && ($index == 0 || qset.items[$index-1].name)' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
+				<button ng-show='categoryShowAdd(category,$index)' class='add'></button>
+				<div ng-show='categoryShowAdd(category,$index)' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
 				<div class='questionholder' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})'>
 					<div class='question' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
-					<button ng-show='!question.questions[0].text && category.name && ($index == 0 || category.items[$index-1].questions[0].text)' class='add'></button>
+					<button ng-show='questionShowAdd(category, question, $index)' class='add'></button>
 				</div>
 			</div>
 			<div id='question_editor' style='top: {{(curCategory.index+1) * 122}}px' class='q{{curQuestion.index+1}} {{curQuestion ? "show" : ""}}' ng-show=''>

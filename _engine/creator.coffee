@@ -26,6 +26,21 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			for question in category.items
 				i++	if question.used
 		i
+	
+	$scope.categoryOpacity = (category, $index) ->
+		opacity = 0.1
+		if $scope.step is 1 and $index is 0
+			opacity = 1
+		if category.name or category.isEditing
+			opacity = 1
+		return opacity
+
+	$scope.categoryShowAdd = (category, $index) ->
+		not category.name and not category.isEditing and ($index == 0 or $scope.qset.items[$index-1].name)
+	$scope.categoryEnabled = (category, $index) ->
+		$index == 0 or $scope.qset.items[$index-1].name
+	$scope.questionShowAdd = (category, question, $index) ->
+		not question.questions[0].text and category.name and ($index == 0 or category.items[$index-1].questions[0].text)
 ]
 
 Namespace('Enigma').Creator = do ->
@@ -165,7 +180,7 @@ Namespace('Enigma').Creator = do ->
 				console.log 'added q'
 			for question in category.items
 				question.index = i++
-	
+
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
 			Materia.CreatorCore.save _scope.title, _scope.qset
