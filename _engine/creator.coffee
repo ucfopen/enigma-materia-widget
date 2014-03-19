@@ -37,88 +37,92 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 
 	$scope.categoryShowAdd = (category, $index) ->
 		not category.name and not category.isEditing and ($index == 0 or $scope.qset.items[$index-1].name)
+
 	$scope.categoryEnabled = (category, $index) ->
 		$index == 0 or $scope.qset.items[$index-1].name
+
 	$scope.questionShowAdd = (category, question, $index) ->
 		not question.questions[0].text and category.name and ($index == 0 or category.items[$index-1].questions[0].text)
+
+	$scope.editCategory = (category) ->
+		category.isEditing = true
+		$scope.curQuestion = false
+
+	$scope.stopCategory = (category) ->
+		category.isEditing = false
+	
+	$scope.changeTitle = ->
+		$('#backgroundcover, .title').addClass 'show'
+		$('.title input[type=text]').focus()
+		$('.title input[type=button]').click ->
+			$('#backgroundcover, .title').removeClass 'show'
+
+	$scope.editQuestion = (category,question,$index) ->
+		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
+			$scope.curQuestion = question
+			$scope.curCategory = category
+			question.used = true
+			setTimeout ->
+				$('#question_text').focus()
+			,0
+
+			$scope.step = 4 if $scope.step is 3
+
+	$scope.editComplete = ->
+		for answer in $scope.curQuestion.answers
+			answer.value = parseInt(answer.value,10)
+
+			if answer.options.custom
+				if answer.value == 100 or answer.value == 0
+					answer.options.custom = false
+					answer.options.correct = if answer.value == 100 then true else false
+			else
+				answer.value = if answer.options.correct then 100 else 0
+		$scope.curQuestion = false
+		
+	$scope.deleteQuestion = (i) ->
+		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $newQuestion(i)
+		$scope.curQuestion = false
+		
+	$scope.addAnswer = ->
+		$scope.curQuestion.answers.push $newAnswer()
+
+	$scope.deleteAnswer = (index) ->
+		$scope.curQuestion.answers.splice(index,1)
+
+	$scope.toggleAnswer = (answer) ->
+		answer.value = if answer.value is 100 then 0 else 100
+		answer.options.custom = false
+
+	$scope.newCategory = (index,category) ->
+		$('#category_'+index).focus()
+		category.isEditing = true
+		$scope.step = 2 if $scope.step is 1
+
+	$scope.updateCategory = ->
+		setTimeout ->
+			$scope.$apply ->
+				$scope.step = 3 if $scope.step is 2
+		,0
 ]
 
 Namespace('Enigma').Creator = do ->
-	_scope = {}
-
-	# reference for question answer lists
-	_letters = ['A','B','C','D','E','F','G','H','I','J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+	$scope = {}
 
 	_initScope = ->
-		_scope = angular.element($('body')).scope()
-		_scope.$apply ->
-			_scope.editCategory = (category) ->
-				category.isEditing = true
-				_scope.curQuestion = false
-
-			_scope.stopCategory = (category) ->
-				category.isEditing = false
-
-			_scope.changeTitle = ->
-				$('#backgroundcover, .title').addClass 'show'
-				$('.title input[type=text]').focus()
-				$('.title input[type=button]').click ->
-					$('#backgroundcover, .title').removeClass 'show'
-
-			_scope.editQuestion = (category,question,$index) ->
-				if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
-					_scope.curQuestion = question
-					_scope.curCategory = category
-					question.used = true
-					setTimeout ->
-						$('#question_text').focus()
-					,0
-
-					_scope.step = 4 if _scope.step is 3
-
-			_scope.editComplete = ->
-				for answer in _scope.curQuestion.answers
-					answer.value = parseInt(answer.value,10)
-
-					if answer.options.custom
-						if answer.value == 100 or answer.value == 0
-							answer.options.custom = false
-							answer.options.correct = if answer.value == 100 then true else false
-					else
-						answer.value = if answer.options.correct then 100 else 0
-				_scope.curQuestion = false
-				
-			_scope.deleteQuestion = (i) ->
-				_scope.qset.items[_scope.curCategory.index].items[_scope.curQuestion.index] = _newQuestion(i)
-				_scope.curQuestion = false
-			_scope.addAnswer = ->
-				_scope.curQuestion.answers.push _newAnswer()
-			_scope.deleteAnswer = (index) ->
-				_scope.curQuestion.answers.splice(index,1)
-			_scope.toggleAnswer = (answer) ->
-				answer.value = if answer.value is 100 then 0 else 100
-				answer.options.custom = false
-			_scope.newCategory = (index,category) ->
-				$('#category_'+index).focus()
-				category.isEditing = true
-				_scope.step = 2 if _scope.step is 1
-			_scope.updateCategory = ->
-				setTimeout ->
-					_scope.$apply ->
-						_scope.step = 3 if _scope.step is 2
-				,0
-		_scope.$watch ->
-			if _scope.qset.items[_scope.qset.items.length-1].name
-				_scope.qset.items.push
+		$scope = angular.element($('body')).scope()
+		$scope.$watch ->
+			if $scope.qset.items[$scope.qset.items.length-1].name
+				$scope.qset.items.push
 					items: []
 					used: 0
 				_buildScaffold()
 
 	initNewWidget = (widget, baseUrl) ->
 		_initScope()
-		_scope.$apply ->
-			_scope.title = 'New enigma widget'
-			_scope.qset =
+		$scope.$apply ->
+			$scope.title = 'New enigma widget'
+			$scope.qset =
 				items: []
 				options:
 					randomize: true
@@ -128,17 +132,17 @@ Namespace('Enigma').Creator = do ->
 
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
-			_scope.$apply ->
-				_scope.title = $('.intro input[type=text]').val() or _scope.title
-				_scope.step = 1
+			$scope.$apply ->
+				$scope.title = $('.intro input[type=text]').val() or $scope.title
+				$scope.step = 1
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		_initScope()
 
-		_scope.$apply ->
-			_scope.title = title
-			_scope.qset = qset
-		_scope.$apply ->
+		$scope.$apply ->
+			$scope.title = title
+			$scope.qset = qset
+		$scope.$apply ->
 			_buildScaffold()
 
 
@@ -165,25 +169,24 @@ Namespace('Enigma').Creator = do ->
 		index: i
 
 	_buildScaffold = ->
-		while _scope.qset.items.length < 5
-			_scope.qset.items.push
+		while $scope.qset.items.length < 5
+			$scope.qset.items.push
 				items: []
 				used: 0
 		i = 0
-		for category in _scope.qset.items
+		for category in $scope.qset.items
 			category.index = i++
 
-		for category in _scope.qset.items
+		for category in $scope.qset.items
 			i = 0
 			while category.items.length < 6
 				category.items.push _newQuestion()
-				console.log 'added q'
 			for question in category.items
 				question.index = i++
 
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
-			Materia.CreatorCore.save _scope.title, _scope.qset
+			Materia.CreatorCore.save $scope.title, $scope.qset
 		else
 			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
 		_buildScaffold()
@@ -201,26 +204,21 @@ Namespace('Enigma').Creator = do ->
 		okToSave = true
 
 		i = 0
-		console.log _scope.qset
-		while i < _scope.qset.items.length
-			if not _scope.qset.items[i].name
-				_scope.qset.items.splice(i,1)
+		while i < $scope.qset.items.length
+			if not $scope.qset.items[i].name
+				$scope.qset.items.splice(i,1)
 				i--
 
 			j = 0
-			while j < _scope.qset.items[i].items.length
-				if not _scope.qset.items[i].items[j].questions[0].text
-					_scope.qset.items[i].items.splice(j,1)
+			while j < $scope.qset.items[i].items.length
+				if not $scope.qset.items[i].items[j].questions[0].text
+					$scope.qset.items[i].items.splice(j,1)
 					j--
 				j++
 			i++
 
 		okToSave
-
-	_trace = ->
-		if console? && console.log?
-			console.log.apply console, arguments
-
+	
 	#public
 	initNewWidget: initNewWidget
 	initExistingWidget: initExistingWidget
