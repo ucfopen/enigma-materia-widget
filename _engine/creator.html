@@ -10,6 +10,7 @@
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" type="text/css" href="creator.css">
 		<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700' rel='stylesheet' type='text/css'>
+		<link href='assets/jquery-ui-1.10.4.custom.css' rel='stylesheet' type='text/css'>
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -18,6 +19,7 @@
 		<!-- YOUR PREREQUISITES -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular.min.js"></script>
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular-animate.min.js"></script>
+		<script type="text/javascript" src="assets/jquery-ui-1.10.4.custom.js"></script>
 
 		<!-- MAIN CREATOR SCRIPT -->
 		<script src="creator.js"></script>
@@ -35,6 +37,16 @@
 				<label for='randomize' class='checktoggle'></label>
 			</div>
 		</div>
+		<div class='imported_pane'>
+			<div class='imported'>
+				<b>Imported questions</b><br>
+				<div class='overflower'>
+					<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
+						<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
+					</div>
+				</div>
+			</div>
+		</div>
 		<div id='board'>
 			<div class='category' ng-repeat='category in qset.items'>
 				<div class='label' style='opacity:{{ categoryOpacity(category,$index) }}'>
@@ -43,7 +55,9 @@
 				<button ng-show='categoryShowAdd(category,$index)' class='add'></button>
 				<div ng-show='categoryShowAdd(category,$index)' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
 				<div class='questionholder' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})'>
-					<div class='question' style='opacity:{{ question.questions[0].text ? 1 : 0.1 }}'></div>
+					<div class='question {{ question.questions[0].text ? "show" : "" }}' data-category='{{category.index}}' data-question='{{$index}}'>
+						<div class='hover'><strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}</div>
+					</div>
 					<button ng-show='questionShowAdd(category, question, $index)' class='add'></button>
 				</div>
 			</div>
