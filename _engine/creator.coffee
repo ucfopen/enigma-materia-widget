@@ -135,8 +135,6 @@ Namespace('Enigma').Creator = do ->
 
 		#$('#backgroundcover, .intro').addClass 'show'
 
-		_initDragDrop()
-
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
 			$scope.$apply ->
@@ -250,9 +248,9 @@ Namespace('Enigma').Creator = do ->
 	onSaveComplete = (title, widget, qset, version) -> true
 
 	onQuestionImportComplete = (questions) ->
-		console.log JSON.stringify(questions)
 		$scope.$apply ->
 			$scope.imported = questions.concat $scope.imported
+		_initDragDrop()
 
 	# Enigma does not support media
 	onMediaImportComplete = (media) -> null
