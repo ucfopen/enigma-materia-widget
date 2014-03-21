@@ -416,6 +416,21 @@ input[type=checkbox]:checked + label.checktoggle {
 				overflow: hidden;
 				word-break: break-all;
 				z-index: 10;
+
+				a {
+					color: #fff;
+					background: #333;
+					opacity: 0;
+					position:absolute;
+					right: 0px;
+					top: 0px;
+					padding: 6px;
+				}
+				&:hover {
+					a {
+						opacity: 1;
+					}
+				}
 			}
 		}
 

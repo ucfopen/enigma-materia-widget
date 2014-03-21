@@ -38,12 +38,13 @@
 			</div>
 		</div>
 		<div id='board'>
-			<div class='imported_pane'>
+			<div class='imported_pane' ng-show='imported.length'>
 				<div class='imported'>
 					<b>Imported questions</b><br>
 					<div class='overflower'>
 						<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
 							<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
+							<a href='javascript:;' ng-click='imported.splice($index,1)'>x</a>
 						</div>
 					</div>
 				</div>
