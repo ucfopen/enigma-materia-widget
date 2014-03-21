@@ -37,17 +37,17 @@
 				<label for='randomize' class='checktoggle'></label>
 			</div>
 		</div>
-		<div class='imported_pane'>
-			<div class='imported'>
-				<b>Imported questions</b><br>
-				<div class='overflower'>
-					<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
-						<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
+		<div id='board'>
+			<div class='imported_pane'>
+				<div class='imported'>
+					<b>Imported questions</b><br>
+					<div class='overflower'>
+						<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
+							<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
+						</div>
 					</div>
 				</div>
 			</div>
-		</div>
-		<div id='board'>
 			<div class='category' ng-repeat='category in qset.items'>
 				<div class='label' style='opacity:{{ categoryOpacity(category,$index) }}'>
 					<textarea ng-model='category.name' id='category_{{$index}}' ng-disabled='!categoryEnabled(category,$index)' ng-focus='editCategory(category)' ng-blur='stopCategory(category)' ng-keydown='updateCategory()'></textarea>
