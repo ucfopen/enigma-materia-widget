@@ -37,9 +37,15 @@
 				<label for='randomize' class='checktoggle'></label>
 			</div>
 		</div>
+		<div class='importedbackground' ng-show='imported.length'></div>
 		<div id='board'>
 			<div class='imported_pane' ng-show='imported.length'>
+				<div class='arrow_box' ng-show='!shownImportTutorial'>
+					Drag &amp; drop these over empty questions to add them to your game board
+				</div>
+				<div class='background'></div>
 				<div class='imported'>
+					<input type='button' ng-click='imported = []' value='Done Importing'>
 					<b>Imported questions</b><br>
 					<div class='overflower'>
 						<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
