@@ -68,6 +68,15 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				$('#question_text').focus()
 			,0
 
+			for answer in question.answers
+				answer.options.correct = false
+				answer.options.custom = false
+
+				if answer.value == 100
+					answer.options.correct = true
+				else if answer.value isnt 100 and answer.value isnt 0
+					answer.options.custom = true
+
 			$scope.step = 4 if $scope.step is 3
 
 	$scope.editComplete = ->
@@ -138,7 +147,6 @@ Namespace('Enigma').Creator = do ->
 	zIndex = 9999
 
 	_initScope = ->
-		$scope = angular.element($('body')).scope()
 		$scope.$watch ->
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
@@ -147,7 +155,10 @@ Namespace('Enigma').Creator = do ->
 				_buildScaffold()
 
 	initNewWidget = (widget, baseUrl) ->
+		$scope = angular.element($('body')).scope()
+
 		_initScope()
+
 		$scope.$apply ->
 			$scope.title = 'New enigma widget'
 			$scope.qset =
@@ -156,7 +167,7 @@ Namespace('Enigma').Creator = do ->
 					randomize: true
 			_buildScaffold()
 
-		#$('#backgroundcover, .intro').addClass 'show'
+		$('#backgroundcover, .intro').addClass 'show'
 
 		$('.intro input[type=button]').click ->
 			$('#backgroundcover, .intro').removeClass 'show'
@@ -165,13 +176,18 @@ Namespace('Enigma').Creator = do ->
 				$scope.step = 1
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) ->
-		_initScope()
+		$scope = angular.element($('body')).scope()
+
+		if qset.data
+			qset = qset.data
 
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
-		$scope.$apply ->
+
 			_buildScaffold()
+
+			_initScope()
 
 	_initDragDrop = () ->
 		$('.importable').draggable
@@ -274,6 +290,15 @@ Namespace('Enigma').Creator = do ->
 					j--
 				j++
 			i++
+
+		# trim out our helping data
+		for category in $scope.qset.items
+			for question in category.items
+				for answer in question.answers
+					delete answer.options.custom
+					delete answer.options.correct
+				delete question.used
+			delete category.index
 
 		okToSave
 	
