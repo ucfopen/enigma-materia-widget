@@ -160,7 +160,7 @@ Namespace('Enigma').Creator = do ->
 		_initScope()
 
 		$scope.$apply ->
-			$scope.title = 'New enigma widget'
+			$scope.title = 'My enigma widget'
 			$scope.qset =
 				items: []
 				options:
