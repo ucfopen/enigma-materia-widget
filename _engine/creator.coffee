@@ -83,14 +83,37 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		$scope.curQuestion = false
 		
 	$scope.deleteQuestion = (i) ->
-		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $newQuestion(i)
+		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $scope.newQuestion(i)
 		$scope.curQuestion = false
 		
 	$scope.addAnswer = ->
-		$scope.curQuestion.answers.push $newAnswer()
+		$scope.curQuestion.answers.push $scope.newAnswer()
 
 	$scope.deleteAnswer = (index) ->
 		$scope.curQuestion.answers.splice(index,1)
+
+	$scope.newAnswer = ->
+		id: ''
+		text: ''
+		value: 0
+		options:
+			feedback: ''
+			custom: false
+			correct: false
+	
+	$scope.newQuestion = (i=0) ->
+		type: 'MC'
+		id: ''
+		questions: [
+			text: ''
+		]
+		answers: [
+			$scope.newAnswer(),
+			$scope.newAnswer()
+		]
+		used: 0
+		index: i
+
 
 	$scope.toggleAnswer = (answer) ->
 		answer.value = if answer.value is 100 then 0 else 100
@@ -202,28 +225,6 @@ Namespace('Enigma').Creator = do ->
 			out: (event,ui) ->
 				$(ui.draggable).css 'border', ''
 
-	_newAnswer = ->
-		id: ''
-		text: ''
-		value: 0
-		options:
-			feedback: ''
-			custom: false
-			correct: false
-	
-	_newQuestion = (i=0) ->
-		type: 'MC'
-		id: ''
-		questions: [
-			text: ''
-		]
-		answers: [
-			_newAnswer(),
-			_newAnswer()
-		]
-		used: 0
-		index: i
-
 	_buildScaffold = ->
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
@@ -236,7 +237,7 @@ Namespace('Enigma').Creator = do ->
 		for category in $scope.qset.items
 			i = 0
 			while category.items.length < 6
-				category.items.push _newQuestion()
+				category.items.push $scope.newQuestion()
 			for question in category.items
 				question.index = i++
 
