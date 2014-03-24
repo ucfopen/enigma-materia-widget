@@ -153,17 +153,20 @@ Namespace('Enigma').Creator = do ->
 	_initDragDrop = () ->
 		$('.importable').draggable
 			start: (event,ui) ->
+				$scope.shownImportTutorial = true
 				$scope.curDragging = +this.getAttribute('data-index')
 				this.style.position = 'absolute'
 				this.style.zIndex = ++zIndex
 				this.style.marginLeft = $(this).position().left + 'px'
 				this.style.marginTop = $(this).position().top + 'px'
+				this.className += ' dragging'
 			stop: (event,ui) ->
 				this.style.position = 'relative'
 				this.style.marginTop =
 				this.style.marginLeft =
 				this.style.top =
 				this.style.left = ''
+				this.className = 'importable'
 		$('.question').droppable
 			drop: (event,ui) ->
 				$(ui.draggable).css 'border', ''
@@ -173,7 +176,6 @@ Namespace('Enigma').Creator = do ->
 				questionobj = $scope.qset.items[category].items[question]
 
 				if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
-					console.log 'cant drop'
 					return
 
 				if questionobj.questions[0].text == ''

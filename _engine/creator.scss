@@ -388,14 +388,57 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 }
 
+.importedbackground {
+	background: #4d5355;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	height: 236px;
+}
+
 .imported_pane {
 	display: block;
 	width: 100%;
 
 	background: #4d5355;
 	margin: 0px;
-	margin-bottom: 25px;
-	
+	margin-bottom: 5px;
+
+	.arrow_box {
+		width: 184px;
+		text-align: left;
+		border: solid 2px #c59fca;
+		top: -40px;
+		left: 250px;
+		font-weight: 400;
+
+		&:after {
+			border-color: rgba(157, 82, 164, 0);
+			border-top-color: #9d52a4;
+			border-width: 15px;
+			margin-left: -15px;
+		}
+		&:before {
+			border-color: rgba(157, 82, 164, 0);
+			border-top-color: #c59fca;
+			border-width: 18px;
+			margin-left: -18px;
+		}
+	}
+
+	input {
+		position:absolute;
+		top: 5px;
+		right: 5px;
+		background: #70bd34;
+		font-size: 13px;
+		color: #fff;
+		border: none;
+		padding: 9px;
+		margin: 7px;
+	}
+
 	.imported {
 		margin: auto;
 		width: 730px;
@@ -406,6 +449,14 @@ input[type=checkbox]:checked + label.checktoggle {
 		display: block;
 		box-shadow: inset -10px -5px 5px #717577;
 
+		b {
+			position:relative;
+			top: 8px;
+			margin: 5px;
+			font-size: 15px;
+			font-weight: 400;
+		}
+
 		.overflower {
 			width: 1000px;
 
@@ -414,12 +465,15 @@ input[type=checkbox]:checked + label.checktoggle {
 				color: #333;
 				display: inline-block;
 				height: 78px;
-				width: 78px;
+				width: 68px;
 				margin: 20px 7px;
+				margin-top: 29px;
 				padding: 6px;
+				padding-right: 16px;
 				overflow: hidden;
 				word-break: break-all;
 				z-index: 10;
+				font-size: 13px;
 
 				a {
 					color: #fff;
@@ -428,11 +482,17 @@ input[type=checkbox]:checked + label.checktoggle {
 					position:absolute;
 					right: 0px;
 					top: 0px;
-					padding: 6px;
+					padding: 2px 5px;
+					text-decoration: none;
 				}
 				&:hover {
 					a {
 						opacity: 1;
+					}
+				}
+				&.dragging:hover {
+					a {
+						opacity: 0;
 					}
 				}
 			}
