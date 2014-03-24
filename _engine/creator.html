@@ -37,9 +37,9 @@
 				<label for='randomize' class='checktoggle'></label>
 			</div>
 		</div>
-		<div class='importedbackground' ng-show='imported.length'></div>
+		<div class='importedbackground {{ imported.length ? "show" : "" }}'></div>
 		<div id='board'>
-			<div class='imported_pane' ng-show='imported.length'>
+			<div class='imported_pane {{ imported.length ? "show" : "" }}'>
 				<div class='arrow_box' ng-show='!shownImportTutorial'>
 					Drag &amp; drop these over empty questions to add them to your game board
 				</div>

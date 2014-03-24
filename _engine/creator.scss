@@ -395,15 +395,26 @@ input[type=checkbox]:checked + label.checktoggle {
 	left: 0px;
 	right: 0px;
 	height: 236px;
+	display: none;
+
+	&.show {
+		animation: slide 0.5s;
+		display: block;
+	}
 }
 
 .imported_pane {
-	display: block;
+	display: none;
 	width: 100%;
 
 	background: #4d5355;
 	margin: 0px;
 	margin-bottom: 5px;
+
+	&.show {
+		display: block;
+		animation: slide 0.5s;
+	}
 
 	.arrow_box {
 		width: 184px;
@@ -924,6 +935,15 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 	100% {
 		transform: scale(1);
+	}
+}
+
+@keyframes slide {
+	0% {
+		margin-top: -150px;
+	}
+	100% {
+		margin-top: 0px;
 	}
 }
 
