@@ -1,10 +1,8 @@
 /* Standardize padding in all browsers */
 * {
-	user-select: none;
-}
-html, body, div {
 	margin: 0;
 	padding: 0;
+	user-select: none;
 }
 
 input, textarea {
@@ -129,7 +127,7 @@ $green: #70bd34;
 	margin-bottom: 40px;
 
 	.categories {
-		position:relative;
+		position: relative;
 	}
 }
 
@@ -192,21 +190,11 @@ button {
 
 	vertical-align: top;
 	text-align: center;
+	overflow: hidden;
 
 	opacity: 0.1;
 
-	&.show {
-		opacity: 1;
-		&:hover {
-			&:before {
-				content: '';
-			}
-
-			.hover {
-				opacity: 1;
-			}
-		}
-	}
+	clear: both;
 
 	div {
 		color: #000;
@@ -225,27 +213,29 @@ button {
 	}
 	
 	.hover {
-		position: absolute;
-		top: -38px;
-		left: 4px;
-		width: 64px;
-		height: 64px;
 		text-align: center;
 		color: #333;
+		width: 68px;
+		height: 64px;
 		font-size: 14px;
-		word-break: break-word;
-		overflow: hidden;
+		word-break: break-all;
 		padding: 4px;
-		opacity: 0;
+		display: none;
+		overflow: hidden;
+		margin-top: 2px;
+		clear: both;
 	}
 
-	&:before {
-		display: inline-block;
-		color: #000;
-		content: counter(q);
-		font-size: 40px;
+	.number {
+		text-align: center;
+		color: #333;
+		width: 58px;
+		font-size: 36px;
 		font-weight: 400;
-		margin-top: 15px;
+		padding: 4px;
+		display: inline-block;
+		margin-top: 16px;
+		clear: both;
 	}
 
 	&.dim, &.dim:hover {
@@ -253,11 +243,18 @@ button {
 		outline: none;
 	}
 
-	&.selected {
-		-webkit-box-shadow: 0px 0px 1px 2px rgba(255, 255, 190, .75);
-		-moz-box-shadow: 0px 0px 1px 2px rgba(255, 255, 190, .75);
-		box-shadow: 0px 0px 1px 2px rgba(255, 255, 190, .75);
+	&.show {
+		opacity: 1;
+		&:hover {
+			.hover {
+				display: inline-block;
+			}
+			.number {
+				display: none;
+			}
+		}
 	}
+
 }
 
 h1 {
@@ -274,11 +271,11 @@ h1 {
 	background: #000;
 	z-index: -1;
 	opacity: 0;
-	-webkit-transition: all 0.5s ease;
+	transition: all 0.5s ease;
 	&.show {
 		z-index: 2000;
 		opacity: 0.5;
-		-webkit-transition: opacity 0.5s ease;
+		transition: opacity 0.5s ease;
 	}
 }
 
@@ -294,7 +291,7 @@ h1 {
 	border: solid 1px #777;
 	z-index: -1;
 	opacity: 0;
-	-webkit-transition: all 0.5s ease;
+	transition: all 0.5s ease;
 
 	text-align: left;
 	font-weight: 300;
@@ -558,8 +555,6 @@ input[type=checkbox]:checked + label.checktoggle {
 		background-color: #16222a;
 	}
 	&.drop_target {
-		-webkit-box-shadow: 0px 0px 1px 2px rgba(178, 255, 255, .75);
-		-moz-box-shadow: 0px 0px 1px 2px rgba(178, 255, 255, .75);
 		box-shadow: 0px 0px 1px 2px rgba(178, 255, 255, .75);
 	}
 
@@ -634,13 +629,12 @@ input[type=checkbox]:checked + label.checktoggle {
 	z-index: -1;
 	opacity: 0;
 
-	-webkit-transition: all 0.25s ease;
+	transition: all 0.25s ease;
 
 	&.show {
 		opacity: 1;
 		z-index: 2;
-		-webkit-animation: bloop 0.2s;
-
+		animation: bloop 0.2s;
 	}
 
 	&:after, &:before {
@@ -659,14 +653,14 @@ input[type=checkbox]:checked + label.checktoggle {
 		border-bottom-color: #3b4657;
 		border-width: 20px;
 		margin-left: -200px;
-		-webkit-transition: all 0.2s ease;
+		transition: all 0.2s ease;
 	}
 	&:before {
 		border-color: rgba(255, 255, 255, 0);
 		border-bottom-color: #fff;
 		border-width: 26px;
 		margin-left: -206px;
-		-webkit-transition: all 0.2s ease;
+		transition: all 0.2s ease;
 	}
 
 	&.q1:after {
