@@ -184,7 +184,7 @@ Namespace('Enigma').Creator = do ->
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
-
+		$scope.$apply ->
 			_buildScaffold()
 
 			_initScope()
