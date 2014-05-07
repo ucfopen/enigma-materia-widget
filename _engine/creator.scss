@@ -803,6 +803,11 @@ input[type=checkbox]:checked + label.checktoggle {
 			overflow: hidden;
 			padding-top: 9px;
 			padding-bottom: 8px;
+			cursor: pointer;
+
+			&:hover {
+				background: #de4444;
+			}
 
 			&:before {
 				transition: all ease 0.25s;
@@ -830,6 +835,9 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 		input[type=checkbox]:checked + label.checktoggle {
 			background: #70be34;
+			&:hover {
+				background: #80de44;
+			}
 			position:relative;
 			&:before {
 				margin-left: 50px;
