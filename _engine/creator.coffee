@@ -53,6 +53,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.stopCategory = (category) ->
 		category.isEditing = false
 	
+	$scope.hideCover = ->
+		$('#backgroundcover, .intro, .title').removeClass 'show'
+	
 	$scope.changeTitle = ->
 		$('#backgroundcover, .title').addClass 'show'
 		$('.title input[type=text]').focus()
