@@ -87,7 +87,7 @@
 									<a href='javascript:;' ng-click='answer.options.custom = true'>Set percentage</a>
 								</div>
 								<div class='text' ng-show='answer.options.custom'>
-									<input type='text' ng-model='answer.value' ng-blur=''>%
+									<input type='text' ng-model='answer.value' ng-change='numbersOnly(answer)' ng-blur=''>%
 								</div>
 							</div>
 							<button class='delete' ng-click='deleteAnswer($index)'></button>

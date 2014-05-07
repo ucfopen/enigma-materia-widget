@@ -138,6 +138,12 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			$scope.$apply ->
 				$scope.step = 3 if $scope.step is 2
 		,0
+
+	$scope.numbersOnly = (answer) ->
+		if not answer.value.match(/^[0-9]?[0-9]?$/)
+			answer.value = answer.value.replace(/[^0-9]+/, '')
+		if ~~answer.value > 100
+			answer.value = 100
 ]
 
 Namespace('Enigma').Creator = do ->
