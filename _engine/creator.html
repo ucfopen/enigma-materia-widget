@@ -30,7 +30,6 @@
 			<div class='logo'></div>
 			<h1 id='title' ng-bind='title' ng-click='changeTitle()'></h1>
 			<div class='link' ng-click='changeTitle()'>Edit...</div>
-			<div class='center'>{{numQuestions()}} Questions</div>
 			<div class='right'>
 				Randomize Answer Order
 				<input type='checkbox' id='randomize' ng-model='qset.options.randomize'/>
@@ -103,8 +102,10 @@
 				<div class='arrow_box' id='second_cat' ng-show='step == 2'>Now name this category</div>
 				<div class='arrow_box' id='third_cat' ng-show='step == 3'>Click here to add your first question</div>
 			</div>
+			<div class='question-count'>{{numQuestions()}} Questions</div>
 		</div>
 		<div id='backgroundcover' ng-click='hideCover()'></div>
+
 		<div class='box intro'>
 			<img src='assets/creator_example.png'>
 			<h1>Enigma</h1>
