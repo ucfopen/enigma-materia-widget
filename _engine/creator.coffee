@@ -263,6 +263,20 @@ Namespace('Enigma').Creator = do ->
 				$(ui.draggable).css 'border', ''
 
 	_buildScaffold = ->
+		i = 0
+		while i < $scope.qset.items.length
+			if not $scope.qset.items[i].name
+				found = false
+				for question in $scope.qset.items[i].items
+					if question.questions[0].text
+						found = true
+
+				if not found and $scope.qset.items[i+1] and $scope.qset.items[1+1].name
+					$scope.qset.items.splice(i,1)
+					i--
+					break
+			i++
+
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
 				items: []
@@ -303,6 +317,7 @@ Namespace('Enigma').Creator = do ->
 			if not $scope.qset.items[i].name
 				$scope.qset.items.splice(i,1)
 				i--
+				continue
 
 			j = 0
 			while j < $scope.qset.items[i].items.length
