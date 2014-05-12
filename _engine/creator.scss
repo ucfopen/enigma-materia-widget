@@ -87,12 +87,6 @@ $green: #70bd34;
 		margin-top: 6px;
 		font-size: 14px;
 	}
-	.center {
-		position:absolute;
-		margin-left: -50px;;
-		left: 50%;
-		top: 22px;
-	}
 
 	h1 {
 		margin-left: 8px;
@@ -103,6 +97,9 @@ $green: #70bd34;
 		margin-top: 3px;
 		float: left;
 		cursor: pointer;
+		max-width: 500px;
+		white-space: nowrap;
+		overflow:hidden;
 	}
 	div.link {
 		float: left;
@@ -130,6 +127,12 @@ $green: #70bd34;
 	.categories {
 		position: relative;
 	}
+	.question-count {
+		margin: 0 auto;
+		width: 10%;
+		white-space: nowrap;
+		padding: 0 0 10px 0;
+	}
 }
 
 #add_category_button {
@@ -155,6 +158,13 @@ button {
 		width: 26px;
 		&:after {
 			content: "\e602";
+			color:#333;
+		}
+		&:hover {
+			background-color:#BE3434;
+		}
+		&:hover:after {
+			color:white;
 		}
 	}
 
@@ -348,6 +358,11 @@ h1 {
 			border: solid 2px #70bd34;
 			padding: 11px;
 			margin-left: 0px;
+		}
+		&[type=button]:hover, &[type=submit]:hover{
+			background: #78DD5E;
+			color: #000;
+			cursor: pointer;
 		}
 	}
 
@@ -734,6 +749,9 @@ input[type=checkbox]:checked + label.checktoggle {
 
 		a {
 			color: #188eed;
+			&:hover {
+				color:#1766A5;
+			}
 		}
 
 		.controls {
@@ -855,14 +873,23 @@ input[type=checkbox]:checked + label.checktoggle {
 		float: right;
 		vertical-align: bottom;
 
-		input[type=button] {
-			background: #70bd34;
-			font-size: 14px;
-			color: #fff;
-			border: none;
-			padding: 10px;
-			margin: 7px;
+		input {
+			&[type=button] {
+				background: #70bd34;
+				font-size: 14px;
+				color: #fff;
+				border: none;
+				padding: 10px;
+				margin: 7px;
+			}
+
+			&[type=button]:hover, &[type=submit]:hover {
+				background: #78DD5E;
+				color: #000;
+				cursor: pointer;
+			}
 		}
+
 	}
 }
 

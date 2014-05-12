@@ -54,9 +54,6 @@ Namespace('Enigma').Engine = do ->
 
 	# Draw the main board.
 	_drawBoard = (title) ->
-		document.oncontextmenu = -> false                  # Disables right click.
-		document.addEventListener 'mousedown', (e) ->      
-			if e.button is 2 then false else true          # Disables right click.
 
 		tBoard = _.template $('#t-board').html()
 		_$board = $(tBoard title: title, categories:_qset.items )

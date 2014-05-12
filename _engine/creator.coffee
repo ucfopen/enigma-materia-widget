@@ -252,7 +252,6 @@ Namespace('Enigma').Creator = do ->
 				questionobj = $scope.qset.items[category].items[question]
 
 				if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
-					console.log 'cant'
 					return
 
 				if questionobj.questions[0].text != ''
