@@ -10,6 +10,16 @@ Updated	: 3/14
 ###
 
 EnigmaCreator = angular.module('enigmaCreator', [])
+EnigmaCreator.directive('ngEnter', ->
+    return (scope, element, attrs) ->
+        element.bind("keydown keypress", (event) ->
+            if(event.which == 13)
+                scope.$apply ->
+                    scope.$eval(attrs.ngEnter)
+                event.preventDefault()
+        )
+)
+
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.title = ''
@@ -61,6 +71,14 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		$('.title input[type=text]').focus()
 		$('.title input[type=button]').click ->
 			$('#backgroundcover, .title').removeClass 'show'
+	
+	$scope.setTitle = ->
+		setTimeout ->
+			$('#backgroundcover, .intro').removeClass 'show'
+			$scope.$apply ->
+				$scope.title = $('.intro input[type=text]').val() or $scope.title
+				$scope.step = 1
+		,1
 
 	$scope.editQuestion = (category,question,$index) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
@@ -177,12 +195,7 @@ Namespace('Enigma').Creator = do ->
 			_buildScaffold()
 
 		$('#backgroundcover, .intro').addClass 'show'
-
-		$('.intro input[type=button]').click ->
-			$('#backgroundcover, .intro').removeClass 'show'
-			$scope.$apply ->
-				$scope.title = $('.intro input[type=text]').val() or $scope.title
-				$scope.step = 1
+		$('.intro input[type=text]').focus()
 
 	initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		$scope = angular.element($('body')).scope()

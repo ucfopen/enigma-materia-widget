@@ -113,8 +113,8 @@
 			<p>Each question is worth the same amount.</p>
 			<hr>
 			<b>Start by giving your Enigma widget a title</b><br>
-			<input type='text' placeholder='My enigma widget' autofocus='1'>
-			<input type='button' value='Get Started'>
+			<input type='text' placeholder='My enigma widget' ng-enter='setTitle()' autofocus>
+			<input type='button' value='Get Started' ng-click='setTitle()'>
 		</div>
 		<div class='box title'>
 			<b>Give your Enigma widget a title</b><br>
