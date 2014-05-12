@@ -51,7 +51,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		not category.name and not category.isEditing and ($index == 0 or $scope.qset.items[$index-1].name)
 
 	$scope.categoryEnabled = (category, $index) ->
-		$index == 0 or $scope.qset.items[$index-1].name
+		$index == 0 or $scope.qset.items[$index-1].name or $scope.qset.items[$index].name
 
 	$scope.questionShowAdd = (category, question, $index) ->
 		not question.questions[0].text and category.name and ($index == 0 or category.items[$index-1].questions[0].text)
@@ -62,6 +62,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 
 	$scope.stopCategory = (category) ->
 		category.isEditing = false
+		$scope.buildScaffold()
 	
 	$scope.hideCover = ->
 		$('#backgroundcover, .intro, .title').removeClass 'show'
@@ -150,7 +151,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		answer.options.custom = false
 
 	$scope.newCategory = (index,category) ->
-		$('#category_'+index).focus()
+		setTimeout ->
+			$('#category_'+index).focus()
+		,10
 		category.isEditing = true
 		$scope.step = 2 if $scope.step is 1
 
@@ -174,6 +177,7 @@ Namespace('Enigma').Creator = do ->
 	zIndex = 9999
 
 	_initScope = ->
+		$scope.buildScaffold = _buildScaffold
 		$scope.$watch ->
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
@@ -263,20 +267,6 @@ Namespace('Enigma').Creator = do ->
 				$(ui.draggable).css 'border', ''
 
 	_buildScaffold = ->
-		i = 0
-		while i < $scope.qset.items.length
-			if not $scope.qset.items[i].name
-				found = false
-				for question in $scope.qset.items[i].items
-					if question.questions[0].text
-						found = true
-
-				if not found and $scope.qset.items[i+1] and $scope.qset.items[1+1].name
-					$scope.qset.items.splice(i,1)
-					i--
-					break
-			i++
-
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
 				items: []
@@ -291,6 +281,21 @@ Namespace('Enigma').Creator = do ->
 				category.items.push $scope.newQuestion()
 			for question in category.items
 				question.index = i++
+
+		i = 0
+		while i < $scope.qset.items.length
+			if not $scope.qset.items[i].name
+				found = false
+				for question in $scope.qset.items[i].items
+					if question.questions[0].text
+						found = true
+
+				if not found and $scope.qset.items[i+1] and $scope.qset.items[i+1].name
+					$scope.qset.items.splice(i,1)
+					i--
+					break
+			i++
+
 
 	onSaveClicked = (mode = 'save') ->
 		if _buildSaveData()
