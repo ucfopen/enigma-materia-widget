@@ -261,7 +261,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				this.className = 'importable'
 		$('.question').droppable
 			drop: (event,ui) ->
-				$(ui.draggable).css 'border', ''
+				$(ui.draggable).removeClass('green').removeClass('red')
 
 				category = +this.getAttribute('data-category')
 				question = +this.getAttribute('data-question')
@@ -282,16 +282,14 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 
 				questionobj = $scope.qset.items[category].items[question]
 
-				if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
-					return
-
 				if questionobj.questions[0].text != ''
-					$(ui.draggable).css 'border', 'solid 3px #f6002b'
+					$(ui.draggable).addClass('red').removeClass('green')
 				else
-					$(ui.draggable).css 'border', 'solid 3px #71be34'
+					return if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
+					$(ui.draggable).addClass('green').removeClass('red')
 
 			out: (event,ui) ->
-				$(ui.draggable).css 'border', ''
+				$(ui.draggable).removeClass('green').removeClass('red')
 
 	_buildSaveData = ->
 		okToSave = true

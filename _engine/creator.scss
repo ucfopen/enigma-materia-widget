@@ -523,6 +523,12 @@ input[type=checkbox]:checked + label.checktoggle {
 						opacity: 0;
 					}
 				}
+				&.green {
+					border: solid 3px #71be34;
+				}
+				&.red {
+					border: solid 3px #f6002b;
+				}
 			}
 		}
 
