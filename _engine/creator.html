@@ -36,9 +36,9 @@
 				<label for='randomize' class='checktoggle'></label>
 			</div>
 		</div>
-		<div class='importedbackground {{ imported.length ? "show" : "" }}'></div>
+		<div class='importedbackground' ng-class='{ show: imported.length }'></div>
 		<div id='board'>
-			<div class='imported_pane {{ imported.length ? "show" : "" }}'>
+			<div class='imported_pane' ng-class='{ show: imported.length }'>
 				<div class='arrow_box' ng-show='!shownImportTutorial'>
 					Drag &amp; drop these over empty questions to add them to your game board
 				</div>
@@ -114,13 +114,14 @@
 			<p>Each question is worth the same amount.</p>
 			<hr>
 			<b>Start by giving your Enigma widget a title</b><br>
-			<input type='text' placeholder='My enigma widget' ng-enter='setTitle()' ng-model='introTitle' autofocus>
+			<input type='text' placeholder='My Enigma widget' ng-enter='setTitle()' ng-model='introTitle' focus-me='showIntroDialog'>
 			<input type='button' value='Get Started' ng-click='setTitle()'>
 		</div>
 		<div class='box title' ng-class='{ show: showTitleDialog }'>
 			<b>Give your Enigma widget a title</b><br>
-			<input type='text' placeholder='My enigma widget' ng-model='title'>
+			<input type='text' placeholder='My Enigma widget' ng-model='title' focus-me='showTitleDialog' ng-enter='hideCover()'>
 			<input type='button' value='Done' ng-click='hideCover()'>
 		</div>
 	</body>
 </html>
+
