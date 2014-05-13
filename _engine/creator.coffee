@@ -1,25 +1,14 @@
-###
+EnigmaCreator = angular.module 'enigmaCreator', []
 
-Materia
-It's a thing
-
-Widget	: Enigma, Creator
-Authors	: Jonathan Warner
-Updated	: 5/14
-
-###
-
-EnigmaCreator = angular.module('enigmaCreator', [])
-EnigmaCreator.directive('ngEnter', ->
+EnigmaCreator.directive 'ngEnter', ->
 	return (scope, element, attrs) ->
-		element.bind("keydown keypress", (event) ->
-			if(event.which == 13)
+		element.bind "keydown keypress", (event) ->
+			if event.which == 13
 				scope.$apply ->
 					scope.$eval(attrs.ngEnter)
 				event.preventDefault()
-		)
-)
-EnigmaCreator.directive('focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
+
+EnigmaCreator.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->
 		model = $parse(attrs.focusMe)
 		scope.$watch model, (value) ->
@@ -27,7 +16,7 @@ EnigmaCreator.directive('focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 				$timeout ->
 					element[0].focus()
 			value
-])
+]
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.title = ''
@@ -41,7 +30,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	# forever increasing number
 	zIndex = 9999
 
-	# Public methods
+	# EngineCore Public Interface
 	$scope.initNewWidget = (widget, baseUrl) ->
 		$scope.$apply ->
 			$scope.title = 'My Enigma widget'
@@ -117,7 +106,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		
 		$scope.hideCover()
 
-	$scope.editQuestion = (category,question,$index) ->
+	$scope.editQuestion = (category, question, $index) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 			$scope.curQuestion = question
 			$scope.curCategory = category
@@ -182,7 +171,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		answer.value = if answer.value is 100 then 0 else 100
 		answer.options.$custom = false
 
-	$scope.newCategory = (index,category) ->
+	$scope.newCategory = (index, category) ->
 		setTimeout ->
 			$('#category_'+index).focus()
 		,10
@@ -239,7 +228,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	# Private helpers
 	_initDragDrop = ->
 		$('.importable').draggable
-			start: (event,ui) ->
+			start: (event, ui) ->
 				$scope.shownImportTutorial = true
 				$scope.curDragging = +this.getAttribute('data-index')
 				this.style.position = 'absolute'
@@ -247,7 +236,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				this.style.marginLeft = $(this).position().left + 'px'
 				this.style.marginTop = $(this).position().top + 'px'
 				this.className += ' dragging'
-			stop: (event,ui) ->
+			stop: (event, ui) ->
 				this.style.position = 'relative'
 				this.style.marginTop =
 				this.style.marginLeft =
@@ -255,7 +244,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				this.style.left = ''
 				this.className = 'importable'
 		$('.question').droppable
-			drop: (event,ui) ->
+			drop: (event, ui) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
 				category = +this.getAttribute('data-category')
@@ -271,7 +260,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 						$scope.imported.splice($scope.curDragging,1)
 					_initDragDrop()
 
-			over: (event,ui) ->
+			over: (event, ui) ->
 				category = +this.getAttribute('data-category')
 				question = +this.getAttribute('data-question')
 
@@ -283,19 +272,22 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 					return if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
 					$(ui.draggable).addClass('green').removeClass('red')
 
-			out: (event,ui) ->
+			out: (event, ui) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
 	_buildSaveData = ->
+		# duplicate the model and remove angular hash keys
 		qset = angular.copy $scope.qset
 
 		i = 0
 		while i < qset.items.length
+			# remove empty categories
 			if not qset.items[i].name
 				qset.items.splice(i,1)
 				i--
 				continue
 
+			# remove empty questions
 			j = 0
 			while j < qset.items[i].items.length
 				if not qset.items[i].items[j].questions[0].text
@@ -308,4 +300,3 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 
 	Materia.CreatorCore.start $scope
 ]
-
