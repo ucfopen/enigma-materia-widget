@@ -44,7 +44,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	# Public methods
 	$scope.initNewWidget = (widget, baseUrl) ->
 		$scope.$apply ->
-			$scope.title = 'My enigma widget'
+			$scope.title = 'My Enigma widget'
 			$scope.qset =
 				items: []
 				options:
@@ -126,7 +126,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.editQuestion = (category,question,$index) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 			$scope.curQuestion = question
-			console.log $scope.curQuestion
 			$scope.curCategory = category
 			question.used = true
 
