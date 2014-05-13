@@ -59,15 +59,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
-		$scope.$apply ->
-			$scope.buildScaffold()
 
 	$scope.onSaveClicked = (mode = 'save') ->
-		if _buildSaveData()
-			Materia.CreatorCore.save $scope.title, $scope.qset
-		else
-			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
-		$scope.buildScaffold()
+		Materia.CreatorCore.save $scope.title, _buildSaveData()
 
 	$scope.onSaveComplete = (title, widget, qset, version) -> true
 
@@ -85,7 +79,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		i = 0
 		for category in $scope.qset.items
 			for question in category.items
-				i++	if question.used
+				i++	if question.$used
 		i
 	
 	$scope.categoryOpacity = (category, $index) ->
@@ -127,16 +121,16 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 			$scope.curQuestion = question
 			$scope.curCategory = category
-			question.used = true
+			question.$used = true
 
 			for answer in question.answers
-				answer.options.correct = false
-				answer.options.custom = false
+				answer.options.$correct = false
+				answer.options.$custom = false
 
 				if answer.value == 100
-					answer.options.correct = true
+					answer.options.$correct = true
 				else if answer.value isnt 100 and answer.value isnt 0
-					answer.options.custom = true
+					answer.options.$custom = true
 
 			$scope.step = 4 if $scope.step is 3
 
@@ -144,12 +138,12 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		for answer in $scope.curQuestion.answers
 			answer.value = parseInt(answer.value,10)
 
-			if answer.options.custom
+			if answer.options.$custom
 				if answer.value == 100 or answer.value == 0
-					answer.options.custom = false
-					answer.options.correct = if answer.value == 100 then true else false
+					answer.options.$custom = false
+					answer.options.$correct = if answer.value == 100 then true else false
 			else
-				answer.value = if answer.options.correct then 100 else 0
+				answer.value = if answer.options.$correct then 100 else 0
 		$scope.curQuestion = false
 		
 	$scope.deleteQuestion = (i) ->
@@ -168,8 +162,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		value: 0
 		options:
 			feedback: ''
-			custom: false
-			correct: false
+			$custom: false
+			$correct: false
 	
 	$scope.newQuestion = (i=0) ->
 		type: 'MC'
@@ -181,12 +175,12 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			$scope.newAnswer(),
 			$scope.newAnswer()
 		]
-		used: 0
-		index: i
+		$used: 0
+		$index: i
 
 	$scope.toggleAnswer = (answer) ->
 		answer.value = if answer.value is 100 then 0 else 100
-		answer.options.custom = false
+		answer.options.$custom = false
 
 	$scope.newCategory = (index,category) ->
 		setTimeout ->
@@ -202,7 +196,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
 				items: []
-				used: 0
+				$used: 0
 		i = 0
 		for category in $scope.qset.items
 			category.index = i++
@@ -238,7 +232,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		if $scope?.qset?.items?[$scope.qset.items.length-1]?.name
 			$scope.qset.items.push
 				items: []
-				used: 0
+				index: $scope.qset.items.length
+				$used: 0
 			$scope.buildScaffold()
 
 	# Private helpers
@@ -292,33 +287,24 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
 	_buildSaveData = ->
-		okToSave = true
+		qset = JSON.parse(angular.toJson($scope.qset))
 
 		i = 0
-		while i < $scope.qset.items.length
-			if not $scope.qset.items[i].name
-				$scope.qset.items.splice(i,1)
+		while i < qset.items.length
+			if not qset.items[i].name
+				qset.items.splice(i,1)
 				i--
 				continue
 
 			j = 0
-			while j < $scope.qset.items[i].items.length
-				if not $scope.qset.items[i].items[j].questions[0].text
-					$scope.qset.items[i].items.splice(j,1)
+			while j < qset.items[i].items.length
+				if not qset.items[i].items[j].questions[0].text
+					qset.items[i].items.splice(j,1)
 					j--
 				j++
 			i++
 
-		# trim out our helping data
-		for category in $scope.qset.items
-			for question in category.items
-				for answer in question.answers
-					delete answer.options.custom
-					delete answer.options.correct
-				delete question.used
-			delete category.index
-
-		okToSave
+		qset
 
 	Materia.CreatorCore.start $scope
 ]
