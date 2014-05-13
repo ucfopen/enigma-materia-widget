@@ -5,21 +5,30 @@ It's a thing
 
 Widget	: Enigma, Creator
 Authors	: Jonathan Warner
-Updated	: 3/14
+Updated	: 5/14
 
 ###
 
 EnigmaCreator = angular.module('enigmaCreator', [])
 EnigmaCreator.directive('ngEnter', ->
-    return (scope, element, attrs) ->
-        element.bind("keydown keypress", (event) ->
-            if(event.which == 13)
-                scope.$apply ->
-                    scope.$eval(attrs.ngEnter)
-                event.preventDefault()
-        )
+	return (scope, element, attrs) ->
+		element.bind("keydown keypress", (event) ->
+			if(event.which == 13)
+				scope.$apply ->
+					scope.$eval(attrs.ngEnter)
+				event.preventDefault()
+		)
 )
-
+EnigmaCreator.directive('focusMe', ($timeout, $parse) ->
+	link: (scope, element, attrs) ->
+		model = $parse(attrs.focusMe)
+		scope.$watch model, (value) ->
+			if value
+				$timeout ->
+					element[0].focus()
+		element.bind 'blur', ->
+			scope.$apply(model.assign(scope, false))
+)
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.title = ''
@@ -29,7 +38,48 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.curCategory = false
 
 	$scope.imported = []
+	
+	# forever increasing number
+	zIndex = 9999
 
+	# Public methods
+	$scope.initNewWidget = (widget, baseUrl) ->
+		$scope.$apply ->
+			$scope.title = 'My enigma widget'
+			$scope.qset =
+				items: []
+				options:
+					randomize: true
+			$scope.buildScaffold()
+			$scope.showIntroDialog = true
+
+	$scope.initExistingWidget = (title, widget, qset, version, baseUrl) ->
+		if qset.data
+			qset = qset.data
+
+		$scope.$apply ->
+			$scope.title = title
+			$scope.qset = qset
+		$scope.$apply ->
+			$scope.buildScaffold()
+
+	$scope.onSaveClicked = (mode = 'save') ->
+		if _buildSaveData()
+			Materia.CreatorCore.save $scope.title, $scope.qset
+		else
+			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
+		$scope.buildScaffold()
+
+	$scope.onSaveComplete = (title, widget, qset, version) -> true
+
+	$scope.onQuestionImportComplete = (questions) ->
+		$scope.$apply ->
+			$scope.imported = questions.concat $scope.imported
+		_initDragDrop()
+
+	$scope.onMediaImportComplete = (media) -> null
+
+	# View properties
 	$scope.numQuestions = ->
 		if !$scope.qset.items?
 			return 0
@@ -56,6 +106,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.questionShowAdd = (category, question, $index) ->
 		not question.questions[0].text and category.name and ($index == 0 or category.items[$index-1].questions[0].text)
 
+	# View actions
 	$scope.editCategory = (category) ->
 		category.isEditing = true
 		$scope.curQuestion = false
@@ -65,30 +116,19 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		$scope.buildScaffold()
 	
 	$scope.hideCover = ->
-		$('#backgroundcover, .intro, .title').removeClass 'show'
-	
-	$scope.changeTitle = ->
-		$('#backgroundcover, .title').addClass 'show'
-		$('.title input[type=text]').focus()
-		$('.title input[type=button]').click ->
-			$('#backgroundcover, .title').removeClass 'show'
+		$scope.showIntroDialog = $scope.showTitleDialog = false
 	
 	$scope.setTitle = ->
-		setTimeout ->
-			$('#backgroundcover, .intro').removeClass 'show'
-			$scope.$apply ->
-				$scope.title = $('.intro input[type=text]').val() or $scope.title
-				$scope.step = 1
-		,1
+		$scope.title = $scope.introTitle or $scope.title
+		$scope.step = 1
+		
+		$scope.hideCover()
 
 	$scope.editQuestion = (category,question,$index) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 			$scope.curQuestion = question
 			$scope.curCategory = category
 			question.used = true
-			setTimeout ->
-				$('#question_text').focus()
-			,0
 
 			for answer in question.answers
 				answer.options.correct = false
@@ -145,7 +185,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		used: 0
 		index: i
 
-
 	$scope.toggleAnswer = (answer) ->
 		answer.value = if answer.value is 100 then 0 else 100
 		answer.options.custom = false
@@ -158,64 +197,53 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		$scope.step = 2 if $scope.step is 1
 
 	$scope.updateCategory = ->
-		setTimeout ->
-			$scope.$apply ->
-				$scope.step = 3 if $scope.step is 2
-		,0
+		$scope.step = 3 if $scope.step is 2
+
+	$scope.buildScaffold = ->
+		while $scope.qset.items.length < 5
+			$scope.qset.items.push
+				items: []
+				used: 0
+		i = 0
+		for category in $scope.qset.items
+			category.index = i++
+
+		for category in $scope.qset.items
+			i = 0
+			while category.items.length < 6
+				category.items.push $scope.newQuestion()
+			for question in category.items
+				question.index = i++
+
+		i = 0
+		while i < $scope.qset.items.length
+			if not $scope.qset.items[i].name
+				found = false
+				for question in $scope.qset.items[i].items
+					if question.questions[0].text
+						found = true
+
+				if not found and $scope.qset.items[i+1] and $scope.qset.items[i+1].name
+					$scope.qset.items.splice(i,1)
+					i--
+					break
+			i++
 
 	$scope.numbersOnly = (answer) ->
 		if not answer.value.match(/^[0-9]?[0-9]?$/)
 			answer.value = answer.value.replace(/[^0-9]+/, '')
 		if ~~answer.value > 100
 			answer.value = 100
-]
 
-Namespace('Enigma').Creator = do ->
-	$scope = {}
-	
-	# forever increasing number
-	zIndex = 9999
-
-	_initScope = ->
-		$scope.buildScaffold = _buildScaffold
-		$scope.$watch ->
-			if $scope.qset.items[$scope.qset.items.length-1].name
-				$scope.qset.items.push
-					items: []
-					used: 0
-				_buildScaffold()
-
-	initNewWidget = (widget, baseUrl) ->
-		$scope = angular.element($('body')).scope()
-
-		_initScope()
-
-		$scope.$apply ->
-			$scope.title = 'My enigma widget'
-			$scope.qset =
+	$scope.$watch ->
+		if $scope?.qset?.items?[$scope.qset.items.length-1]?.name
+			$scope.qset.items.push
 				items: []
-				options:
-					randomize: true
-			_buildScaffold()
+				used: 0
+			$scope.buildScaffold()
 
-		$('#backgroundcover, .intro').addClass 'show'
-		$('.intro input[type=text]').focus()
-
-	initExistingWidget = (title, widget, qset, version, baseUrl) ->
-		$scope = angular.element($('body')).scope()
-
-		if qset.data
-			qset = qset.data
-
-		$scope.$apply ->
-			$scope.title = title
-			$scope.qset = qset
-		$scope.$apply ->
-			_buildScaffold()
-
-			_initScope()
-
-	_initDragDrop = () ->
+	# Private helpers
+	_initDragDrop = ->
 		$('.importable').draggable
 			start: (event,ui) ->
 				$scope.shownImportTutorial = true
@@ -266,54 +294,6 @@ Namespace('Enigma').Creator = do ->
 			out: (event,ui) ->
 				$(ui.draggable).css 'border', ''
 
-	_buildScaffold = ->
-		while $scope.qset.items.length < 5
-			$scope.qset.items.push
-				items: []
-				used: 0
-		i = 0
-		for category in $scope.qset.items
-			category.index = i++
-
-		for category in $scope.qset.items
-			i = 0
-			while category.items.length < 6
-				category.items.push $scope.newQuestion()
-			for question in category.items
-				question.index = i++
-
-		i = 0
-		while i < $scope.qset.items.length
-			if not $scope.qset.items[i].name
-				found = false
-				for question in $scope.qset.items[i].items
-					if question.questions[0].text
-						found = true
-
-				if not found and $scope.qset.items[i+1] and $scope.qset.items[i+1].name
-					$scope.qset.items.splice(i,1)
-					i--
-					break
-			i++
-
-
-	onSaveClicked = (mode = 'save') ->
-		if _buildSaveData()
-			Materia.CreatorCore.save $scope.title, $scope.qset
-		else
-			Materia.CreatorCore.cancelSave 'Widget not ready to save.'
-		_buildScaffold()
-
-	onSaveComplete = (title, widget, qset, version) -> true
-
-	onQuestionImportComplete = (questions) ->
-		$scope.$apply ->
-			$scope.imported = questions.concat $scope.imported
-		_initDragDrop()
-
-	# Enigma does not support media
-	onMediaImportComplete = (media) -> null
-
 	_buildSaveData = ->
 		okToSave = true
 
@@ -342,11 +322,7 @@ Namespace('Enigma').Creator = do ->
 			delete category.index
 
 		okToSave
-	
-	#public
-	initNewWidget: initNewWidget
-	initExistingWidget: initExistingWidget
-	onSaveClicked: onSaveClicked
-	onMediaImportComplete: onMediaImportComplete
-	onQuestionImportComplete: onQuestionImportComplete
-	onSaveComplete: onSaveComplete
+
+	Materia.CreatorCore.start $scope
+]
+
