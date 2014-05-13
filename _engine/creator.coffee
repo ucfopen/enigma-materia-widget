@@ -19,7 +19,7 @@ EnigmaCreator.directive('ngEnter', ->
 				event.preventDefault()
 		)
 )
-EnigmaCreator.directive('focusMe', ($timeout, $parse) ->
+EnigmaCreator.directive('focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->
 		model = $parse(attrs.focusMe)
 		scope.$watch model, (value) ->
@@ -27,7 +27,7 @@ EnigmaCreator.directive('focusMe', ($timeout, $parse) ->
 				$timeout ->
 					element[0].focus()
 			value
-)
+])
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.title = ''
