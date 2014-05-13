@@ -287,7 +287,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
 	_buildSaveData = ->
-		qset = JSON.parse(angular.toJson($scope.qset))
+		qset = angular.copy $scope.qset
 
 		i = 0
 		while i < qset.items.length
