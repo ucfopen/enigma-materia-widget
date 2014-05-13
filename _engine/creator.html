@@ -9,8 +9,8 @@
 
 		<!-- STYLESHEETS -->
 		<link rel="stylesheet" type="text/css" href="creator.css">
-		<link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700' rel='stylesheet' type='text/css'>
-		<link href='assets/jquery-ui-1.10.4.custom.css' rel='stylesheet' type='text/css'>
+		<link href="http://fonts.googleapis.com/css?family=Lato:100,300,400,700" rel="stylesheet" type="text/css">
+		<link href="assets/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css">
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
@@ -24,103 +24,103 @@
 		<!-- MAIN CREATOR SCRIPT -->
 		<script src="creator.js"></script>
 	</head>
-	<body ng-app='enigmaCreator' ng-controller='enigmaCreatorCtrl'>
-		<div id='modal'></div>
-		<div id='header'>
-			<div class='logo'></div>
-			<h1 id='title' ng-bind='title' ng-click='showTitleDialog = true'></h1>
-			<div class='link' ng-click='showTitleDialog = true'>Edit...</div>
-			<div class='right'>
+	<body ng-app="enigmaCreator" ng-controller="enigmaCreatorCtrl">
+		<div id="modal"></div>
+		<div id="header">
+			<div class="logo"></div>
+			<h1 id="title" ng-bind="title" ng-click="showTitleDialog = true"></h1>
+			<div class="link" ng-click="showTitleDialog = true">Edit...</div>
+			<div class="right">
 				Randomize Answer Order
-				<input type='checkbox' id='randomize' ng-model='qset.options.randomize'/>
-				<label for='randomize' class='checktoggle'></label>
+				<input type="checkbox" id="randomize" ng-model="qset.options.randomize"/>
+				<label for="randomize" class="checktoggle"></label>
 			</div>
 		</div>
-		<div class='importedbackground' ng-class='{ show: imported.length }'></div>
-		<div id='board'>
-			<div class='imported_pane' ng-class='{ show: imported.length }'>
-				<div class='arrow_box' ng-show='!shownImportTutorial'>
+		<div class="importedbackground" ng-class="{ show: imported.length }"></div>
+		<div id="board">
+			<div class="imported_pane" ng-class="{ show: imported.length }">
+				<div class="arrow_box" ng-show="!shownImportTutorial">
 					Drag &amp; drop these over empty questions to add them to your game board
 				</div>
-				<div class='background'></div>
-				<div class='imported'>
-					<input type='button' ng-click='imported = []' value='Done Importing'>
+				<div class="background"></div>
+				<div class="imported">
+					<input type="button" ng-click="imported = []" value="Done Importing">
 					<b>Imported questions</b><br>
-					<div class='overflower'>
-						<div class='importable' ng-repeat='question in imported' data-index='{{$index}}'>
+					<div class="overflower">
+						<div class="importable" ng-repeat="question in imported" data-index="{{$index}}">
 							<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
-							<a href='javascript:;' ng-click='imported.splice($index,1)'>x</a>
+							<a href="javascript:;" ng-click="imported.splice($index,1)">x</a>
 						</div>
 					</div>
 				</div>
 			</div>
-			<div class='categories'>
-				<div class='category' ng-repeat='category in qset.items'>
-					<div class='label' style='opacity:{{ categoryOpacity(category,$index) }}'>
-						<textarea ng-model='category.name' id='category_{{$index}}' ng-disabled='!categoryEnabled(category,$index)' ng-focus='editCategory(category)' ng-blur='stopCategory(category)' ng-keydown='updateCategory()'></textarea>
+			<div class="categories">
+				<div class="category" ng-repeat="category in qset.items">
+					<div class="label" style="opacity:{{ categoryOpacity(category,$index) }}">
+						<textarea ng-model="category.name" id="category_{{$index}}" ng-disabled="!categoryEnabled(category,$index)" ng-focus="editCategory(category)" ng-blur="stopCategory(category)" ng-keydown="updateCategory()"></textarea>
 					</div>
-					<button ng-show='categoryShowAdd(category,$index)' class='add'></button>
-					<div ng-show='categoryShowAdd(category,$index)' class='newcat' ng-click='newCategory({{$index}}, category)'>New Category</div>
-					<div class='questionholder' ng-repeat='question in category.items' ng-click='editQuestion(category,question,{{$index}})'>
-						<div class='question' ng-class='{ show: question.questions[0].text }' data-category='{{category.index}}' data-question='{{$index}}'>
-							<div class='hover'><strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}</div>
-							<div class='number'>{{ $index+1 }}</div>
+					<button ng-show="categoryShowAdd(category,$index)" class="add"></button>
+					<div ng-show="categoryShowAdd(category,$index)" class="newcat" ng-click="newCategory({{$index}}, category)">New Category</div>
+					<div class="questionholder" ng-repeat="question in category.items" ng-click="editQuestion(category,question,{{$index}})">
+						<div class="question" ng-class="{ show: question.questions[0].text }" data-category="{{category.index}}" data-question="{{$index}}">
+							<div class="hover"><strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}</div>
+							<div class="number">{{ $index+1 }}</div>
 						</div>
-						<button ng-show='questionShowAdd(category, question, $index)' class='add'></button>
+						<button ng-show="questionShowAdd(category, question, $index)" class="add"></button>
 					</div>
 				</div>
-				<div id='question_editor' ng-style="{ top: ((curCategory.index+1) * 122) + 'px' }" class='q{{curQuestion.index+1}}' ng-class='{ show: curQuestion }'>
-					<div class='title'>Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
+				<div id="question_editor" ng-style="{ top: ((curCategory.index+1) * 122) + 'px' }" class="q{{curQuestion.index+1}}" ng-class="{ show: curQuestion }">
+					<div class="title">Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
-					<textarea ng-model='curQuestion.questions[0].text' focus-me='curQuestion' placeholder='Enter your question here' id='question_text' autofocus></textarea>
+					<textarea ng-model="curQuestion.questions[0].text" focus-me="curQuestion" placeholder="Enter your question here" id="question_text" autofocus></textarea>
 
-					<div class='questions'>
-						<div ng-repeat='answer in curQuestion.answers'>
-							<textarea ng-model='answer.text' placeholder='Enter an answer choice'></textarea>
-							<textarea ng-model='answer.options.feedback' placeholder='Enter optional feedback'></textarea>
+					<div class="questions">
+						<div ng-repeat="answer in curQuestion.answers">
+							<textarea ng-model="answer.text" placeholder="Enter an answer choice"></textarea>
+							<textarea ng-model="answer.options.feedback" placeholder="Enter optional feedback"></textarea>
 
-							<div class='controls'>
-								<div ng-show='!answer.options.$custom'>
-									<input type='checkbox' id='qtoggle{{$index}}' ng-model='answer.options.$correct'/>
-									<label for='qtoggle{{$index}}' class='checktoggle correctness'><span></span></label>
-									<a href='javascript:;' ng-click='answer.options.$custom = true'>Set percentage</a>
+							<div class="controls">
+								<div ng-show="!answer.options.$custom">
+									<input type="checkbox" id="qtoggle{{$index}}" ng-model="answer.options.$correct"/>
+									<label for="qtoggle{{$index}}" class="checktoggle correctness"><span></span></label>
+									<a href="javascript:;" ng-click="answer.options.$custom = true">Set percentage</a>
 								</div>
-								<div class='text' ng-show='answer.options.$custom'>
-									<input type='text' ng-model='answer.value' ng-change='numbersOnly(answer)' ng-blur=''>%
+								<div class="text" ng-show="answer.options.$custom">
+									<input type="text" ng-model="answer.value" ng-change="numbersOnly(answer)" ng-blur="">%
 								</div>
 							</div>
-							<button class='delete' ng-click='deleteAnswer($index)'></button>
+							<button class="delete" ng-click="deleteAnswer($index)"></button>
 						</div>
-						<a href='javascript:;' ng-click='addAnswer()'>+ Add another answer choice</a>
+						<a href="javascript:;" ng-click="addAnswer()">+ Add another answer choice</a>
 					</div>
-					<div class='controls'>
-						<a href='javascript:;' ng-click='deleteQuestion(curQuestion.index)'>Delete</a>
-						<input type='button' value='Close' ng-click='editComplete()'>
+					<div class="controls">
+						<a href="javascript:;" ng-click="deleteQuestion(curQuestion.index)">Delete</a>
+						<input type="button" value="Close" ng-click="editComplete()">
 					</div>
 				</div>
-				<div class='arrow_box' id='first_cat' ng-show='step == 1'>Click here to create your first category</div>
-				<div class='arrow_box' id='second_cat' ng-show='step == 2'>Now name this category</div>
-				<div class='arrow_box' id='third_cat' ng-show='step == 3'>Click here to add your first question</div>
+				<div class="arrow_box" id="first_cat" ng-show="step == 1">Click here to create your first category</div>
+				<div class="arrow_box" id="second_cat" ng-show="step == 2">Now name this category</div>
+				<div class="arrow_box" id="third_cat" ng-show="step == 3">Click here to add your first question</div>
 			</div>
-			<div class='question-count'>{{numQuestions()}} Questions</div>
+			<div class="question-count">{{numQuestions()}} Questions</div>
 		</div>
-		<div id='backgroundcover' ng-click='hideCover()' ng-class='{ show: showIntroDialog || showTitleDialog }'></div>
+		<div id="backgroundcover" ng-click="hideCover()" ng-class="{ show: showIntroDialog || showTitleDialog }"></div>
 
-		<div class='box intro' ng-class='{ show: showIntroDialog }'>
-			<img src='assets/creator_example.png'>
+		<div class="box intro" ng-class="{ show: showIntroDialog }">
+			<img src="assets/creator_example.png">
 			<h1>Enigma</h1>
 			<p>Create a gameboard of multiple choice questions</p>
 			<p>Questions are organized by categories.</p>
 			<p>Each question is worth the same amount.</p>
 			<hr>
 			<b>Start by giving your Enigma widget a title</b><br>
-			<input type='text' placeholder='My Enigma widget' ng-enter='setTitle()' ng-model='introTitle' focus-me='showIntroDialog'>
-			<input type='button' value='Get Started' ng-click='setTitle()'>
+			<input type="text" placeholder="My Enigma widget" ng-enter="setTitle()" ng-model="introTitle" focus-me="showIntroDialog">
+			<input type="button" value="Get Started" ng-click="setTitle()">
 		</div>
-		<div class='box title' ng-class='{ show: showTitleDialog }'>
+		<div class="box title" ng-class="{ show: showTitleDialog }">
 			<b>Give your Enigma widget a title</b><br>
-			<input type='text' placeholder='My Enigma widget' ng-model='title' focus-me='showTitleDialog' ng-enter='hideCover()'>
-			<input type='button' value='Done' ng-click='hideCover()'>
+			<input type="text" placeholder="My Enigma widget" ng-model="title" focus-me="showTitleDialog" ng-enter="hideCover()">
+			<input type="button" value="Done" ng-click="hideCover()">
 		</div>
 	</body>
 </html>
