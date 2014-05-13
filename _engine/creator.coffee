@@ -26,8 +26,7 @@ EnigmaCreator.directive('focusMe', ($timeout, $parse) ->
 			if value
 				$timeout ->
 					element[0].focus()
-		element.bind 'blur', ->
-			scope.$apply(model.assign(scope, false))
+			value
 )
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
@@ -38,7 +37,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.curCategory = false
 
 	$scope.imported = []
-	
+
 	# forever increasing number
 	zIndex = 9999
 
@@ -127,6 +126,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.editQuestion = (category,question,$index) ->
 		if category.name and $index == 0 or category.items[$index-1].questions[0].text != ''
 			$scope.curQuestion = question
+			console.log $scope.curQuestion
 			$scope.curCategory = category
 			question.used = true
 
