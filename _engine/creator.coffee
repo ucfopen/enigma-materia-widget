@@ -68,7 +68,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 		i = 0
 		for category in $scope.qset.items
 			for question in category.items
-				i++	if question.$used
+				i++	if question.questions[0].text
 		i
 	
 	$scope.categoryOpacity = (category, $index) ->
