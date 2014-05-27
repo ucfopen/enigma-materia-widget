@@ -59,9 +59,41 @@ describe 'Main page', ->
 			.execute "$('.menu .submit').click()", null, (err) ->
 				client.waitFor '.correct.mark', 3000
 				done()
-###
+
+	it 'should be able to close popup', (done) ->
+		client
+			.execute "$('.menu .return.highlight').click()", null, (err) ->
+				done()
+
+	it 'should be able answer all the questions', (done) ->
+		i = 1
+		f = ->
+			client.execute "$('.question:eq(" + i + ")').click()", null, (err) ->
+				client.execute "$('#answer-1').click()", null, (err) ->
+					client.execute "$('.menu .submit').click()", null, (err) ->
+						client.execute "$('.menu .return.highlight').click()", null, (err) ->
+							i++
+							if i < 10
+								f()
+							else
+								done()
+		f()
+
+	it 'should get 33%', (done) ->
+		client
+			.waitFor '.notice .value', 3000
+			.getText '.notice .value', (err, text) ->
+				expect(err).toBeNull()
+				expect(text).toContain("33")
+				done()
+
+	it 'should be able to close widget', (done) ->
+		client
+			.execute "$('.notice button').click()", null, (err) ->
+				done()
+
 describe 'Score page', ->
-	it 'should get a 90', (done) ->
+	it 'should get a 33', (done) ->
 		client.pause(2000)
 		client.getTitle (err, title) ->
 			expect(err).toBeNull()
@@ -70,10 +102,9 @@ describe 'Score page', ->
 				.waitFor('.overall_score')
 				.getText '.overall_score', (err, text) ->
 					expect(err).toBeNull()
-					expect(text).toBe('90%')
+					expect(text).toBe('33%')
 					client.call(done)
 					client.end()
 
 
-###
 
