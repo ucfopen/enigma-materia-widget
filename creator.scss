@@ -261,6 +261,8 @@ button {
 
 	&.show {
 		opacity: 1;
+		cursor: pointer;
+
 		&:hover {
 			.hover {
 				display: inline-block;
