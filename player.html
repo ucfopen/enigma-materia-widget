@@ -12,6 +12,18 @@
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+		<script>
+			window.Namespace = function(ns) {
+				var a = ns.split('.');
+				var o = window;
+				var len = a.length;
+				for (i = 0; i < len; i++) {
+					o[a[i]] = o[a[i]] || {};
+					o = o[a[i]];
+				}
+				return o;
+			}
+		</script>
 		<script src="materia.enginecore.js"></script>
 		<script src="materia.score.js"></script>
 
