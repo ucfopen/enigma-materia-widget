@@ -55,24 +55,4 @@ class Score_Modules_EnigmaGS extends Score_Module
 		$q_index = array_search($log->item_id, $this->q_ids);
 		$this->new_logs[$q_index] = $log;
 	}
-
-	protected function calculate_score()
-	{
-		ksort($this->new_logs);
-		$this->logs = $this->new_logs;
-
-		$global_mod = array_sum($this->global_modifiers);
-		// if ( ! is_numeric($mod)) $mod = 0;
-		if ($this->total_questions > 0)
-		{
-			$points = $this->verified_score + $global_mod * $this->total_questions;
-			$this->calculated_percent = $points / $this->total_questions;
-		}
-		else
-		{
-			$points = 100 + $this->verified_score + $global_mod;
-			$this->calculated_percent = $points;
-		}
-		if ($this->calculated_percent < 0) $this->calculated_percent = 0;
-	}
 }
