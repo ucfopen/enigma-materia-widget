@@ -89,8 +89,8 @@ describe 'Score page', ->
 		client.getTitle (err, title) ->
 			expect(title).toBe('Score Results | Materia')
 			client
-				.waitForVisible('.overall_score')
-				.getText '.overall_score', (err, text) ->
+				.waitForVisible('.overall-score')
+				.getText '.overall-score', (err, text) ->
 					expect(text).toBe('33%')
 					client.call(done)
 					client.end()
