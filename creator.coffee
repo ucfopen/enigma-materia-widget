@@ -50,7 +50,28 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			$scope.qset = qset
 
 	$scope.onSaveClicked = (mode = 'save') ->
-		Materia.CreatorCore.save $scope.title, _buildSaveData()
+		qset = _buildSaveData()
+		msg = validateQuestions qset
+		if msg
+			Materia.CreatorCore.cancelSave msg
+		else
+			Materia.CreatorCore.save $scope.title, qset
+
+	validateQuestions = (qset) ->
+		i = 0
+		while i < qset.items.length
+			j = 0
+			while j < qset.items[i].items.length
+				hasAnswer = false
+				for answer in qset.items[i].items[j].answers
+					if answer.value > 0
+						hasAnswer = true
+				if !hasAnswer
+					return "Question " + (j + 1) + " in category " + (i + 1) + " has no correct answer"
+				j++
+			i++
+		return false
+
 
 	$scope.onSaveComplete = (title, widget, qset, version) -> true
 
