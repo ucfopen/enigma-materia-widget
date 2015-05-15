@@ -67,7 +67,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 					if answer.value > 0
 						hasAnswer = true
 				if !hasAnswer
-					return "Question " + (j + 1) + " in category " + (i + 1) + " has no correct answer"
+					return "Question " + (j + 1) + " in the " + (qset.items[i].name) + " category has no correct answer"
 				j++
 			i++
 		return false
