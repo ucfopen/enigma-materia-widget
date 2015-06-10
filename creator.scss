@@ -8,6 +8,7 @@
 input, textarea {
 	outline: none;
 	resize: none;
+	user-select: text;
 }
 
 textarea {
@@ -173,7 +174,7 @@ button {
 		margin: 0;
 		padding: 0;
 		width: 42px;
-		background: $green; 
+		background: $green;
 		font-size: 26px;
 		color: #fff;
 		border-radius: 50px;
@@ -227,7 +228,7 @@ button {
 		right: 0;
 		top: 0;
 	}
-	
+
 	.hover {
 		text-align: center;
 		color: #333;
@@ -382,7 +383,7 @@ label.checktoggle {
 	background: #777;
 	padding: 5px;
 	color: #fff;
-	
+
 	position:relative;
 	margin-left: 20px;
 
@@ -645,7 +646,7 @@ input[type=checkbox]:checked + label.checktoggle {
 	.questionholder {
 		counter-increment: q;
 	}
-	
+
 }
 
 #question_editor {
