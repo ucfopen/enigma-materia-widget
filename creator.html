@@ -88,8 +88,8 @@
 
 					<div class="questions">
 						<div ng-repeat="answer in curQuestion.answers">
-							<textarea ng-model="answer.text" placeholder="Enter an answer choice"></textarea>
-							<textarea ng-model="answer.options.feedback" placeholder="Enter optional feedback"></textarea>
+							<textarea class="answerChoiceBox" ng-model="answer.text" placeholder="Enter an answer choice"></textarea>
+							<textarea class="feedbackChoiceBox" ng-model="answer.options.feedback" placeholder="Optional response for student when this answer is chosen."></textarea>
 
 							<div class="controls">
 								<div ng-show="!answer.options.$custom">
