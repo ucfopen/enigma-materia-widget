@@ -9,6 +9,7 @@ input,
 textarea {
 	outline: none;
 	resize: none;
+	user-select: text;
 }
 
 textarea {
@@ -174,7 +175,7 @@ button {
 		margin: 0;
 		padding: 0;
 		width: 42px;
-		background: $green; 
+		background: $green;
 		font-size: 26px;
 		color: #fff;
 		border-radius: 50px;
