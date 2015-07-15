@@ -91,7 +91,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			for question in category.items
 				i++	if question.questions[0].text
 		i
-	
+
 	$scope.categoryOpacity = (category, $index) ->
 		opacity = 0.1
 		if $scope.step is 1 and $index is 0
