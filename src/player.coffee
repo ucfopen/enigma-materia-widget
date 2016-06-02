@@ -162,7 +162,6 @@ Namespace('Enigma').Engine = do ->
 		_currentQuestionIndex = parseInt _$currentQuestionSquare.html(), 10
 
 		# Draw the Question Page.
-		console.log _currentQuestion.id
 		tQuestion = _.template $('#t-question-page').html()
 		$question = $ tQuestion
 			index: _currentQuestionIndex
@@ -203,7 +202,6 @@ Namespace('Enigma').Engine = do ->
 	_submitAnswer = ->
 		$chosenRadio = $(".answers input[type='radio']:checked")
 		chosenAnswer = $chosenRadio.val()
-		console.log(_currentQuestion, chosenAnswer)
 		answer = _checkAnswer _currentQuestion, chosenAnswer
 
 		Materia.Score.submitQuestionForScoring _currentQuestion.id, answer.text
