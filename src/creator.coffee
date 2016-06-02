@@ -147,7 +147,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 	$scope.editComplete = ->
 		for answer in $scope.curQuestion.answers
 			answer.value = parseInt(answer.value,10)
-
+			answer.id = answer.text
 			if answer.options.$custom
 				if answer.value == 100 or answer.value == 0
 					answer.options.$custom = false
@@ -216,6 +216,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', ($scope) ->
 			while category.items.length < 6
 				category.items.push $scope.newQuestion()
 			for question in category.items
+				question.id = category.name + "-" + i++
 				question.index = i++
 
 		i = 0
