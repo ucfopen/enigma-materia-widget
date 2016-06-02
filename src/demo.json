@@ -1,0 +1,460 @@
+{
+  "name": "TV Show Trivia",
+  "qset": {
+    "version": 1,
+    "data": {
+      "items": [
+        {
+          "name": "Animated TV",
+          "items": [
+            {
+              "materiaType": "question",
+              "id": 0,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "The Simpsons takes place in what fictional town?\n"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "Wellville",
+                  "value": 0,
+                  "text": "Wellville",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "Arlen",
+                  "value": 0,
+                  "text": "Arlen",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "Springfield",
+                  "value": 100,
+                  "text": "Springfield",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "Gotham",
+                  "value": 0,
+                  "text": "Gotham",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 1
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 1,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "Futurama takes place in the year?"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "2,000 AD",
+                  "value": 0,
+                  "text": "2,000 AD",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "2,500 AD",
+                  "value": 0,
+                  "text": "2,500 AD",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "3,000 AD",
+                  "value": 100,
+                  "text": "3,000 AD",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "15,000 AD",
+                  "value": 0,
+                  "text": "15,000 AD",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 2
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 2,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "This animated TV character sells \"Propane and propane accessories\".\n"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "Hank Hill",
+                  "value": 100,
+                  "text": "Hank Hill",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "Peter Griffin",
+                  "value": 0,
+                  "text": "Peter Griffin",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "Homer Simpson",
+                  "value": 0,
+                  "text": "Homer Simpson",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "Jay Sherman",
+                  "value": 0,
+                  "text": "Jay Sherman",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 3
+              }
+            }
+          ],
+          "options": {
+            "cid": 2
+          }
+        },
+        {
+          "name": "Sitcoms",
+          "items": [
+            {
+              "materiaType": "question",
+              "id": 3,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "The characters Ross, Monica, and Chandler come from what TV show?"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "Please Shoot Me",
+                  "value": 0,
+                  "text": "Please Shoot Me",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "Suddenly Susan",
+                  "value": 0,
+                  "text": "Suddenly Susan",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "Caroline in the City",
+                  "value": 0,
+                  "text": "Caroline in the City",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "Friends",
+                  "value": 100,
+                  "text": "Friends",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 1
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 4,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "Seinfeld originally aired in what year?"
+                }
+              ],
+              "answers": [
+                {
+                  "id": 1986,
+                  "value": 0,
+                  "text": 1986,
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": 1989,
+                  "value": 100,
+                  "text": 1989,
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": 1991,
+                  "value": 0,
+                  "text": 1991,
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": 1994,
+                  "value": 0,
+                  "text": 1994,
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 2
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 5,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "The character John Becker from the TV sitcom Becker is played by\n"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "Tom Selleck",
+                  "value": 0,
+                  "text": "Tom Selleck",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "Ted Danson",
+                  "value": 100,
+                  "text": "Ted Danson",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "Burt Reynolds",
+                  "value": 0,
+                  "text": "Burt Reynolds",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "David Hasselhoff",
+                  "value": 0,
+                  "text": "David Hasselhoff",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 3
+              }
+            }
+          ],
+          "options": {
+            "cid": 1
+          }
+        },
+        {
+          "name": "Game Shows",
+          "items": [
+            {
+              "materiaType": "question",
+              "id": 6,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "Bob Barker hosted The Price is Right for how many years?\n"
+                }
+              ],
+              "answers": [
+                {
+                  "id": 15,
+                  "value": 0,
+                  "text": 15,
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": 25,
+                  "value": 0,
+                  "text": 25,
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": 35,
+                  "value": 100,
+                  "text": 35,
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": 45,
+                  "value": 0,
+                  "text": 45,
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 1
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 7,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "Let's Make a Deal was hosted by which game show host?"
+                }
+              ],
+              "answers": [
+                {
+                  "id": "Monty Hall",
+                  "value": 100,
+                  "text": "Monty Hall",
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": "Bob Barker",
+                  "value": 0,
+                  "text": "Bob Barker",
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": "Wink Martendale",
+                  "value": 0,
+                  "text": "Wink Martendale",
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": "Dick Clark",
+                  "value": 0,
+                  "text": "Dick Clark",
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 2
+              }
+            },
+            {
+              "materiaType": "question",
+              "id": 8,
+              "type": "MC",
+              "questions": [
+                {
+                  "text": "Wheel of Fortune began airing in what year?\n"
+                }
+              ],
+              "answers": [
+                {
+                  "id": 1975,
+                  "value": 100,
+                  "text": 1975,
+                  "options": {
+                    "letter": "A"
+                  }
+                },
+                {
+                  "id": 1981,
+                  "value": 0,
+                  "text": 1981,
+                  "options": {
+                    "letter": "B"
+                  }
+                },
+                {
+                  "id": 1985,
+                  "value": 0,
+                  "text": 1985,
+                  "options": {
+                    "letter": "C"
+                  }
+                },
+                {
+                  "id": 1989,
+                  "value": 0,
+                  "text": 1989,
+                  "options": {
+                    "letter": "D"
+                  }
+                }
+              ],
+              "options": {
+                "index": 3
+              }
+            }
+          ],
+          "options": {
+            "cid": 0
+          }
+        }
+      ],
+      "options": {
+        "randomize": null
+      }
+    }
+  }
+}
