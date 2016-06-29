@@ -267,7 +267,15 @@ button {
 		opacity: 1;
 		cursor: pointer;
 
-		&:hover {
+		&.incomplete {
+			background-color: #ad363c;
+
+			&:hover {
+				background-color: #f00;
+			}
+		}
+
+		&:hover:not(.incomplete) {
 			.hover {
 				display: inline-block;
 			}
@@ -276,7 +284,6 @@ button {
 			}
 		}
 	}
-
 }
 
 h1 {
@@ -940,23 +947,119 @@ input[type=checkbox]:checked + label.checktoggle {
 				left: 10px;
 			}
 
-			&.action{
+			&.action {
 				background: #70bd34;
 			}
 
-			&.submit{
+			&.submit {
 				position: absolute;
 				right:10px;
 			}
 
-			&.cancel{
+			&.cancel {
 				position: absolute;
 				right:75px;
 				background:none;
 				font-weight:normal;
 				text-decoration: underline;
 			}
+
+			&.remove {
+				position: absolute;
+				right:120px;
+				background:none;
+				font-weight:normal;
+				text-decoration: underline;
+			}
 		}
+	}
+}
+
+#incomplete_alert {
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	margin-left: -130px;
+	width: 260px;
+	background: #ad363c;
+	padding: 10px;
+	border-radius: 3px;
+	opacity: 1;
+
+	&.fade {
+		opacity: 0;
+		animation: fade 5s linear;
+	}
+
+	span {
+		display: block;
+
+		&:first-child {
+			margin-bottom: 10px;
+		}
+	}
+}
+
+#problems_tooltip {
+	position: absolute;
+	background: #ad363c;
+	border-radius: 3px;
+	width: 170px;
+	padding: 10px 0;
+	z-index: -1;
+	opacity: 0;
+	text-align: center;
+
+	transition: opacity 0.25s ease;
+
+	p {
+		margin-bottom: 10px;
+	}
+
+	span {
+		display: block;
+		margin: 0 10px;
+	}
+
+	&.show {
+		opacity: 1;
+		z-index: 2;
+	}
+
+	&:before {
+		bottom: 100%;
+		left: 59px; /* (parent width / 2) - this border width */
+		border: solid transparent;
+		border-color: rgba(255, 255, 255, 0);
+		border-bottom-color: #ad363c;
+		border-width: 26px;
+		content: " ";
+		position: absolute;
+		pointer-events: none;
+	}
+
+	&.q1 {
+		left: 110px;
+	}
+
+	&.q2 {
+		left: 210px;
+	}
+
+	&.q3 {
+		left: 309px;
+	}
+
+	&.q4 {
+		left: 408px;
+	}
+
+	&.q5 {
+		left: 506px;
+	}
+
+	&.q6 {
+		left: 606px;
 	}
 }
 
@@ -1014,7 +1117,6 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 }
 
-
 @keyframes bounce {
 	0% {
 		transform: translate(0px,0px);
@@ -1045,3 +1147,7 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 }
 
+@keyframes fade {
+	0%   { opacity: 1}
+	100% { opacity: 0}
+}
