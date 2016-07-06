@@ -1,5 +1,6 @@
 #TODO:
-# When attempting to publish a widget compile all problems into a window alert
+
+# Toss the center-screen alert that pops up after a question is done editing but has mistakes
 
 EnigmaCreator = angular.module 'enigmaCreator', []
 
@@ -32,12 +33,15 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 	$scope.qset = {}
 
 	# keep track of the question we're currently dealing with and what category it's in
-	$scope.curQuestion = false
 	$scope.curCategory = false
+	$scope.curQuestion = false
+
+	# toggle for question editor sub-menu
+	$scope.subMenu = false
 
 	# keep track of any questions that the mouse is hovering over if they have problems
-	$scope.problemQuestion = false
 	$scope.problemCategory = false
+	$scope.problemQuestion = false
 
 	# keep track of which initial instructions need to be displayed
 	$scope.step = 0
@@ -47,6 +51,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# when a question is done editing, use this to display a message if it is not complete
 	$scope.incompleteMessage = false
+
+	# used with incompleteMessage when a widget is technically valid but potentially still incomplete
+	$scope.warningMessage = false
 
 	$scope.imported = []
 
@@ -64,6 +71,16 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			$scope.buildScaffold()
 			$scope.showIntroDialog = true
 
+	$scope.setTitle = ->
+		$scope.title = $scope.introTitle or $scope.title
+		$scope.step = 1 # the widget has a title - bring up the instructions for adding the first category
+
+		$scope.hideCover()
+
+	# responds to a number of stimuli to hide the intro screen
+	$scope.hideCover = ->
+		$scope.showIntroDialog = $scope.showTitleDialog = false
+
 	$scope.initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		if qset.data
 			qset = qset.data
@@ -71,275 +88,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
-
-	$scope.onSaveClicked = (mode = 'save') ->
-		qset = _buildSaveData()
-		msg = validateQuestions qset
-		if msg
-			Materia.CreatorCore.cancelSave msg
-		else
-			Materia.CreatorCore.save $scope.title, qset
-
-	validateQuestions = (qset) ->
-		i = 0
-		while i < qset.items.length
-			j = 0
-			while j < qset.items[i].items.length
-				hasAnswer = false
-				for answer in qset.items[i].items[j].answers
-					if answer.value > 0
-						hasAnswer = true
-				if !hasAnswer
-					return "Question " + (j + 1) + " in the " + (qset.items[i].name) + " category has no correct answer"
-				j++
-			i++
-		return false
-
-
-	$scope.onSaveComplete = (title, widget, qset, version) -> true
-
-	$scope.onQuestionImportComplete = (questions) ->
-		$scope.$apply ->
-			$scope.imported = questions.concat $scope.imported
-		_initDragDrop()
-
-	$scope.onMediaImportComplete = (media) -> null
-
-	# View properties
-	$scope.numQuestions = ->
-		if !$scope.qset.items?
-			return 0
-		i = 0
-		for category in $scope.qset.items
-			for question in category.items
-				i++	if question.questions[0].text
-		i
-
-	$scope.categoryOpacity = (category, index) ->
-		opacity = 0.1
-		if $scope.step is 1 and index is 0
-			opacity = 1
-		if category.name or category.isEditing
-			opacity = 1
-		return opacity
-
-	$scope.categoryShowAdd = (category, index) ->
-		not category.name and not category.isEditing and (index == 0 or $scope.qset.items[index-1].name)
-
-	$scope.categoryEnabled = (category, index) ->
-		index == 0 or $scope.qset.items[index-1].name or $scope.qset.items[index].name
-
-	# show the question add button for the given question index in the given category
-	# if the category has been named and the question hasn't been edited from defaults
-	# or if this is the first question in the category
-	# or if it's not the first, and the previous question has been edited from defaults
-	$scope.questionShowAdd = (category, question, index) ->
-		category.name? and question.untouched and (index == 0 or !category.items[index-1].untouched)
-
-	# View actions
-	$scope.editCategory = (category) ->
-		category.isEditing = true
-		$scope.curQuestion = false
-
-	$scope.stopCategory = (category) ->
-		category.isEditing = false
-		$scope.buildScaffold()
-
-	$scope.hideCover = ->
-		$scope.showIntroDialog = $scope.showTitleDialog = false
-
-	$scope.setTitle = ->
-		$scope.title = $scope.introTitle or $scope.title
-		$scope.step = 1 # the widget has a title - bring up the instructions for adding the first category
-
-		$scope.hideCover()
-
-	$scope.editQuestion = (category, question, index) ->
-		# make sure we can edit this question
-		if category.name and index == 0 or !category.items[index-1].untouched
-			$scope.curQuestion = question
-			$scope.curCategory = category
-
-			for answer in question.answers
-				answer.options.correct = false
-				answer.options.custom = false
-
-				if answer.value == 100
-					answer.options.correct = true
-				else if answer.value isnt 100 and answer.value isnt 0
-					answer.options.custom = true
-
-			$scope.step = 4 if $scope.step is 3 # the first question has been added - no further instructions
-
-	# Done button clicked, assign point values to valid answers and indicate question has been edited
-	$scope.editComplete = ->
-		# prepare some checks to make sure the question is 'complete'
-		# has question text
-		hasQuestion = $scope.curQuestion.questions[0].text != ''
-		# has at least one answer worth 100%
-		fullCredit = false
-		# doesn't have any repeat answers
-		repeatChecks = []
-		hasRepeats = false
-		# has blank answers
-		blankAnswer = false
-
-		# store whatever problems remain in the question for later
-		problems = []
-
-		for answer in $scope.curQuestion.answers
-			trimmedAnswer = answer.text.trim()
-			if trimmedAnswer == '' then blankAnswer = true
-			# keep track of each possible answer
-			if not repeatChecks[trimmedAnswer]
-				repeatChecks[trimmedAnswer] = true # store this word so we can look for it later
-			else
-				hasRepeats = true
-
-			answer.value = parseInt(answer.value,10)
-
-			if answer.options.custom
-				if answer.value == 100 or answer.value == 0
-					answer.options.custom = false
-					answer.options.correct = if answer.value == 100 then true else false
-			else
-				answer.value = if answer.options.correct then 100 else 0
-
-			if answer.value == 100 then fullCredit = true
-
-		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
-		isComplete = hasQuestion and fullCredit and not hasRepeats
-
-		# if the question is 'incomplete', alert reasons why
-		if not isComplete
-			incompleteMessage = ["Warning: this question is incomplete!"]
-			if not hasQuestion
-				incompleteMessage.push _QUESTION_PROBLEM
-				problems.push _QUESTION_PROBLEM
-			if not fullCredit
-				incompleteMessage.push _CREDIT_PROBLEM
-				problems.push _CREDIT_PROBLEM
-			if hasRepeats
-				incompleteMessage.push _REPEAT_PROBLEM
-				problems.push _REPEAT_PROBLEM
-			if blankAnswer
-				incompleteMessage.push _ANSWER_PROBLEM
-				problems.push _ANSWER_PROBLEM
-
-			# bring up an alert describing any problems
-			$scope.incompleteMessage = incompleteMessage
-			$scope.startFade = true
-			$timeout ->
-				$scope.incompleteMessage = false
-			, 5000
-		else
-			$scope.curQuestion.complete = true
-			$scope.curQuestion.problems = []
-
-		$scope.curQuestion.problems = problems
-		$scope.curQuestion.untouched = false
-		$scope.curQuestion = false
-
-	# hide the alert early if the user clicks on it
-	$scope.killAlert = ->
-		$scope.incompleteMessage = false
-
-	$scope.markProblems = (category, question) ->
-		return unless not question.untouched and not question.complete
-		$scope.problemQuestion = question
-		$scope.problemCategory = category
-
-	$scope.unmarkProblems = ->
-		$scope.problemQuestion = false
-		$scope.problemCategory = false
-
-	# 'delete' a question; essentially sets the question in that index to the default state
-	$scope.deleteQuestion = (i) ->
-		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $scope.newQuestion(i)
-		# since this deletion isn't altering the order, treat this more like setting it to defaults instead of making a whole new question
-		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index].untouched = false
-		$scope.curQuestion = false
-
-	$scope.addAnswer = ->
-		$scope.curQuestion.answers.push $scope.newAnswer()
-
-	$scope.deleteAnswer = (index) ->
-		$scope.curQuestion.answers.splice(index,1)
-
-	$scope.newAnswer = ->
-		id: ''
-		text: ''
-		value: 0
-		options:
-			feedback: ''
-			custom: false
-			correct: false
-
-	$scope.newQuestion = (i=0) ->
-		type: 'MC'
-		id: ''
-		questions: [
-			text: ''
-		]
-		answers: [
-			$scope.newAnswer(),
-			$scope.newAnswer()
-		]
-		untouched: true
-		complete: false
-		problems: []
-		index: i
-
-	$scope.toggleAnswer = (answer) ->
-		answer.value = if answer.value is 100 then 0 else 100
-		answer.options.custom = false
-
-	$scope.newCategory = (index, category) ->
-		setTimeout ->
-			$('#category_'+index).focus()
-		,10
-		category.isEditing = true
-		$scope.step = 2 if $scope.step is 1 # the first category has been clicked - display instructions for giving it a name
-
-	$scope.updateCategory = ->
-		$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
-
-	# set default values for the widget - 5 empty categories with 6 empty questions each
-	$scope.buildScaffold = ->
-		# create 6 empty categories
-		i = 0
-		while $scope.qset.items.length < 5
-			$scope.qset.items.push
-				items: []
-				index: i++
-
-		# create 6 empty questions per category
-		for category in $scope.qset.items
-			i = 0
-			while category.items.length < 6
-				category.items.push $scope.newQuestion()
-			for question in category.items
-				question.index = i++
-
-		i = 0
-		while i < $scope.qset.items.length
-			if not $scope.qset.items[i].name
-				found = false
-				for question in $scope.qset.items[i].items
-					if question.questions[0].text
-						found = true
-
-				if not found and $scope.qset.items[i+1] and $scope.qset.items[i+1].name
-					$scope.qset.items.splice(i,1)
-					i--
-					break
-			i++
-
-	$scope.numbersOnly = (answer) ->
-		if not answer.value.match(/^[0-9]?[0-9]?$/)
-			answer.value = answer.value.replace(/[^0-9]+/, '')
-		if ~~answer.value > 100
-			answer.value = 100
 
 	# Private helpers
 	_initDragDrop = ->
@@ -391,33 +139,381 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			out: (event, ui) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
+	$scope.onQuestionImportComplete = (questions) ->
+		$scope.$apply ->
+			$scope.imported = questions.concat $scope.imported
+		_initDragDrop()
+
+	$scope.onMediaImportComplete = (media) -> null
+
+	# get the total number of questions in the widget so Angular can put it on the page
+	$scope.numQuestions = ->
+		if !$scope.qset.items?
+			return 0
+		i = 0
+		for category in $scope.qset.items
+			for question in category.items
+				i++	if question.questions[0].text
+		i
+
+	$scope.categoryOpacity = (category, index) ->
+		opacity = 0.1
+		if $scope.step is 1 and index is 0
+			opacity = 1
+		if category.name or category.isEditing
+			opacity = 1
+		return opacity
+
+	$scope.categoryShowAdd = (category, index) ->
+		not category.name and not category.isEditing and (index == 0 or not $scope.qset.items[index-1].untouched)
+
+	$scope.categoryEnabled = (category, index) ->
+		index == 0 or $scope.qset.items[index-1].name or $scope.qset.items[index].name
+
+	# editing a category
+	$scope.editCategory = (category) ->
+		category.isEditing = true
+		$scope.curQuestion = false
+
+	# pressed the enter key while changing a category's name - spoof a blur to try finalizing it
+	$scope.blurCategory = (category) ->
+		$timeout ->
+			document.getElementById('category_'+category.index).blur()
+
+	# done editing a category
+	$scope.stopCategory = (category) ->
+		# don't do anything unless the category was named properly
+		if category.name
+			if $scope.qset.items[$scope.qset.items.length-1].name
+				$scope.qset.items.push
+					items: []
+					index: $scope.qset.items.length
+				$scope.buildScaffold()
+
+			category.isEditing = false
+			category.untouched = false
+			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
+
+	$scope.deleteCategory = (category) ->
+		if confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
+			$scope.qset.items.splice(category.index, 1)
+			$scope.buildScaffold()
+
+			#reset all of the remaining categories' index properties or Angular will get confused
+			i = 0
+			while i < $scope.qset.items.length
+				$scope.qset.items[i].index = i++
+
+	$scope.categoryReorder = (index, forward) ->
+		temp = $scope.qset.items[index]
+		if forward
+			$scope.qset.items[index] = $scope.qset.items[index+1]
+			$scope.qset.items[index].index = index
+			$scope.qset.items[index+1] = temp
+			$scope.qset.items[index+1].index = index+1
+		else
+			$scope.qset.items[index] = $scope.qset.items[index-1]
+			$scope.qset.items[index].index = index
+			$scope.qset.items[index-1] = temp
+			$scope.qset.items[index-1].index = index-1
+
+	# show the question add button for the given question index in the given category if:
+	# the category has been named and is not being edited
+	# and the question hasn't been edited from defaults
+	# or if this is the first question in the category
+	# or if it's not the first, and the previous question has been edited from defaults
+	$scope.questionShowAdd = (category, question, index) ->
+		category.name? and not category.isEditing and question.untouched and (index == 0 or !category.items[index-1].untouched)
+
+	$scope.editQuestion = (category, question, index) ->
+		# make sure we can edit this question
+		# the category has been named, this is the first question in the category, this or the previous question has been edited already
+		if category.name and not category.isEditing and index == 0 or !category.items[index].untouched or !category.items[index-1].untouched
+			$scope.curQuestion = question
+			$scope.curCategory = category
+
+			for answer in question.answers
+				answer.options.correct = false
+				answer.options.custom = false
+
+				if answer.value == 100
+					answer.options.correct = true
+				else if answer.value isnt 100 and answer.value isnt 0
+					answer.options.custom = true
+
+			$scope.step = 4 if $scope.step is 3 # the first question has been added - no further instructions
+
+	# Done button clicked, assign point values to valid answers and indicate question has been edited
+	$scope.editComplete = ->
+		# prepare some checks to make sure the question is 'complete':
+		# has question text
+		hasQuestion = $scope.curQuestion.questions[0].text != ''
+		# has at least one answer worth 100%
+		fullCredit = false
+		# doesn't have any repeat answers
+		repeatChecks = []
+		hasRepeats = false
+		# or blank answers
+		blankAnswer = false
+
+		# store whatever problems remain in the question for later
+		problems = []
+
+		# compile problems in an array for Angular to display
+		incompleteMessage = []
+
+		for answer in $scope.curQuestion.answers
+			trimmedAnswer = answer.text.trim()
+			if trimmedAnswer == '' then blankAnswer = true
+			# keep track of each possible answer
+			if not repeatChecks[trimmedAnswer]
+				repeatChecks[trimmedAnswer] = true # store this word so we can look for it later
+			else
+				hasRepeats = true
+
+			answer.value = parseInt(answer.value,10)
+
+			if answer.options.custom
+				if answer.value == 100 or answer.value == 0
+					answer.options.custom = false
+					answer.options.correct = if answer.value == 100 then true else false
+			else
+				answer.value = if answer.options.correct then 100 else 0
+
+			if answer.value == 100 then fullCredit = true
+
+		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
+		isComplete = hasQuestion and fullCredit and not hasRepeats and not blankAnswer
+
+		# if the question is 'incomplete', alert reasons why and store them in the question for later
+		if not isComplete
+			incompleteMessage.push "Warning: this question is incomplete!"
+
+			if not hasQuestion
+				incompleteMessage.push _QUESTION_PROBLEM
+				problems.push _QUESTION_PROBLEM
+			if not fullCredit
+				incompleteMessage.push _CREDIT_PROBLEM
+				problems.push _CREDIT_PROBLEM
+			if hasRepeats
+				incompleteMessage.push _REPEAT_PROBLEM
+				problems.push _REPEAT_PROBLEM
+			if blankAnswer
+				incompleteMessage.push _ANSWER_PROBLEM
+				problems.push _ANSWER_PROBLEM
+		else
+			$scope.curQuestion.complete = true
+			$scope.curQuestion.problems = []
+
+			# make additional checks here for any potential warnings
+
+			# if there's only one answer for this question
+			if $scope.curQuestion.answers.length < 2
+				incompleteMessage.push 'Only one answer found.'
+
+			# specify that these are warnings, not show-stoppers
+			if incompleteMessage.length > 0
+				$scope.warningMessage = true
+				incompleteMessage.unshift 'Attention: this question may be incomplete!'
+
+
+		# bring up a temporary alert describing any problems
+		if incompleteMessage.length > 0
+			$scope.incompleteMessage = incompleteMessage
+			$scope.startFade = true
+			$timeout ->
+				$scope.incompleteMessage = false
+				$scope.warningMessage    = false
+			, 5000
+
+		# store any problems for this question and flag is as edited
+		$scope.curQuestion.problems = problems
+		$scope.curQuestion.untouched = false
+		$scope.subMenu = false
+		$scope.curQuestion = false
+
+	# hide the alert early if the user clicks on it
+	$scope.killAlert = ->
+		$scope.incompleteMessage = false
+
+	# draw a tooltip near a question when the mouse is over it if that question is invalid
+	$scope.markProblems = (category, question) ->
+		return unless not question.untouched and not question.complete
+		$scope.problemQuestion = question
+		$scope.problemCategory = category
+
+	# remove the tooltip indicating problems with a question
+	$scope.unmarkProblems = ->
+		$scope.problemQuestion = false
+		$scope.problemCategory = false
+
+	# reset a question; doesn't impact question order
+	$scope.resetQuestion = (i) ->
+		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $scope.newQuestion(i)
+		$scope.curQuestion = false
+
+	# delete a question; removes question from the order completely
+	$scope.deleteQuestion = (i) ->
+		# get rid of this question and put a blank one on the end of the category's stack
+		$scope.qset.items[$scope.curCategory.index].items.splice($scope.curQuestion.index, 1)
+		$scope.qset.items[$scope.curCategory.index].items.push $scope.newQuestion()
+
+		# reset all of the questions' index properties to match the change
+		while i < $scope.qset.items[$scope.curCategory.index].items.length
+			$scope.qset.items[$scope.curCategory.index].items[i].index = i++
+		$scope.curQuestion = false
+
+	$scope.addAnswer = ->
+		$scope.curQuestion.answers.push $scope.newAnswer()
+
+	$scope.deleteAnswer = (index) ->
+		$scope.curQuestion.answers.splice(index,1)
+
+	$scope.newAnswer = ->
+		id: ''
+		text: ''
+		value: 0
+		options:
+			feedback: ''
+			custom: false
+			correct: false
+
+	# change the order of questions within a category
+	$scope.questionReorder = (forward) ->
+		currentIndex = $scope.curQuestion.index
+		temp = $scope.curCategory.items[currentIndex]
+		if forward
+			$scope.curCategory.items[currentIndex] = $scope.curCategory.items[currentIndex+1]
+			$scope.curCategory.items[currentIndex].index = currentIndex
+			$scope.curCategory.items[currentIndex+1] = temp
+			$scope.curCategory.items[currentIndex+1].index = currentIndex+1
+		else
+			$scope.curCategory.items[currentIndex] = $scope.curCategory.items[currentIndex-1]
+			$scope.curCategory.items[currentIndex].index = currentIndex
+			$scope.curCategory.items[currentIndex-1] = temp
+			$scope.curCategory.items[currentIndex-1].index = currentIndex-1
+
+	$scope.newQuestion = (i=0) ->
+		type: 'MC'
+		id: ''
+		questions: [
+			text: ''
+		]
+		answers: [
+			$scope.newAnswer(),
+			$scope.newAnswer()
+		]
+		untouched: true
+		complete: false
+		problems: []
+		index: i
+
+	$scope.newCategory = (index, category) ->
+		setTimeout ->
+			$('#category_'+index).focus()
+		,10
+		category.isEditing = true
+		$scope.step = 2 if $scope.step is 1 # the first category has been clicked - display instructions for giving it a name
+
+	# set default values for the widget - 5 empty categories with 6 empty questions each
+	$scope.buildScaffold = ->
+		# create 6 empty categories
+		i = 0
+		while $scope.qset.items.length < 5
+			$scope.qset.items.push
+				items: []
+				untouched: true
+				index: i++
+
+		# create 6 empty questions per category
+		for category in $scope.qset.items
+			i = 0
+			while category.items.length < 6
+				category.items.push $scope.newQuestion()
+			for question in category.items
+				question.index = i++
+
+		i = 0
+		while i < $scope.qset.items.length
+			if not $scope.qset.items[i].name
+				found = false
+				for question in $scope.qset.items[i].items
+					if question.questions[0].text
+						found = true
+
+				if not found and $scope.qset.items[i+1] and $scope.qset.items[i+1].name
+					$scope.qset.items.splice(i,1)
+					i--
+					break
+			i++
+
+	# called when an answer's custom value is changed - makes sure no non-numbers are present
+	$scope.numbersOnly = (answer) ->
+		# if the answer's value isn't only numbers, strip out any non-numbers
+		if not answer.value.match(/^[0-9]?[0-9]?$/)
+			answer.value = answer.value.replace(/[^0-9]+/, '')
+		# if the rounded-down value of the answer is over 100, constrain it to 100
+		if ~~answer.value > 100
+			answer.value = 100
+
+	$scope.onSaveClicked = (mode = 'save') ->
+		qset = _buildSaveData()
+		msg = validateQuestions qset
+		if msg
+			Materia.CreatorCore.cancelSave msg
+		else
+			Materia.CreatorCore.save $scope.title, qset
+
 	_buildSaveData = ->
 		# duplicate the model and remove angular hash keys
 		qset = angular.copy $scope.qset
 
 		i = 0
+		# for each category
 		while i < qset.items.length
-			# remove empty categories
-			if not qset.items[i].name
+			# remove empty categories; no name, no questions, or never touched
+			if qset.items[i].untouched or qset.items[i].items.length == 0 and not qset.items[i].name
 				qset.items.splice(i,1)
 				i--
 				continue
 
-			# remove empty questions
+			# for each question
 			j = 0
 			while j < qset.items[i].items.length
-				# remove creator-specific properties
+				untouched = qset.items[i].items[j].untouched
+				# remove creator-specific properties; save problems for validation phase
 				delete qset.items[i].items[j].untouched
 				delete qset.items[i].items[j].complete
-				delete qset.items[i].items[j].problems
 
-				if not qset.items[i].items[j].questions[0].text
+				# remove empty questions; no name, no answers, or never touched
+				if untouched or qset.items[i].items[j].answers.length == 0 and not qset.items[i].items[j].questions[0].text
 					qset.items[i].items.splice(j,1)
 					j--
 				j++
 			i++
 
 		qset
+
+	validateQuestions = (qset) ->
+		compiledMessage = ''
+
+		i = 0
+		while i < qset.items.length
+			j = 0
+			category = qset.items[i]
+			while j < category.items.length
+				question = category.items[j]
+				console.log question
+				if question.problems.length > 0
+					for problem in question.problems
+						compiledMessage += "\nQuestion "+(j+1)+" in category "+category.name+": "+problem
+				delete qset.items[i].items[j].problems
+				j++
+			i++
+		if compiledMessage then return compiledMessage
+		return false
+
+	$scope.onSaveComplete = (title, widget, qset, version) -> true
 
 	Materia.CreatorCore.start $scope
 ]

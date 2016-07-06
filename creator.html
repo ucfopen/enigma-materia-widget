@@ -63,12 +63,21 @@
 			<div class="categories">
 				<div class="category" ng-repeat="category in qset.items">
 					<div class="label" style="opacity:{{ categoryOpacity(category,$index) }}">
+						<button class="shift-up"
+							ng-show="!category.isEditing && !category.untouched && category.index > 0"
+							ng-click="categoryReorder($index, false)"></button>
+						<button class="shift-down"
+							ng-show="!category.isEditing && !category.untouched && category.index < qset.items.length && !qset.items[category.index+1].untouched"
+							ng-click="categoryReorder($index, true)"></button>
+						<button class="delete"
+							ng-show="!category.isEditing && !category.untouched"
+							ng-click="deleteCategory(category)"></button>
 						<textarea ng-model="category.name"
 							id="category_{{$index}}"
 							ng-disabled="!categoryEnabled(category,$index)"
 							ng-focus="editCategory(category)"
 							ng-blur="stopCategory(category)"
-							ng-keydown="updateCategory()"></textarea>
+							ng-enter="blurCategory(category)"></textarea>
 					</div>
 					<button ng-show="categoryShowAdd(category,$index)" class="add"></button>
 					<div ng-show="categoryShowAdd(category,$index)"
@@ -78,7 +87,7 @@
 					</div>
 					<div class="questionholder"
 						ng-repeat="question in category.items"
-						ng-click="editQuestion(category,question,{{$index}})">
+						ng-click="editQuestion(category,question,$index)">
 						<div class="question"
 							ng-class="{ show: !question.untouched, incomplete: !question.complete }"
 							data-category="{{category.index}}"
@@ -95,13 +104,13 @@
 				</div>
 				<div id="problems_tooltip"
 					ng-class="{ show: problemQuestion }"
-					ng-style="{ top: ((problemCategory.index+1) * 122) + 'px' }"
+					ng-style="{ top: ((problemCategory.index+1) * 120) + 'px' }"
 					class="q{{problemQuestion.index+1}}">
 					<p>Question invalid:</p>
 					<span ng-repeat="problem in problemQuestion.problems">{{problem}}</span>
 				</div>
 				<div id="question_editor"
-					ng-style="{ top: ((curCategory.index+1) * 122) + 'px' }"
+					ng-style="{ top: ((curCategory.index+1) * 120) + 'px' }"
 					class="q{{curQuestion.index+1}}"
 					ng-class="{ show: curQuestion }">
 					<div class="title">Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
@@ -156,7 +165,31 @@
 
 					<div class="dialog-controls">
 						<button class="add-question action" ng-click="addAnswer()">+ Add an Answer</button>
-						<button class="cancel" ng-click="deleteQuestion(curQuestion.index)">Delete</button>
+						<button class="open-submenu"
+							ng-click="subMenu = !subMenu"
+							ng-show="curQuestion.index > 0 || curQuestion.index < curCategory.items.length && !curCategory.items[curQuestion.index+1].untouched">
+						</button>
+						<div class="reorder-controls"
+							ng-show="subMenu"
+							ng-class="{ show: subMenu }">
+							<p>
+								Change this question's order in this category.
+								<br/>
+								Swap with:
+							</p>
+							<button class="shift-left"
+								ng-show="curQuestion.index > 0"
+								ng-click="questionReorder(false)">
+								Previous
+							</button>
+							<button class="shift-right"
+								ng-show="curQuestion.index < curCategory.items.length && !curCategory.items[curQuestion.index+1].untouched"
+								ng-click="questionReorder(true)">
+								Next
+							</button>
+						</div>
+						<button class="reset" ng-click="resetQuestion(curQuestion.index)">Reset</button>
+						<button class="remove" ng-click="deleteQuestion(curQuestion.index)">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>
 				</div>
@@ -206,7 +239,7 @@
 
 		<div id="incomplete_alert"
 			ng-show="incompleteMessage"
-			ng-class="{ fade: incompleteMessage }"
+			ng-class="{ fade: incompleteMessage, warn: warningMessage }"
 			ng-click="killAlert()">
 			<span ng-repeat="messagePart in incompleteMessage">{{ messagePart }}</span>
 		</div>
