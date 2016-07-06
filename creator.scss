@@ -221,21 +221,6 @@ button {
 		right: 0;
 		top: 0;
 	}
-
-	.hover {
-		text-align: center;
-		color: #333;
-		width: 68px;
-		height: 64px;
-		font-size: 14px;
-		word-break: break-all;
-		padding: 4px;
-		display: none;
-		overflow: hidden;
-		margin-top: 2px;
-		clear: both;
-	}
-
 	.number {
 		text-align: center;
 		color: #333;
@@ -263,20 +248,11 @@ button {
 			border-color: #000;
 
 			.number {
-				color: #000;
+				color: #fff;
 			}
 
 			&:hover {
 				background-color: #ad363c;
-			}
-		}
-
-		&:hover:not(.incomplete) {
-			.hover {
-				display: inline-block;
-			}
-			.number {
-				display: none;
 			}
 		}
 	}
@@ -642,8 +618,8 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		.delete {
-			left: -17px;
-			top: -17px;
+			left: -15px;
+			top: -15px;
 			background-color: #fff;
 			border-radius: 13px;
 
@@ -1064,6 +1040,7 @@ input[type=checkbox]:checked + label.checktoggle {
 	padding: 10px;
 	border-radius: 5px;
 	opacity: 1;
+	z-index: 9000;
 
 	&.warn {
 		background: #96a422;
@@ -1071,7 +1048,7 @@ input[type=checkbox]:checked + label.checktoggle {
 
 	&.fade {
 		opacity: 0;
-		animation: fade 5s linear;
+		animation: fade 10s linear;
 	}
 
 	span {
@@ -1083,21 +1060,32 @@ input[type=checkbox]:checked + label.checktoggle {
 	}
 }
 
-#problems_tooltip {
+#question_tooltip {
 	position: absolute;
-	background: #ad363c;
 	border-radius: 5px;
+	background: #d1d7e2;
 	width: 170px;
 	padding: 10px 0;
 	z-index: -1;
 	opacity: 0;
 	text-align: center;
+	color: #333;
 
 	left: 50px;
 
 	transition: opacity 0.25s ease;
 
+	&.problems {
+		color: #fff;
+		background: #ad363c;
+
+		&:before {
+			border-bottom-color: #ad363c;
+		}
+	}
+
 	p {
+		padding: 0 2px;
 		margin-bottom: 10px;
 	}
 
@@ -1105,6 +1093,12 @@ input[type=checkbox]:checked + label.checktoggle {
 		text-align: left;
 		display: block;
 		margin: 0 10px;
+	}
+
+	.correct:before {
+		color: #70be34;
+		content: "(Correct)";
+		font-size: 10px;
 	}
 
 	&.show {
@@ -1117,7 +1111,7 @@ input[type=checkbox]:checked + label.checktoggle {
 		left: 59px; /* (parent width / 2) - this border width */
 		border: solid transparent;
 		border-color: rgba(255, 255, 255, 0);
-		border-bottom-color: #ad363c;
+		border-bottom-color: #d1d7e2;
 		border-width: 26px;
 		content: " ";
 		position: absolute;

@@ -1,7 +1,5 @@
 #TODO:
 
-# Toss the center-screen alert that pops up after a question is done editing but has mistakes
-
 EnigmaCreator = angular.module 'enigmaCreator', []
 
 EnigmaCreator.directive 'ngEnter', ->
@@ -39,15 +37,18 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 	# toggle for question editor sub-menu
 	$scope.subMenu = false
 
-	# keep track of any questions that the mouse is hovering over if they have problems
-	$scope.problemCategory = false
-	$scope.problemQuestion = false
+	# keep track of any complete questions that the mouse is hovering over
+	$scope.hoverCategory = false
+	$scope.hoverQuestion = false
 
 	# keep track of which initial instructions need to be displayed
 	$scope.step = 0
 
 	# controls whether the first-time tutorial appears - set true when making a new widget
 	$scope.showIntroDialog = false
+
+	# used to store and cancel any on-screen alerts as necessary
+	alertTimer = null
 
 	# when a question is done editing, use this to display a message if it is not complete
 	$scope.incompleteMessage = false
@@ -172,6 +173,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# editing a category
 	$scope.editCategory = (category) ->
+		# make sure the actual input area is focused, in case we didn't click the label to get here
+		document.getElementById('category_'+category.index).focus()
 		category.isEditing = true
 		$scope.curQuestion = false
 
@@ -193,6 +196,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			category.isEditing = false
 			category.untouched = false
 			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
+		else
+		category.isEditing = false
 
 	$scope.deleteCategory = (category) ->
 		if confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
@@ -226,6 +231,11 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		category.name? and not category.isEditing and question.untouched and (index == 0 or !category.items[index-1].untouched)
 
 	$scope.editQuestion = (category, question, index) ->
+		# reset anything that may still be around from a prior completion alert
+		$scope.incompleteMessage = false
+		$scope.warningMessage    = false
+		$timeout.cancel alertTimer
+
 		# make sure we can edit this question
 		# the category has been named, this is the first question in the category, this or the previous question has been edited already
 		if category.name and not category.isEditing and index == 0 or !category.items[index].untouched or !category.items[index-1].untouched
@@ -321,10 +331,11 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		if incompleteMessage.length > 0
 			$scope.incompleteMessage = incompleteMessage
 			$scope.startFade = true
-			$timeout ->
+
+			alertTimer = $timeout ->
 				$scope.incompleteMessage = false
 				$scope.warningMessage    = false
-			, 5000
+			, 10000
 
 		# store any problems for this question and flag is as edited
 		$scope.curQuestion.problems = problems
@@ -337,15 +348,15 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		$scope.incompleteMessage = false
 
 	# draw a tooltip near a question when the mouse is over it if that question is invalid
-	$scope.markProblems = (category, question) ->
-		return unless not question.untouched and not question.complete
-		$scope.problemQuestion = question
-		$scope.problemCategory = category
+	$scope.markQuestion = (category, question) ->
+		return unless not question.untouched
+		$scope.hoverQuestion = question
+		$scope.hoverCategory = category
 
 	# remove the tooltip indicating problems with a question
-	$scope.unmarkProblems = ->
-		$scope.problemQuestion = false
-		$scope.problemCategory = false
+	$scope.unmarkQuestion = ->
+		$scope.hoverQuestion = false
+		$scope.hoverCategory = false
 
 	# reset a question; doesn't impact question order
 	$scope.resetQuestion = (i) ->
@@ -503,7 +514,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			category = qset.items[i]
 			while j < category.items.length
 				question = category.items[j]
-				console.log question
 				if question.problems.length > 0
 					for problem in question.problems
 						compiledMessage += "\nQuestion "+(j+1)+" in category "+category.name+": "+problem

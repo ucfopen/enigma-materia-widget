@@ -92,22 +92,29 @@
 							ng-class="{ show: !question.untouched, incomplete: !question.complete }"
 							data-category="{{category.index}}"
 							data-question="{{$index}}"
-							ng-mouseover="markProblems(category, question)"
-							ng-mouseout="unmarkProblems()">
-							<div class="hover">
-								<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
-							</div>
+							ng-mouseover="markQuestion(category, question)"
+							ng-mouseout="unmarkQuestion()">
 							<div class="number">{{ $index+1 }}</div>
 						</div>
 						<button ng-show="questionShowAdd(category, question, $index)" class="add"></button>
 					</div>
 				</div>
-				<div id="problems_tooltip"
-					ng-class="{ show: problemQuestion }"
-					ng-style="{ top: ((problemCategory.index+1) * 120) + 'px' }"
-					class="q{{problemQuestion.index+1}}">
-					<p>Question invalid:</p>
-					<span ng-repeat="problem in problemQuestion.problems">{{problem}}</span>
+				<div id="question_tooltip"
+					ng-class="{ show: hoverQuestion, problems: !hoverQuestion.complete }"
+					ng-style="{ top: ((hoverCategory.index+1) * 120) + 'px' }"
+					class="q{{hoverQuestion.index+1}}">
+					<p ng-show="!hoverQuestion.complete">Question invalid:</p>
+					<p ng-show="hoverQuestion.complete"><strong>{{ hoverQuestion.questions[0].text }}</strong></p>
+					<p ng-show="hoverQuestion.complete">Answers:</p>
+					<span ng-show="!hoverQuestion.complete"
+						ng-repeat="problem in hoverQuestion.problems">
+						{{problem}}
+					</span>
+					<span ng-show="hoverQuestion.complete"
+						ng-repeat="answer in hoverQuestion.answers"
+						ng-class="{ correct: answer.options.correct }">
+						{{answer.text}}
+					</span>
 				</div>
 				<div id="question_editor"
 					ng-style="{ top: ((curCategory.index+1) * 120) + 'px' }"
