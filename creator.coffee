@@ -186,6 +186,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		problems = []
 
 		for answer in question.answers
+			# make sure we interpret the given answer as a string, then remove extraneous whitespace
+			answer.text += ''
 			trimmedAnswer = answer.text.trim()
 			if trimmedAnswer == '' then blankAnswer = true
 			# keep track of each possible answer
