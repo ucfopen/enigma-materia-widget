@@ -54,7 +54,7 @@
 						<div class="importable"
 							ng-repeat="question in imported"
 							data-index="{{$index}}">
-							<strong>{{ question.questions[0].text }}</strong> {{ question.answers[0].text }}
+							<strong>{{ question.questions[0].text }}</strong>
 							<a href="javascript:;" ng-click="imported.splice($index,1)">x</a>
 						</div>
 					</div>
@@ -101,11 +101,11 @@
 				</div>
 				<div id="question_tooltip"
 					ng-class="{ show: hoverQuestion, problems: !hoverQuestion.complete }"
-					ng-style="{ top: ((hoverCategory.index+1) * 120) + 'px' }"
+					ng-style="{ top: ((hoverCategory.index+1) * 120) + 10 + 'px' }"
 					class="q{{hoverQuestion.index+1}}">
 					<p ng-show="!hoverQuestion.complete">Question invalid:</p>
 					<p ng-show="hoverQuestion.complete"><strong>{{ hoverQuestion.questions[0].text }}</strong></p>
-					<p ng-show="hoverQuestion.complete">Answers:</p>
+					<hr ng-show="hoverQuestion.complete"/>
 					<span ng-show="!hoverQuestion.complete"
 						ng-repeat="problem in hoverQuestion.problems">
 						{{problem}}
@@ -195,7 +195,6 @@
 								Next
 							</button>
 						</div>
-						<button class="reset" ng-click="resetQuestion(curQuestion.index)">Reset</button>
 						<button class="remove" ng-click="deleteQuestion(curQuestion.index)">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>

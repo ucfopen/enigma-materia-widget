@@ -74,21 +74,30 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	$scope.setTitle = ->
 		$scope.title = $scope.introTitle or $scope.title
-		$scope.step = 1 # the widget has a title - bring up the instructions for adding the first category
-
 		$scope.hideCover()
 
 	# responds to a number of stimuli to hide the intro screen
 	$scope.hideCover = ->
+		$scope.step = 1 # the widget has a title - bring up the instructions for adding the first category
 		$scope.showIntroDialog = $scope.showTitleDialog = false
 
 	$scope.initExistingWidget = (title, widget, qset, version, baseUrl) ->
 		if qset.data
 			qset = qset.data
 
+		# loop through each question in each category and validate all incoming questions
+		i = 0
+		while i < qset.items.length
+			j = 0
+			while j < qset.items[i].items.length
+				qset.items[i].items[j] = $scope.checkQuestion qset.items[i].items[j]
+				j++
+			i++
+
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
+			$scope.buildScaffold()
 
 	# Private helpers
 	_initDragDrop = ->
@@ -112,33 +121,110 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			drop: (event, ui) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
 
-				category = +this.getAttribute('data-category')
-				question = +this.getAttribute('data-question')
-				questionobj = $scope.qset.items[category].items[question]
+				# get the category and question indices of the question we're dropping into; cast them as numbers
+				category_index = +this.getAttribute('data-category')
+				question_index = +this.getAttribute('data-question')
+				questionobj = $scope.qset.items[category_index].items[question_index]
 
-				if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
+				if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
 					return
 
-				if questionobj.questions[0].text == ''
+				# if the dragged question was dropped onto an empty slot
+				if questionobj.untouched
 					$scope.$apply ->
-						$scope.qset.items[category].items[question] = $scope.imported[$scope.curDragging]
+						# add Enigma-specific properties to this question before adding it
+						importing = $scope.imported[$scope.curDragging]
+						importing.problems = []
+						importing.untouched = false
+						importing.complete = true
+						importing.index = question_index
+
+						# make sure imported answers have all necessary options set
+						importing.answers.map (answer) ->
+							answer.options.custom = answer.value isnt 100 and answer.value isnt 0
+							answer.options.correct = answer.value is 100
+							answer
+
+						# finally validate the imported question
+						importing = $scope.checkQuestion importing
+
+						$scope.qset.items[category_index].items[question_index] = importing
+						$scope.step = 4 if $scope.step is 3 # the first question has been added - no further instructions
+
 						$scope.imported.splice($scope.curDragging,1)
 					_initDragDrop()
 
 			over: (event, ui) ->
-				category = +this.getAttribute('data-category')
-				question = +this.getAttribute('data-question')
+				# get the category and question indices of the question we're hovering over; cast them as numbers
+				category_index = +this.getAttribute('data-category')
+				question_index = +this.getAttribute('data-question')
 
-				questionobj = $scope.qset.items[category].items[question]
+				questionobj = $scope.qset.items[category_index].items[question_index]
 
 				if questionobj.questions[0].text != ''
 					$(ui.draggable).addClass('red').removeClass('green')
 				else
-					return if not $scope.questionShowAdd($scope.qset.items[category], questionobj, question)
+					return if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
 					$(ui.draggable).addClass('green').removeClass('red')
 
 			out: (event, ui) ->
 				$(ui.draggable).removeClass('green').removeClass('red')
+
+	# prepare some checks to make sure the given question is 'complete':
+	$scope.checkQuestion = (question) ->
+		# has question text
+		hasQuestion = question.questions[0].text != ''
+		# has at least one answer worth 100%
+		fullCredit = false
+		# doesn't have any repeat answers
+		repeatChecks = []
+		hasRepeats = false
+		# or blank answers
+		blankAnswer = false
+
+		# store whatever problems remain in the question for later
+		problems = []
+
+		for answer in question.answers
+			trimmedAnswer = answer.text.trim()
+			if trimmedAnswer == '' then blankAnswer = true
+			# keep track of each possible answer
+			if not repeatChecks[trimmedAnswer]
+				repeatChecks[trimmedAnswer] = true # store this word so we can look for it later
+			else
+				hasRepeats = true
+
+			answer.value = parseInt(answer.value,10)
+
+			if answer.options.custom
+				if answer.value == 100 or answer.value == 0
+					answer.options.custom = false
+					answer.options.correct = if answer.value == 100 then true else false
+			else
+				answer.value = if answer.options.correct then 100 else 0
+
+			if answer.value == 100 then fullCredit = true
+
+		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
+		isComplete = hasQuestion and fullCredit and not hasRepeats and not blankAnswer
+
+		# if the question is 'incomplete', keep track of any reasons why
+		if not isComplete
+			if not hasQuestion
+				problems.push _QUESTION_PROBLEM
+			if not fullCredit
+				problems.push _CREDIT_PROBLEM
+			if hasRepeats
+				problems.push _REPEAT_PROBLEM
+			if blankAnswer
+				problems.push _ANSWER_PROBLEM
+
+		# store any problems for this question and flag is as edited
+		question.complete = isComplete
+		question.problems = problems
+		question.untouched = false
+
+		return question
 
 	$scope.onQuestionImportComplete = (questions) ->
 		$scope.$apply ->
@@ -255,66 +341,17 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# Done button clicked, assign point values to valid answers and indicate question has been edited
 	$scope.editComplete = ->
-		# prepare some checks to make sure the question is 'complete':
-		# has question text
-		hasQuestion = $scope.curQuestion.questions[0].text != ''
-		# has at least one answer worth 100%
-		fullCredit = false
-		# doesn't have any repeat answers
-		repeatChecks = []
-		hasRepeats = false
-		# or blank answers
-		blankAnswer = false
+		# run the current question through validation
+		$scope.checkQuestion $scope.curQuestion
 
-		# store whatever problems remain in the question for later
-		problems = []
-
-		# compile problems in an array for Angular to display
+		# compile any problems in an array for Angular to display
 		incompleteMessage = []
 
-		for answer in $scope.curQuestion.answers
-			trimmedAnswer = answer.text.trim()
-			if trimmedAnswer == '' then blankAnswer = true
-			# keep track of each possible answer
-			if not repeatChecks[trimmedAnswer]
-				repeatChecks[trimmedAnswer] = true # store this word so we can look for it later
-			else
-				hasRepeats = true
-
-			answer.value = parseInt(answer.value,10)
-
-			if answer.options.custom
-				if answer.value == 100 or answer.value == 0
-					answer.options.custom = false
-					answer.options.correct = if answer.value == 100 then true else false
-			else
-				answer.value = if answer.options.correct then 100 else 0
-
-			if answer.value == 100 then fullCredit = true
-
-		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
-		isComplete = hasQuestion and fullCredit and not hasRepeats and not blankAnswer
-
-		# if the question is 'incomplete', alert reasons why and store them in the question for later
-		if not isComplete
-			incompleteMessage.push "Warning: this question is incomplete!"
-
-			if not hasQuestion
-				incompleteMessage.push _QUESTION_PROBLEM
-				problems.push _QUESTION_PROBLEM
-			if not fullCredit
-				incompleteMessage.push _CREDIT_PROBLEM
-				problems.push _CREDIT_PROBLEM
-			if hasRepeats
-				incompleteMessage.push _REPEAT_PROBLEM
-				problems.push _REPEAT_PROBLEM
-			if blankAnswer
-				incompleteMessage.push _ANSWER_PROBLEM
-				problems.push _ANSWER_PROBLEM
+		# if the question is 'incomplete', alert reasons why
+		if not $scope.curQuestion.complete
+			incompleteMessage = $scope.curQuestion.problems
+			incompleteMessage.unshift "Warning: this question is incomplete!"
 		else
-			$scope.curQuestion.complete = true
-			$scope.curQuestion.problems = []
-
 			# make additional checks here for any potential warnings
 
 			# if there's only one answer for this question
@@ -337,9 +374,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 				$scope.warningMessage    = false
 			, 10000
 
-		# store any problems for this question and flag is as edited
-		$scope.curQuestion.problems = problems
-		$scope.curQuestion.untouched = false
 		$scope.subMenu = false
 		$scope.curQuestion = false
 
@@ -357,11 +391,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 	$scope.unmarkQuestion = ->
 		$scope.hoverQuestion = false
 		$scope.hoverCategory = false
-
-	# reset a question; doesn't impact question order
-	$scope.resetQuestion = (i) ->
-		$scope.qset.items[$scope.curCategory.index].items[$scope.curQuestion.index] = $scope.newQuestion(i)
-		$scope.curQuestion = false
 
 	# delete a question; removes question from the order completely
 	$scope.deleteQuestion = (i) ->
@@ -483,14 +512,14 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		# for each category
 		while i < qset.items.length
 			# remove empty categories; no name, no questions, or never touched
-			if qset.items[i].untouched or qset.items[i].items.length == 0 and not qset.items[i].name
+			if qset.items[i] and qset.items[i].untouched or qset.items[i]?.items.length == 0 and not qset.items[i].name
 				qset.items.splice(i,1)
 				i--
 				continue
 
 			# for each question
 			j = 0
-			while j < qset.items[i].items.length
+			while j < qset.items[i]?.items.length
 				untouched = qset.items[i].items[j].untouched
 				# remove creator-specific properties; save problems for validation phase
 				delete qset.items[i].items[j].untouched
@@ -502,11 +531,13 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 					j--
 				j++
 			i++
-
 		qset
 
 	validateQuestions = (qset) ->
 		compiledMessage = ''
+
+		# simplest check - are there any categories?
+		return 'No categories found.' unless qset.items.length
 
 		i = 0
 		while i < qset.items.length

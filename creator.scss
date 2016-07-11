@@ -1018,14 +1018,6 @@ input[type=checkbox]:checked + label.checktoggle {
 				font-weight:normal;
 				text-decoration: underline;
 			}
-
-			&.reset {
-				position: absolute;
-				right:120px;
-				background:none;
-				font-weight:normal;
-				text-decoration: underline;
-			}
 		}
 	}
 }
@@ -1095,10 +1087,15 @@ input[type=checkbox]:checked + label.checktoggle {
 		margin: 0 10px;
 	}
 
-	.correct:before {
+	hr {
+		margin: 0 10px;
+		border-bottom: none;
+		opacity: .5;
+	}
+
+	.correct {
 		color: #70be34;
-		content: "(Correct)";
-		font-size: 10px;
+		weight: bold;
 	}
 
 	&.show {
