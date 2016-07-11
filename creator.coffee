@@ -22,10 +22,11 @@ EnigmaCreator.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 
 EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	# private constants to refer to any problems a question might have
-	_QUESTION_PROBLEM = 'Question undefined.'
-	_CREDIT_PROBLEM   = 'Inadequate credit.'
-	_REPEAT_PROBLEM   = 'Duplicate answers.'
-	_ANSWER_PROBLEM   = 'Blank answer(s).'
+	_QUESTION_PROBLEM     = 'Question undefined.'
+	_CREDIT_PROBLEM       = 'Inadequate credit.'
+	_REPEAT_PROBLEM       = 'Duplicate answers.'
+	_BLANK_ANSWER_PROBLEM = 'Blank answer(s).'
+	_NO_ANSWER_PROBLEM    = 'No answers.'
 
 	$scope.title = ''
 	$scope.qset = {}
@@ -138,9 +139,11 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 						importing.untouched = false
 						importing.complete = true
 						importing.index = question_index
+						# make sure the question at least has the ability to store answers if it somehow wasn't saved with any
+						importing.answers = [] unless importing.answers
 
 						# make sure imported answers have all necessary options set
-						importing.answers.map (answer) ->
+						importing.answers?.map (answer) ->
 							answer.options.custom = answer.value isnt 100 and answer.value isnt 0
 							answer.options.correct = answer.value is 100
 							answer
@@ -181,6 +184,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		hasRepeats = false
 		# or blank answers
 		blankAnswer = false
+		# and has answers at all
+		noAnswers = question.answers.length == 0
 
 		# store whatever problems remain in the question for later
 		problems = []
@@ -208,7 +213,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			if answer.value == 100 then fullCredit = true
 
 		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
-		isComplete = hasQuestion and fullCredit and not hasRepeats and not blankAnswer
+		isComplete = hasQuestion and not noAnswers and fullCredit and not hasRepeats and not blankAnswer
 
 		# if the question is 'incomplete', keep track of any reasons why
 		if not isComplete
@@ -219,7 +224,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			if hasRepeats
 				problems.push _REPEAT_PROBLEM
 			if blankAnswer
-				problems.push _ANSWER_PROBLEM
+				problems.push _BLANK_ANSWER_PROBLEM
+			if noAnswers
+				problems.push _NO_ANSWER_PROBLEM
 
 		# store any problems for this question and flag is as edited
 		question.complete = isComplete
