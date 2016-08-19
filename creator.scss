@@ -1050,6 +1050,12 @@ input[type=checkbox]:checked + label.checktoggle {
 			margin-bottom: 10px;
 		}
 	}
+
+	p {
+		text-align: center;
+		margin: 5px auto 0;
+		font-size: 12px;
+	}
 }
 
 #question_tooltip {
