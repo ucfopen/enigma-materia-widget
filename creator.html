@@ -248,6 +248,7 @@
 			ng-class="{ fade: incompleteMessage, warn: warningMessage }"
 			ng-click="killAlert()">
 			<span ng-repeat="messagePart in incompleteMessage">{{ messagePart }}</span>
+			<p>(Click this message to dismiss it)</p>
 		</div>
 	</body>
 </html>
