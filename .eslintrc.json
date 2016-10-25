@@ -1,0 +1,36 @@
+{
+	"extends": "eslint:recommended",
+	"globals": {
+		"console": false,
+		"document": false,
+		"event": false,
+		"$": false,
+		"_": false,
+		"Namespace": true,
+		"Materia": true
+	},
+	"rules": {
+		"no-console": "warn",
+		"no-unused-vars": "warn",
+		"no-extra-parens": "error",
+		"curly": "error",
+		"no-empty-function": "error",
+		"no-magic-numbers": ["warn",
+			{
+				"ignoreArrayIndexes": true
+			}
+		],
+		"no-multi-spaces": ["error",
+			{
+				"exceptions":
+				{
+					"ImportDeclaration":  true,
+					"Property":           true,
+					"VariableDeclarator": true
+				}
+			}
+		],
+		"no-use-before-define": "error",
+		"brace-style": "error"
+	}
+}
