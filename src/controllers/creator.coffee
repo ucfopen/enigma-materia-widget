@@ -1,26 +1,6 @@
-#TODO:
+Enigma = angular.module 'enigma'
 
-EnigmaCreator = angular.module 'enigmaCreator', []
-
-EnigmaCreator.directive 'ngEnter', ->
-	return (scope, element, attrs) ->
-		element.bind "keydown keypress", (event) ->
-			if event.which == 13
-				scope.$apply ->
-					scope.$eval(attrs.ngEnter)
-				event.preventDefault()
-
-EnigmaCreator.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
-	link: (scope, element, attrs) ->
-		model = $parse(attrs.focusMe)
-		scope.$watch model, (value) ->
-			if value
-				$timeout ->
-					element[0].focus()
-			value
-]
-
-EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
+Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	# private constants to refer to any problems a question might have
 	_QUESTION_PROBLEM     = 'Question undefined.'
 	_CREDIT_PROBLEM       = 'Inadequate credit.'
@@ -79,7 +59,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# responds to a number of stimuli to hide the intro screen
 	$scope.hideCover = ->
-		$scope.step = 1 # the widget has a title - bring up the instructions for adding the first category
+		$scope.step = 1 if $scope.step is 0 # the widget has a title - bring up the instructions for adding the first category
 		$scope.showIntroDialog = $scope.showTitleDialog = false
 
 	$scope.initExistingWidget = (title, widget, qset, version, baseUrl) ->
@@ -91,90 +71,19 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		while i < qset.items.length
 			j = 0
 			while j < qset.items[i].items.length
-				qset.items[i].items[j] = $scope.checkQuestion qset.items[i].items[j]
+				qset.items[i].items[j] = _checkQuestion qset.items[i].items[j]
 				j++
 			i++
+
+		$scope.step = 4 if i > 0 # if this widget had some questions, assume the instructions are unnecessary
 
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
 			$scope.buildScaffold()
 
-	# Private helpers
-	_initDragDrop = ->
-		$('.importable').draggable
-			start: (event, ui) ->
-				$scope.shownImportTutorial = true
-				$scope.curDragging = +this.getAttribute('data-index')
-				this.style.position = 'absolute'
-				this.style.zIndex = ++zIndex
-				this.style.marginLeft = $(this).position().left + 'px'
-				this.style.marginTop = $(this).position().top + 'px'
-				this.className += ' dragging'
-			stop: (event, ui) ->
-				this.style.position = 'relative'
-				this.style.marginTop =
-				this.style.marginLeft =
-				this.style.top =
-				this.style.left = ''
-				this.className = 'importable'
-		$('.question').droppable
-			drop: (event, ui) ->
-				$(ui.draggable).removeClass('green').removeClass('red')
-
-				# get the category and question indices of the question we're dropping into; cast them as numbers
-				category_index = +this.getAttribute('data-category')
-				question_index = +this.getAttribute('data-question')
-				questionobj = $scope.qset.items[category_index].items[question_index]
-
-				if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
-					return
-
-				# if the dragged question was dropped onto an empty slot
-				if questionobj.untouched
-					$scope.$apply ->
-						# add Enigma-specific properties to this question before adding it
-						importing = $scope.imported[$scope.curDragging]
-						importing.problems = []
-						importing.untouched = false
-						importing.complete = true
-						importing.index = question_index
-						# make sure the question at least has the ability to store answers if it somehow wasn't saved with any
-						importing.answers = [] unless importing.answers
-
-						# make sure imported answers have all necessary options set
-						importing.answers?.map (answer) ->
-							answer.options.custom = answer.value isnt 100 and answer.value isnt 0
-							answer.options.correct = answer.value is 100
-							answer
-
-						# finally validate the imported question
-						importing = $scope.checkQuestion importing
-
-						$scope.qset.items[category_index].items[question_index] = importing
-						$scope.step = 4 if $scope.step is 3 # the first question has been added - no further instructions
-
-						$scope.imported.splice($scope.curDragging,1)
-					_initDragDrop()
-
-			over: (event, ui) ->
-				# get the category and question indices of the question we're hovering over; cast them as numbers
-				category_index = +this.getAttribute('data-category')
-				question_index = +this.getAttribute('data-question')
-
-				questionobj = $scope.qset.items[category_index].items[question_index]
-
-				if questionobj.questions[0].text != ''
-					$(ui.draggable).addClass('red').removeClass('green')
-				else
-					return if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
-					$(ui.draggable).addClass('green').removeClass('red')
-
-			out: (event, ui) ->
-				$(ui.draggable).removeClass('green').removeClass('red')
-
 	# prepare some checks to make sure the given question is 'complete':
-	$scope.checkQuestion = (question) ->
+	_checkQuestion = (question) ->
 		# has question text
 		hasQuestion = question.questions[0].text != ''
 		# has at least one answer worth 100%
@@ -201,16 +110,20 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			else
 				hasRepeats = true
 
-			answer.value = parseInt(answer.value,10)
-
-			if answer.options.custom
-				if answer.value == 100 or answer.value == 0
-					answer.options.custom = false
-					answer.options.correct = if answer.value == 100 then true else false
+			if answer.options.correct
+				answer.value = 100
 			else
-				answer.value = if answer.options.correct then 100 else 0
+				answer.value = parseInt(answer.value,10)
 
-			if answer.value == 100 then fullCredit = true
+			# make sure options are set correctly based on value
+			if answer.value is 100 or answer.value is 0
+				answer.options.custom = false
+				answer.options.correct = answer.value is 100
+			else
+				answer.options.custom = true
+				answer.options.correct = false
+
+			fullCredit = true if answer.value is 100
 
 		# this question is complete if it has question text, one answer worth 100%, and no repeated answers
 		isComplete = hasQuestion and not noAnswers and fullCredit and not hasRepeats and not blankAnswer
@@ -228,19 +141,60 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			if noAnswers
 				problems.push _NO_ANSWER_PROBLEM
 
-		# store any problems for this question and flag is as edited
+		# store any problems for this question and flag it as edited
 		question.complete = isComplete
 		question.problems = problems
 		question.untouched = false
 
-		return question
+		question
+
+	_showProblems = (question) ->
+		# compile any problems in an array for Angular to display
+		incompleteMessage = []
+
+		# if the question is 'incomplete', alert reasons why
+		if not question.complete
+			incompleteMessage = question.problems
+			incompleteMessage.unshift "Warning: this question is incomplete!"
+		else
+			# make additional checks here for any potential warnings
+
+			# if there's only one answer for this question
+			if question.answers.length < 2
+				incompleteMessage.push 'Only one answer found.'
+
+			# specify that these are warnings, not show-stoppers
+			if incompleteMessage.length > 0
+				$scope.warningMessage = true
+				incompleteMessage.unshift 'Attention: this question may be incomplete!'
+
+
+		# bring up a temporary alert describing any problems
+		if incompleteMessage.length > 0
+			$scope.incompleteMessage = incompleteMessage
+			$scope.startFade = true
+
+			alertTimer = $timeout ->
+				$scope.incompleteMessage = false
+				$scope.warningMessage    = false
+			, 10000
 
 	$scope.onQuestionImportComplete = (questions) ->
-		$scope.$apply ->
-			$scope.imported = questions.concat $scope.imported
-		_initDragDrop()
+		$scope.$apply -> $scope.imported = questions.concat $scope.imported
 
-	$scope.onMediaImportComplete = (media) -> null
+	# REPLACE THIS SHIT
+	# https://github.com/marceljuenemann/angular-drag-and-drop-lists
+	$scope.importDropped = (category, item) ->
+		#find the last empty question in this category
+		lastIndex = category.items.length-1
+		for q in category.items
+			if q.untouched
+				item.index = q.index
+				category.items[q.index] = _checkQuestion item
+				_showProblems item
+				return true
+		# if there aren't any empty questions in this category, don't take this question
+		false
 
 	# get the total number of questions in the widget so Angular can put it on the page
 	$scope.numQuestions = ->
@@ -351,37 +305,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 	# Done button clicked, assign point values to valid answers and indicate question has been edited
 	$scope.editComplete = ->
 		# run the current question through validation
-		$scope.checkQuestion $scope.curQuestion
+		_checkQuestion $scope.curQuestion
 
-		# compile any problems in an array for Angular to display
-		incompleteMessage = []
-
-		# if the question is 'incomplete', alert reasons why
-		if not $scope.curQuestion.complete
-			incompleteMessage = $scope.curQuestion.problems
-			incompleteMessage.unshift "Warning: this question is incomplete!"
-		else
-			# make additional checks here for any potential warnings
-
-			# if there's only one answer for this question
-			if $scope.curQuestion.answers.length < 2
-				incompleteMessage.push 'Only one answer found.'
-
-			# specify that these are warnings, not show-stoppers
-			if incompleteMessage.length > 0
-				$scope.warningMessage = true
-				incompleteMessage.unshift 'Attention: this question may be incomplete!'
-
-
-		# bring up a temporary alert describing any problems
-		if incompleteMessage.length > 0
-			$scope.incompleteMessage = incompleteMessage
-			$scope.startFade = true
-
-			alertTimer = $timeout ->
-				$scope.incompleteMessage = false
-				$scope.warningMessage    = false
-			, 10000
+		_showProblems $scope.curQuestion
 
 		$scope.subMenu = false
 		$scope.curQuestion = false
@@ -405,7 +331,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 	$scope.deleteQuestion = (i) ->
 		# get rid of this question and put a blank one on the end of the category's stack
 		$scope.qset.items[$scope.curCategory.index].items.splice($scope.curQuestion.index, 1)
-		$scope.qset.items[$scope.curCategory.index].items.push $scope.newQuestion()
+		$scope.qset.items[$scope.curCategory.index].items.push _newQuestion()
 
 		# reset all of the questions' index properties to match the change
 		while i < $scope.qset.items[$scope.curCategory.index].items.length
@@ -442,7 +368,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			$scope.curCategory.items[currentIndex-1] = temp
 			$scope.curCategory.items[currentIndex-1].index = currentIndex-1
 
-	$scope.newQuestion = (i=0) ->
+	_newQuestion = (i=0) ->
 		type: 'MC'
 		id: ''
 		questions: [
@@ -458,9 +384,10 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		index: i
 
 	$scope.newCategory = (index, category) ->
-		setTimeout ->
-			$('#category_'+index).focus()
-		,10
+		# focus on the category name input after clicking the 'add' button
+		$timeout ->
+			document.getElementById('category_'+index).focus()
+		, 10
 		category.isEditing = true
 		$scope.step = 2 if $scope.step is 1 # the first category has been clicked - display instructions for giving it a name
 
@@ -478,7 +405,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		for category in $scope.qset.items
 			i = 0
 			while category.items.length < 6
-				category.items.push $scope.newQuestion()
+				category.items.push _newQuestion()
 			for question in category.items
 				question.index = i++
 
