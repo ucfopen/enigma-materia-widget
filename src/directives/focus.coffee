@@ -1,4 +1,4 @@
-Enigma = angular.module 'enigma'
+Enigma = angular.module 'enigmaCreator'
 
 Enigma.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->

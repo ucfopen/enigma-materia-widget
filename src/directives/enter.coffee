@@ -1,4 +1,4 @@
-Enigma = angular.module 'enigma'
+Enigma = angular.module 'enigmaCreator'
 
 Enigma.directive 'ngEnter', ->
 	return (scope, element, attrs) ->
@@ -7,3 +7,4 @@ Enigma.directive 'ngEnter', ->
 				scope.$apply ->
 					scope.$eval(attrs.ngEnter)
 				event.preventDefault()
+				element[0].blur()

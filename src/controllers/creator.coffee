@@ -1,4 +1,4 @@
-Enigma = angular.module 'enigma'
+Enigma = angular.module 'enigmaCreator'
 
 Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	# private constants to refer to any problems a question might have
@@ -222,15 +222,8 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 
 	# editing a category
 	$scope.editCategory = (category) ->
-		# make sure the actual input area is focused, in case we didn't click the label to get here
-		document.getElementById('category_'+category.index).focus()
 		category.isEditing = true
 		$scope.curQuestion = false
-
-	# pressed the enter key while changing a category's name - spoof a blur to try finalizing it
-	$scope.blurCategory = (category) ->
-		$timeout ->
-			document.getElementById('category_'+category.index).blur()
 
 	# done editing a category
 	$scope.stopCategory = (category) ->
@@ -384,10 +377,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		index: i
 
 	$scope.newCategory = (index, category) ->
-		# focus on the category name input after clicking the 'add' button
-		$timeout ->
-			document.getElementById('category_'+index).focus()
-		, 10
 		category.isEditing = true
 		$scope.step = 2 if $scope.step is 1 # the first category has been clicked - display instructions for giving it a name
 

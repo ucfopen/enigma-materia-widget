@@ -20,12 +20,12 @@
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-drag-and-drop-lists/1.4.0/angular-drag-and-drop-lists.min.js"></script>
 
 		<!-- MAIN CREATOR SCRIPT -->
-		<script src="modules/main.js"></script>
+		<script src="modules/creator.js"></script>
 		<script src="directives/enter.js"></script>
 		<script src="directives/focus.js"></script>
 		<script src="controllers/creator.js"></script>
 	</head>
-	<body ng-app="enigma" ng-controller="enigmaCreatorCtrl">
+	<body ng-app="enigmaCreator" ng-controller="enigmaCreatorCtrl">
 		<div id="modal"></div>
 		<div id="header">
 			<div class="logo"></div>
@@ -83,7 +83,8 @@
 							ng-disabled="!categoryEnabled(category,$index)"
 							ng-focus="editCategory(category)"
 							ng-blur="stopCategory(category)"
-							ng-enter="blurCategory(category)"></textarea>
+							ng-enter
+							focus-me="category.isEditing"></textarea>
 					</div>
 					<button ng-show="categoryShowAdd(category,$index)" class="add"></button>
 					<div ng-show="categoryShowAdd(category,$index)"
