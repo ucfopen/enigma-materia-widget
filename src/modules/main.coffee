@@ -1,1 +1,0 @@
-Enigma = angular.module 'enigma', ['dndLists']
