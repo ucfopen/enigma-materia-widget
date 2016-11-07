@@ -2,28 +2,167 @@
 <!-- INJECTS IE CLASSES ONTO HTML TAG -->
 <!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
 <!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html class=''> <!--<![endif]-->
 	<head>
 		<title>Enigma Widget Player</title>
-		<meta charset="utf-8" />
+		<meta charset='utf-8' />
 
 		<!-- STYLESHEETS -->
-		<link rel="stylesheet" type="text/css" href="player.css">
+		<link rel='stylesheet' type='text/css' href='player.css'>
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="materia.enginecore.js"></script>
 		<script src="materia.score.js"></script>
 
 		<!-- YOUR PREREQUISITES -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.2/raphael-min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.min.js"></script>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="player.js"></script>
+		<script src="modules/player.js"></script>
+		<script src="controllers/player.js"></script>
 	</head>
-	<body>
+	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
+		<header>
+			<h1>{{ title }}</h1>
+			<div id='scorebox' class='score' role='status'>
+				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
+				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
+					<circle cx='60' cy='60' r='60' fill='#444444'/>
+					<circle cx='60' cy='60' r='50' fill='none'
+						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
+						stroke='#ac3434' stroke-width='20'
+						style="
+							stroke-dasharray: {{ circumference }};
+							stroke-dashoffset: {{ circumference - ((percentIncorrect/100) * circumference) }};
+							transform: rotate( {{ percentCorrect/100 }}turn )
+						"/>
+					<circle cx='60' cy='60' r='50' fill='none'
+					class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
+						stroke='#2af0b1' stroke-width='20'
+						style="
+							stroke-dasharray: {{ circumference }};
+							stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
+						"/>
+					<circle cx='60' cy='60' r='50' fill='#333333'/>
+				</svg>
 
+				<center>
+					<span class='hidden'>Score:</span>
+					<span class='value' ng-class="{numberExit: changingNumber, numberEnter: !changingNumber}">
+						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
+					</span>
+					<div class='remaining'>remaining</div>
+				</center>
+			</div>
+			<div class='menu off'></div>
+		</header>
+		<section class='gameboard'>
+			<!-- categories -->
+			<section class='category'
+				ng-repeat="category in categories">
+				<div class='title'>
+					{{ category.name }}
+				</div>
+				<!-- questions -->
+				<div ng-repeat="question in category.items"
+					title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
+					role='button'
+					class='question'
+					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
+					ng-click="selectQuestion(category, question)">
+					<span ng-hide="question.answered">{{ $index + 1 }}</span>
+					<span ng-show="question.score === 100">&#x2713;</span>
+					<span ng-show="question.score > 0 && question.score < 100">{{ question.score }}&#x25;</span>
+					<span ng-show="question.score === 0">X</span>
+				</div>
+			</section>
+		</section>
+
+		<section class='question-popup-bg'
+			ng-show="currentQuestion">
+			<div id='t-question-page'
+				class='question-popup'>
+				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
+				<div class='question-text'>
+					{{ currentQuestion.questions[0].text }}
+				</div>
+				<div class='answers'>
+					<ul ng-class="{answered: currentQuestion.answered}">
+						<li ng-repeat='answer in currentQuestion.answers'
+							ng-class="{selected: answer == currentAnswer}"
+							ng-click="selectAnswer(answer)">
+							<span class='mark-holder' ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
+								<span class="correct mark" ng-show="currentQuestion.score == 100">
+									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
+									</svg>
+								</span>
+								<span class='partial mark' ng-show="currentQuestion.score > 0 && currentQuestion.score < 100">
+									{{ currentQuestion.score }}&#x25;
+								</span>
+								<span class="wrong mark" ng-show="currentQuestion.score == 0">
+									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
+										<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+									</svg>
+								</span>
+							</span>
+							<label>
+								<svg class="fancy-button" height="20px" width="20px" pxxmlns="http://www.w3.org/2000/svg" version="1.1">
+									<circle cx="10" cy="10" r="7"
+										stroke="rgb(36, 55, 75)" stroke-width="2"
+										fill="#fff"/>
+									<circle class='button-checked'
+										cx="10" cy="10" r="3"
+										stroke="rgb(36, 55, 75)" stroke-width="2"
+										fill="rgb(36, 55, 75)"
+										ng-class="{selected: answer == currentAnswer}"/>
+								</svg>
+								<input type="radio" value="{{ answer.id }}" name="group1"/>
+								<p>{{ answer.text }}</p>
+							</label>
+						</li>
+					</ul>
+				</div>
+				<div class="menu">
+					<button class="button return"
+						ng-class="{highlight: currentQuestion.answered}"
+						ng-click="cancelQuestion()">
+						Return
+					</button>
+					<button class="button submit"
+						ng-disabled="!currentAnswer || currentQuestion.answered"
+						ng-click="submitAnswer()">
+						Submit Final Answer
+					</button>
+				</div>
+			</div>
+		</section>
+		<section class='notice' ng-show="allAnswered">
+			<center>
+				<div id='scorebox_final' class='score' role='status'>
+					<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
+						<circle cx='60' cy='60' r='60' fill='#ac3434'/>
+						<circle cx='60' cy='60' r='50' fill='none' class='correct-ring'
+							stroke='#2af0b1' stroke-width='20'
+							style="
+								stroke-dasharray: {{ circumference }};
+								stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
+							"/>
+						<circle cx='60' cy='60' r='50' fill='#333333'/>
+					</svg>
+					<span class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
+					<span class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
+					<span class='percent-wrong' ng-show="percentCorrect < 100 && percentCorrect > 0">{{ 100 - percentCorrect }}% Wrong</span>
+				</div>
+			</center>
+			<h1>All Questions Answered</h1>
+			<button ng-click="end()">Submit for Review</button>
+		</section>
+
+<!-- TOSS ALL THIS SHIT WHEN THE CONVERSION IS DONE -->
+
+<!-- why would anybody think this is a good idea -->
 <script type="text/template" id="t-board"><div class="screen board">
 	<header class="header">
 		<h1><span><%= title %></span></h1>
@@ -54,7 +193,9 @@
 </div>
 </script>
 
-<script type="text/template" id="t-question-page"><div class="screen question">
+<!-- seriously what a pain in the ass -->
+<script type="text/template" id="t-question-page">
+<div class="screen question">
 	<section class="question-popup" data-id="<%= id %>">
 			<h1>Question <%= index %> in "<%= category %>"</h1>
 			<div class="question-text">
@@ -85,25 +226,22 @@
 </div>
 </script>
 
-<script type="text/template" id="t-finish-notice"><section class="notice">
-		<center>
-		<div id="scorebox_final" class="score" role="status">
-				<span class="hidden">Score:</span>
-				<span class="value"></span>
-				<span class="percent">%</span>
-				<div class="percent-wrong"></div>
-		</div>
-		</center>
-		<h1>All Questions Answered</h1>
-		<button>Submit for Review</button>
-	</section>
-</script>
-
-
-<!-- INITIALIZE -->
-<script>
-	Materia.Engine.start(Enigma.Engine);
+<!-- it's like they want to make shit harder to understand -->
+<script type="text/template" id="t-finish-notice">
+<section class="notice">
+	<center>
+	<div id="scorebox_final" class="score" role="status">
+			<span class="hidden">Score:</span>
+			<span class="value"></span>
+			<span class="percent">%</span>
+			<div class="percent-wrong"></div>
+	</div>
+	</center>
+	<h1>All Questions Answered</h1>
+	<button>Submit for Review</button>
+</section>
 </script>
 
 	</body>
 </html>
+
