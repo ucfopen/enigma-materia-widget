@@ -9,7 +9,6 @@ var exec = require('child_process').exec;
 var fs = require('fs');
 var gulp = require('gulp');
 var gutil = require('gulp-util');
-var less = require('gulp-less');
 var ngAnnotate = require('gulp-ng-annotate');
 var print = require('gulp-print');
 var rename = require('gulp-rename');
@@ -96,10 +95,6 @@ gulp.task('compress', function()
 					'!' + sourceString + buildLocation + '**/*.coffee',
 					'!' + sourceString + buildLocation + '*.scss',
 					'!' + sourceString + buildLocation + '**/*.scss',
-					'!' + sourceString + buildLocation + '*.less',
-					'!' + sourceString + buildLocation + '**/*.less',
-					'!' + sourceString + buildLocation + '*.jade',
-					'!' + sourceString + buildLocation + '**/*.jade',
 					'!' + sourceString + buildLocation + '*.zip',
 					'!' + sourceString + buildLocation + '*.wigt',])
 				.pipe( print() )
@@ -239,30 +234,6 @@ gulp.task('embed', function()
 gulp.task('help', function()
 {
 	showDocs();
-});
-// Transpiles Less into plain CSS.
-gulp.task('less', function()
-{
-	gutil.log("Less Running");
-	// Engine
-	return gulp.src([sourceString + 'src/*.less'])
-				.pipe( less() )
-				.pipe( autoprefix() )
-				.on('error', function(msg) {console.log("less Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + buildLocation));
-});
-// Transpiles Less into plain CSS.
-gulp.task('less-assets', function()
-{
-	gutil.log("Less Assets Running");
-	// Assets
-	return gulp.src([sourceString + 'src/assets/*.less', sourceString + 'src/assets/**/*.less'])
-				.pipe( less() )
-				.pipe( autoprefix() )
-				.on('error', function(msg) {console.log("less Fail Error: ", msg.toString());})
-				.pipe( print() )
-				.pipe(gulp.dest(sourceString + buildLocation + 'assets/'));
 });
 // Replaces all of the (internally sourced) script tags in the player/creator files with
 // a combined script tag referenceing a single player.js/creator.js source
@@ -538,7 +509,6 @@ gulp.task('default', function ()
 		'copy:init-score',
 		'copy:init-spec',
 		['coffee','coffee-assets'],
-		['less','less-assets'],
 		['sass','sass-assets'],
 		'replace:materiaJS',
 		'ngAnnotate',
@@ -580,7 +550,6 @@ gulp.task('build-readable', function()
 		'copy:init-score',
 		'copy:init-spec',
 		['coffee','coffee-assets'],
-		['less','less-assets'],
 		['sass','sass-assets'],
 		'replace:materiaJS',
 		'replace-player-scripts',
@@ -626,7 +595,6 @@ exports["buildReadable"] = function(widget, full, callback)
 		'copy:init-score',
 		'copy:init-spec',
 		['coffee','coffee-assets'],
-		['less','less-assets'],
 		['sass','sass-assets'],
 		'replace:materiaJS',
 		'replace-player-scripts',
@@ -673,7 +641,6 @@ exports["gulp"] = function(widget, minify, mangle, embed, callback)
 		'copy:init-score',
 		'copy:init-spec',
 		['coffee','coffee-assets'],
-		['less','less-assets'],
 		['sass','sass-assets'],
 		'replace:materiaJS',
 		'ngAnnotate',
