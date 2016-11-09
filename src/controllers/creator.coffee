@@ -232,6 +232,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
 					items: []
+					untouched: true
 					index: $scope.qset.items.length
 				$scope.buildScaffold()
 
