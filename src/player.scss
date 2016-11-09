@@ -110,6 +110,9 @@ header {
 			top: 2px;
 			right: 44px;
 		}
+		.doubleDigit {
+			right: 28px;
+		}
 		.remaining {
 			position: absolute;
 			top: 34px;
@@ -255,7 +258,6 @@ header {
 .question-popup {
 	position: fixed;
 	top: 10px;
-	bottom: 10px;
 	left: 10px;
 	right: 10px;
 	background: #3a4655;

@@ -20,6 +20,7 @@
 
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="modules/player.js"></script>
+		<script src="directives/scroll.js"></script>
 		<script src="controllers/player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
@@ -49,7 +50,8 @@
 
 				<center>
 					<span class='hidden'>Score:</span>
-					<span class='value' ng-class="{numberExit: changingNumber, numberEnter: !changingNumber}">
+					<span class='value'
+						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
 						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
 					</span>
 					<div class='remaining'>remaining</div>
@@ -80,7 +82,8 @@
 		</section>
 
 		<section class='question-popup-bg'
-			ng-show="currentQuestion">
+			ng-show="currentQuestion"
+			scroll-up="currentQuestion">
 			<div id='t-question-page'
 				class='question-popup'>
 				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
