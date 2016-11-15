@@ -350,6 +350,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# Done button clicked, assign point values to valid answers and indicate question has been edited
 	$scope.editComplete = ->
+
 		# run the current question through validation
 		$scope.checkQuestion $scope.curQuestion
 
@@ -480,6 +481,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			while category.items.length < 6
 				category.items.push $scope.newQuestion()
 			for question in category.items
+				question.id = category.name + "-" + i++
 				question.index = i++
 
 		i = 0
