@@ -64,6 +64,7 @@ Namespace('Enigma').Engine = do ->
 				question.answers = _shuffle(question.answers) if _qset.options.randomize
 				_totalQuestions++
 				_questions[question.id] = question
+
 		_$board.on 'click', _onBoardQuestionClick
 		$('body').append _$board
 
