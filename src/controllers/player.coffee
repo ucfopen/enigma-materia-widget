@@ -2,9 +2,8 @@ Enigma = angular.module 'enigmaPlayer'
 
 Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	$scope.title      = ''
-	$scope.categories = {}
+	$scope.categories = []
 	$scope.scores     = []
-	$scope.finalScore = 0
 
 	$scope.totalQuestions    = 0
 	$scope.answeredQuestions = []
@@ -44,12 +43,13 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		a
 
 	$scope.selectQuestion = (category, question) ->
-		throw Error 'A question is already selected!' if $scope.currentQuestion || $scope.currentCategory
+		throw Error 'A question is already selected!' if $scope.currentQuestion
 		unless question.answered
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
 
 	$scope.selectAnswer = (answer) ->
+		throw Error 'Select a question first!' unless $scope.currentQuestion
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
 
 	$scope.cancelQuestion = ->
@@ -104,9 +104,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 	_gameOver = ->
 		$scope.allAnswered = true
-
-		# _paper2 = new Raphael('scorebox_final', '100%', '100%')
-		# _drawPie(_paper2)
 
 		# End, but don't show the score screen yet
 		Materia.Engine.end no
