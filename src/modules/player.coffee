@@ -1,1 +1,1 @@
-Enigma = angular.module 'enigmaPlayer', []
+angular.module 'enigmaPlayer', []
