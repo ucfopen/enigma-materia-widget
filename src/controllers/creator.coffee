@@ -80,27 +80,28 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 	# set default values for the widget - 5 empty categories with 6 empty questions each
 	_buildScaffold = ->
 		# create 5 empty categories
-		i = $scope.qset.items.length
+		i = 0
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
+				name: ''
 				items: []
 				untouched: true
 				index: i++
 
 		# create 6 empty questions per category
 		for category in $scope.qset.items
-			i = category.items.length
+			i = 0
 			while category.items.length < 6
 				category.items.push _newQuestion()
 			for question in category.items
 				question.index = i++
 
-		console.log 'the hell does this loop do'
+		# go through each category
 		i = 0
 		while i < $scope.qset.items.length
-			console.log $scope.qset.items[i]
+			# if any categories don't have a name
 			if not $scope.qset.items[i].name
-				console.log 'category has no name at '+i
+				# make sure none of the category's questions have any text
 				found = false
 				for question in $scope.qset.items[i].items
 					if question.questions[0].text
@@ -134,7 +135,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		i = 0
 		for category in $scope.qset.items
 			for question in category.items
-				i++	if question.questions[0].text
+				i++	if question.complete
 		i
 
 	$scope.categoryOpacity = (category, index) ->
@@ -146,10 +147,12 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		return opacity
 
 	$scope.categoryShowAdd = (category, index) ->
-		not category.name and not category.isEditing and (index == 0 or not $scope.qset.items[index-1].untouched)
+		not category.name and not
+		category.isEditing and
+		(index == 0 or not $scope.qset.items[index-1].untouched)
 
 	$scope.categoryEnabled = (category, index) ->
-		index == 0 or $scope.qset.items[index-1].name or $scope.qset.items[index].name
+		index == 0 or category.name != '' or $scope.qset.items[index-1].name != ''
 
 	$scope.setTitle = ->
 		$scope.title = $scope.introTitle or $scope.title
@@ -176,6 +179,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		if category.name
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
+					name: ''
 					items: []
 					untouched: true
 					index: $scope.qset.items.length
@@ -185,7 +189,11 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			category.untouched = false
 			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
 		else
-			category.name = _categoryTempName unless $scope.deleteCategory category
+			if _hasQuestions category
+				category.name = _categoryTempName unless $scope.deleteCategory category
+			else
+				# delete it if it was named before, otherwise this is because we canceled naming a new category
+				_deleteCategory category unless category.untouched
 		category.isEditing = false
 		_categoryTempName = ''
 
@@ -197,6 +205,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 				return false
 		else
 			_deleteCategory category
+		true
 
 	_hasQuestions = (category) ->
 		for question in category.items
@@ -237,7 +246,11 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 	# or if this is the first question in the category
 	# or if it's not the first, and the previous question has been edited from defaults
 	$scope.questionShowAdd = (category, question, index) ->
-		category.name? and not category.isEditing and question.untouched and (index == 0 or !category.items[index-1].untouched)
+		category.name? and not
+		category.untouched and not
+		category.isEditing and
+		question.untouched and
+		(index == 0 or !category.items[index-1].untouched)
 
 	$scope.editQuestion = (category, question, index) ->
 		# reset anything that may still be around from a prior completion alert
@@ -247,7 +260,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 
 		# make sure we can edit this question
 		# the category has been named, this is the first question in the category, this or the previous question has been edited already
-		if category.name and not category.isEditing and index == 0 or !category.items[index].untouched or !category.items[index-1].untouched
+		if category.name and not category.isEditing and index == 0 or !category.items[index].untouched or (index > 0 and !category.items[index-1].untouched)
 			$scope.curQuestion = question
 			$scope.curCategory = category
 
@@ -255,6 +268,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 				answer.options.correct = false
 				answer.options.custom = false
 
+				# set the 'correct' or 'custom' flags for answers if necessary
 				if answer.value == 100
 					answer.options.correct = true
 				else if answer.value isnt 100 and answer.value isnt 0
@@ -270,10 +284,14 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		_showProblems $scope.curQuestion
 
 		$scope.subMenu = false
+		$scope.curCategory = false
 		$scope.curQuestion = false
 
 	# delete a question; removes question from the order completely
-	$scope.deleteQuestion = (i) ->
+	$scope.deleteQuestion = ->
+		# get this question's index so we can reset the index of each following question
+		i = $scope.curQuestion.index
+
 		# get rid of this question and put a blank one on the end of the category's stack
 		$scope.qset.items[$scope.curCategory.index].items.splice($scope.curQuestion.index, 1)
 		$scope.qset.items[$scope.curCategory.index].items.push _newQuestion()
@@ -298,7 +316,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			$scope.curCategory.items[currentIndex-1] = temp
 			$scope.curCategory.items[currentIndex-1].index = currentIndex-1
 
-	_newQuestion = (i=0) ->
+	_newQuestion = ->
 		type: 'MC'
 		id: ''
 		questions: [
@@ -311,7 +329,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		untouched: true
 		complete: false
 		problems: []
-		index: i
+		index: 0
 
 	$scope.addAnswer = ->
 		$scope.curQuestion.answers.push _newAnswer()
@@ -330,12 +348,11 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 
 	# called when an answer's custom value is changed - makes sure no non-numbers are present
 	$scope.numbersOnly = (answer) ->
-		# if the answer's value isn't only numbers, strip out any non-numbers
-		if not answer.value.match(/^[0-9]?[0-9]?$/)
-			answer.value = answer.value.replace(/[^0-9]+/, '')
-		# if the rounded-down value of the answer is over 100, constrain it to 100
-		if ~~answer.value > 100
-			answer.value = 100
+		# strip out any non-numbers and cast it to a number
+		answer.value = Number answer.value.replace(/[^\d-]/g, '')
+		# constrain it between 0 and 100
+		answer.value = 100 if ~~answer.value > 100
+		answer.value = 0 if ~~answer.value < 0
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->
@@ -430,13 +447,13 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			$scope.startFade = true
 
 			_alertTimer = $timeout ->
-				$scope.incompleteMessage = false
-				$scope.warningMessage    = false
+				$scope.killAlert();
 			, 10000
 
 	# hide the alert early if the user clicks on it
 	$scope.killAlert = ->
 		$scope.incompleteMessage = false
+		$scope.warningMessage    = false
 
 	# draw a tooltip near a question when the mouse is over it if that question is invalid
 	$scope.markQuestion = (category, question) ->

@@ -28,7 +28,7 @@
 	<body ng-app="enigmaCreator" ng-controller="enigmaCreatorCtrl">
 		<div id="modal"></div>
 		<div id="header">
-			<div class="logo"></div>
+			<div class="logo" ng-click='derp()'></div>
 			<h1 id="title"
 				ng-bind="title"
 				ng-click="showTitleDialog = true">
@@ -173,7 +173,7 @@
 									<a href="javascript:;" ng-click="answer.options.custom = true">Set percentage</a>
 
 									<div class="text" ng-show="answer.options.custom">
-										<input type="text" ng-model="answer.value" ng-change="numbersOnly(answer)" ng-blur="">%
+										<input type="text" ng-model="answer.value" ng-change="numbersOnly(answer)">%
 									</div>
 								</div>
 								<button class="delete" ng-click="deleteAnswer($index)"></button>
@@ -207,7 +207,7 @@
 								Next
 							</button>
 						</div>
-						<button class="remove" ng-click="deleteQuestion(curQuestion.index)">Delete</button>
+						<button class="remove" ng-click="deleteQuestion()">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>
 				</div>

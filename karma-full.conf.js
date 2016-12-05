@@ -10,9 +10,11 @@ module.exports = function(config) {
 		files: [
 			'../../js/*.js',
 			'node_modules/angular/angular.js',
+			'node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
 			'node_modules/angular-mocks/angular-mocks.js',
 			'build/demo.json',
 			'build/modules/*.js',
+			'build/directives/*.js',
 			'build/controllers/*.js',
 			'tests/*.js'
 		],
@@ -29,6 +31,8 @@ module.exports = function(config) {
 		],
 
 		preprocessors: {
+			'build/modules/*.js': ['coverage', 'eslint'],
+			'build/directives/*.js': ['coverage', 'eslint'],
 			'build/controllers/*.js': ['coverage', 'eslint'],
 			'build/demo.json': ['json_fixtures']
 		},
