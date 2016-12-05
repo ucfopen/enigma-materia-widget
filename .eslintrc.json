@@ -2,6 +2,7 @@
 	"extends": "eslint:recommended",
 	"globals": {
 		"console": false,
+		"window": false,
 		"document": false,
 		"event": false,
 		"$": false,
@@ -12,11 +13,12 @@
 	"rules": {
 		"no-console": "warn",
 		"no-unused-vars": "warn",
-		"no-extra-parens": "error",
+		"no-extra-parens": "warn",
 		"curly": "error",
 		"no-empty-function": "error",
 		"no-magic-numbers": ["warn",
 			{
+				"ignore": [0, 1, 100],
 				"ignoreArrayIndexes": true
 			}
 		],
