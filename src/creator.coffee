@@ -9,6 +9,7 @@ EnigmaCreator.directive 'ngEnter', ->
 				scope.$apply ->
 					scope.$eval(attrs.ngEnter)
 				event.preventDefault()
+				element[0].blur()
 
 EnigmaCreator.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
 	link: (scope, element, attrs) ->
@@ -268,15 +269,8 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 
 	# editing a category
 	$scope.editCategory = (category) ->
-		# make sure the actual input area is focused, in case we didn't click the label to get here
-		document.getElementById('category_'+category.index).focus()
 		category.isEditing = true
 		$scope.curQuestion = false
-
-	# pressed the enter key while changing a category's name - spoof a blur to try finalizing it
-	$scope.blurCategory = (category) ->
-		$timeout ->
-			document.getElementById('category_'+category.index).blur()
 
 	# done editing a category
 	$scope.stopCategory = (category) ->
