@@ -46,6 +46,7 @@
     "test": "karma start ./karma.conf.js",
     "pretest-full": "gulp build-readable",
     "test-full": "karma start ./karma-full.conf.js"
+    "build": "gulp"
   },
   "author": "New Media"
 }
