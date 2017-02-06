@@ -526,13 +526,13 @@ header {
 }
 
 .numberExit {
-	-webkit-animation: numberExit 0.3s;
-	        animation: numberExit 0.3s;
+	-webkit-animation: numberExit 300ms;
+	        animation: numberExit 300ms;
 }
 
 .numberEnter {
-	-webkit-animation: numberEnter 0.3s;
-	        animation: numberEnter 0.3s;
+	-webkit-animation: numberEnter 300ms;
+	        animation: numberEnter 300ms;
 }
 
 .percent-ring {
