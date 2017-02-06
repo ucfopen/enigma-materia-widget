@@ -113,6 +113,14 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 					break
 			i++
 
+		# make sure there's at least one empty category at the end
+		unless $scope.qset.items[$scope.qset.items.length - 1].untouched
+			$scope.qset.items.push
+				name: ''
+				items: []
+				untouched: true
+				index: i++
+
 	$scope.importDropped = (category, item) ->
 		#find the last empty question in this category
 		for q in category.items

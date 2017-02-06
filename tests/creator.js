@@ -854,6 +854,32 @@ describe('Enigma', function() {
 			expect($scope.numQuestions()).toBe(0);
 		});
 
+		//by default an Enigma widget will have 5 empty categories
+		//if an existing widget has fewer, it will add empties to get to 5
+		//if it has 5 or more, it should add an empty to the end
+		it('should react properly to a qset with more than 5 categories', function(){
+			var existing = {};
+			angular.copy(qset, existing);
+
+			var len = 8;
+			for(var i = existing.data.items.length; i < len; i++)
+			{
+				existing.data.items.push({
+					name: '',
+					items: [],
+					untouched: true,
+					index: i
+				});
+				// pretend we've gone through and made a bunch of empty categories before
+				existing.data.items[i].name = 'cat'+i;
+				existing.data.items[i].items = [];
+				existing.data.items[i].untouched = false;
+			}
+
+			$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
+			expect($scope.qset.items.length).toBe(len+1);
+		});
+
 		//this shouldn't be possible currently, but old qsets may exist in this state
 		//if a category is unnamed, the creator checks to see if it has questions
 		//if so, it is allowed
