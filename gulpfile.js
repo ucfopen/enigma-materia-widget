@@ -18,9 +18,17 @@ var runSequence = require('run-sequence');
 var sass = require('gulp-sass');
 var uglify = require('gulp-uglify');
 var zip = require('gulp-zip');
-
 var Server = require('karma').Server;
-var configs = require('../../backend/config.json');
+
+var configs = null;
+try
+{
+	configs = require('../../backend/config.json');
+}
+catch(e)
+{
+	console.log(e);
+}
 
 var widget = sanitize("enigma");
 // When compiling this may be entered as an argument.
