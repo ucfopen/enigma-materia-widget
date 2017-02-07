@@ -878,6 +878,7 @@ describe('Enigma', function() {
 
 			$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
 			expect($scope.qset.items.length).toBe(len+1);
+			expect($scope.qset.items[len].items.length).toBe(6);
 		});
 
 		//this shouldn't be possible currently, but old qsets may exist in this state
