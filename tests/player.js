@@ -250,6 +250,13 @@ describe('Enigma', function() {
 			//this will make sure the shuffle function reacts properly to single-answer questions
 			qset.data.items[0].items[2].answers.splice(0,1);
 
+			//go through each answer and assign sequential ids
+			var n = 0;
+			for(var i in qset.data.items[0].items[0].answers)
+			{
+				qset.data.items[0].items[0].answers[i].id = ++n;
+			}
+
 			//get a list of the answer ids for the supplied question - used to see which order the answers are in
 			function listOfIds(q) {
 				var list = [];
