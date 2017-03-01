@@ -475,7 +475,6 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			while category.items.length < 6
 				category.items.push $scope.newQuestion()
 			for question in category.items
-				question.id = category.name + "-" + i++
 				question.index = i++
 
 		i = 0
