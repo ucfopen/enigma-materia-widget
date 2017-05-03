@@ -453,7 +453,8 @@
         }
       ],
       "options": {
-        "randomize": null
+        "randomize": null,
+        "hide_correct": false
       }
     }
   }

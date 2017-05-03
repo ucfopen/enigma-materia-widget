@@ -38,6 +38,11 @@
 				<input type="checkbox" id="randomize" ng-model="qset.options.randomize"/>
 				<label for="randomize" class="checktoggle"></label>
 			</div>
+			<div class="right">
+				Hide Correct Answers
+				<input type="checkbox" id="hide-correct" ng-model="qset.options.hide_correct"/>
+				<label for="hide-correct" class="checktoggle"></label>
+			</div>
 		</div>
 		<div class="importedbackground" ng-class="{ show: imported.length }"></div>
 		<div id="board">

@@ -55,4 +55,55 @@ class Score_Modules_EnigmaGS extends Score_Module
 		$q_index = array_search($log->item_id, $this->q_ids);
 		$this->new_logs[$q_index] = $log;
 	}
+
+	protected function details_for_question_answered($log)
+	{
+		if ( ! $this->hide_correct() )
+				return parent::details_for_question_answered($log);
+
+		$q     = $this->questions[$log->item_id];
+		$score = $this->check_answer($log);
+
+		return [
+			'data' => [
+				$this->get_ss_question($log, $q),
+				$this->get_ss_answer($log, $q),
+			],
+			'data_style'    => ['question', 'response'],
+			'score'         => $score,
+			'feedback'      => $this->get_feedback($log, $q->answers),
+			'type'          => $log->type,
+			'style'         => $this->get_detail_style($score),
+			'tag'           => 'div',
+			'symbol'        => '%',
+			'graphic'       => 'score',
+			'display_score' => true
+		];
+	}
+
+
+	protected function get_score_details()
+	{
+		$details = [];
+
+		foreach ($this->logs as $log)
+		{
+			switch ($log->type)
+			{
+				case Session_Log::TYPE_QUESTION_ANSWERED:
+					if (isset($this->questions[$log->item_id]))
+					{
+						$details[] = $this->details_for_question_answered($log);
+					}
+					break;
+			}
+		}
+
+		// return an array of tables
+		return [[
+				'title'  => $this->_ss_table_title,
+				'header' => ['Score', 'The Question', 'Your Response'],
+				'table'  => $details
+		]];
+	}
 }
