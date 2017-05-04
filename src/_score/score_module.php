@@ -59,7 +59,7 @@ class Score_Modules_EnigmaGS extends Score_Module
 	protected function details_for_question_answered($log)
 	{
 		if ( ! $this->hide_correct() )
-				return parent::details_for_question_answered($log);
+			return parent::details_for_question_answered($log);
 
 		$q     = $this->questions[$log->item_id];
 		$score = $this->check_answer($log);
@@ -81,9 +81,11 @@ class Score_Modules_EnigmaGS extends Score_Module
 		];
 	}
 
-
 	protected function get_score_details()
 	{
+		if ( ! $this->hide_correct() )
+			return parent::get_score_details();
+
 		$details = [];
 
 		foreach ($this->logs as $log)
