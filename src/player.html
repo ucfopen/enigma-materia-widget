@@ -41,7 +41,7 @@
 		<% for(var i in categories){ var cat = categories[i]; %>
 			<section class="category" data-id="<%= i %>">
 				<div class="title">
-					<%= cat.name %>
+					<%= cat.name.toUpperCase() %>
 					<div class="arrow-right"></div>
 				</div>
 				<!-- questions -->
