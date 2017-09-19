@@ -33,7 +33,7 @@ class Score_Modules_EnigmaGS extends Score_Module
 	private function hide_correct()
 	{
 		$options = $this->inst->qset->data['options'];
-		$hide = isset($options['hide_correct']) && $options['hide_correct'] == true ? true : false;
+		$hide = isset($options['hide_correct']) && $options['hide_correct'] == true;
 		return $hide;
 	}
 
