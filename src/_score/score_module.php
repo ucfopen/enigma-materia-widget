@@ -30,6 +30,13 @@ class Score_Modules_EnigmaGS extends Score_Module
 	private $new_logs = [];
 	private $q_ids = null;
 
+	private function hide_correct()
+	{
+		$options = $this->inst->qset->data['options'];
+		$hide = isset($options['hide_correct']) && $options['hide_correct'] == true ? true : false;
+		return $hide;
+	}
+
 	public function check_answer($log)
 	{
 		if (isset($this->questions[$log->item_id]))
