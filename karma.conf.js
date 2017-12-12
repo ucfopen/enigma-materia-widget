@@ -1,17 +1,19 @@
 module.exports = function(config) {
 	config.set({
 
-		autoWatch: false,
+		// autoWatch: false, // moved into pakcage.json script option
 
 		basePath: './',
 
 		browsers: ['PhantomJS'],
 
 		files: [
-			'../../js/*.js',
 			'node_modules/angular/angular.js',
 			'node_modules/angular-drag-and-drop-lists/angular-drag-and-drop-lists.js',
 			'node_modules/angular-mocks/angular-mocks.js',
+			'node_modules/materia-client-assets/dist/js/materia.js',
+			'node_modules/materia-client-assets/dist/js/student.js',
+			'node_modules/materia-client-assets/dist/js/author.js',
 			'build/demo.json',
 			'build/modules/*.js',
 			'build/directives/*.js',
@@ -37,7 +39,7 @@ module.exports = function(config) {
 			'build/demo.json': ['json_fixtures']
 		},
 
-		singleRun: true,
+		// singleRun: true, // moved into pakcage.json script option
 
 		//plugin-specific configurations
 		eslint: {
@@ -73,8 +75,13 @@ module.exports = function(config) {
 				}
 			},
 			reporters: [
+				{ type: 'html', subdir: 'report-html' },
 				{ type: 'cobertura', subdir: '.', file: 'coverage.xml' }
 			]
+		},
+
+		mochaReporter: {
+			output: 'autowatch'
 		}
 
 	});

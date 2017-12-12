@@ -1,37 +1,26 @@
 {
-  "name": "Enigma",
-  "version": "2.0.0",
-  "private": true,
-  "main": "app.js",
-  "dependencies": {
-    "fs": "0.0.2",
-    "gulp": "^3.9.1",
-    "gulp-autoprefixer": "^3.1.0",
-    "gulp-clean": "^0.3.1",
-    "gulp-clone": "^1.0.0",
-    "gulp-coffee": "^2.3.1",
-    "gulp-concat": "^2.6.0",
-    "gulp-copy": "0.0.2",
-    "gulp-cssmin": "^0.1.7",
-    "gulp-ng-annotate": "^2.0.0",
-    "gulp-print": "^2.0.1",
-    "gulp-rename": "^1.2.2",
-    "gulp-replace": "^0.5.4",
-    "gulp-replace-task": "^0.11.0",
-    "gulp-sass": "^2.2.0",
-    "gulp-uglify": "^1.5.3",
-    "gulp-zip": "^3.2.0",
-    "run-sequence": "^1.1.5",
-    "yargs": "^4.5.0"
+  "name": "@ucfcdl/enigma",
+  "materia": {
+    "cleanName": "enigma"
   },
+  "version": "2.0.1",
+  "dependencies": {
+    "materia-widget-development-kit": "git+ssh://git@clu.cdl.ucf.edu:materia/materia-widget-development-kit#semver:>=1.0.6 <1.10.0"
+  },
+  "scripts": {
+    "start": "webpack-dev-server",
+    "build-dev": "webpack",
+    "build": "webpack -p",
+    "pretest": "npm run build-dev",
+    "test": "karma start ./karma.conf.js --no-auto-watch --single-run"
+  },
+  "author": "University of Central Florida, Center for Distributed Learning",
   "devDependencies": {
     "angular": "~1.5.0",
     "angular-drag-and-drop-lists": "^1.4.0",
     "angular-loader": "~1.5.0",
     "angular-mocks": "~1.5.0",
     "angular-route": "~1.5.0",
-    "gulp-replace-task": "^0.11.0",
-    "http-server": "^0.9.0",
     "jasmine-core": "^2.4.1",
     "karma": "^0.13.22",
     "karma-coverage": "^0.5.5",
@@ -40,13 +29,5 @@
     "karma-json-fixtures-preprocessor": "0.0.6",
     "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.2"
-  },
-  "scripts": {
-    "pretest": "gulp build-readable",
-    "test": "karma start ./karma.conf.js",
-    "pretest-full": "gulp build-readable",
-    "test-full": "karma start ./karma-full.conf.js",
-    "build": "gulp"
-  },
-  "author": "New Media"
+  }
 }
