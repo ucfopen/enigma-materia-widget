@@ -7,6 +7,7 @@
 		"event": false,
 		"$": false,
 		"_": false,
+		"angular": true,
 		"Namespace": true,
 		"Materia": true
 	},
