@@ -68,7 +68,7 @@
 			</div>
 			<div class="categories">
 				<div class="category" ng-repeat="category in qset.items">
-					<div class="label" style="opacity:{{ categoryOpacity(category,$index) }}">
+					<div class="label" ng-style="{opacity: categoryOpacity(category,$index)}">
 						<button class="shift-up"
 							ng-show="!category.isEditing && !category.untouched && category.index > 0"
 							ng-click="categoryReorder($index, false)"></button>
