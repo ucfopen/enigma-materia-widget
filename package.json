@@ -1,20 +1,21 @@
 {
-  "name": "@ucfcdl/enigma",
+  "name": "@ucfopen/enigma",
   "materia": {
     "cleanName": "enigma"
   },
   "version": "2.0.1",
   "dependencies": {
-    "materia-widget-development-kit": "git+ssh://git@clu.cdl.ucf.edu:materia/materia-widget-development-kit#v1.0.8-alpha-1"
+    "materia-widget-development-kit": "v1.2.2"
   },
   "scripts": {
     "start": "webpack-dev-server",
     "build-dev": "webpack",
     "build": "webpack -p",
     "pretest": "npm run build-dev",
-    "test": "karma start ./karma.conf.js --no-auto-watch --single-run"
+    "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
+    "pretest-full": "npm run build-dev",
+    "test-full": "karma start ./karma-full.conf.js"
   },
-  "author": "University of Central Florida, Center for Distributed Learning",
   "devDependencies": {
     "angular": "~1.5.0",
     "angular-drag-and-drop-lists": "^1.4.0",
@@ -29,5 +30,6 @@
     "karma-json-fixtures-preprocessor": "0.0.6",
     "karma-mocha-reporter": "^2.1.0",
     "karma-phantomjs-launcher": "^1.0.2"
-  }
+  },
+  "license": "AGPL-3.0"
 }
