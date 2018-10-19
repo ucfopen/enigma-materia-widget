@@ -80,7 +80,12 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 	# set default values for the widget - 5 empty categories with 6 empty questions each
 	_buildScaffold = ->
 		# create 5 empty categories
+		# start category indices at 0
 		i = 0
+		# unless there are already categories, in which case start after the highest
+		if $scope.qset.items.length > 0
+			i = $scope.qset.items[$scope.qset.items.length-1].index + 1
+
 		while $scope.qset.items.length < 5
 			$scope.qset.items.push
 				name: ''
