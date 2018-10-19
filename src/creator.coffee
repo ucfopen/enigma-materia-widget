@@ -97,12 +97,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			i++
 
 		$scope.$apply ->
-			console.log 'before'
 			$scope.title = title
 			$scope.qset = qset
 			$scope.buildScaffold()
-
-		console.log 'after'
 
 	# Private helpers
 	_initDragDrop = ->
