@@ -41,7 +41,7 @@
 		<% for(var i in categories){ var cat = categories[i]; %>
 			<section class="category" data-id="<%= i %>">
 				<div class="title">
-					<%= cat.name.toUpperCase() %>
+					<%= cat.name && typeof(cat.name) == 'string' ? cat.name.toUpperCase() : cat.name %>
 					<div class="arrow-right"></div>
 				</div>
 				<!-- questions -->
