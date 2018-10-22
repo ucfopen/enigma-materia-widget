@@ -12,7 +12,6 @@
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
 		<script src="materia.enginecore.js"></script>
-		<script src="materia.score.js"></script>
 
 		<!-- YOUR PREREQUISITES -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.min.js"></script>
@@ -64,7 +63,7 @@
 			<section class='category'
 				ng-repeat="category in categories">
 				<div class='title'>
-					{{ category.name }}
+					{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"

@@ -26,6 +26,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 		# Make an array of each category, questions, and count the questions.
 		for ci, category of qset.items
+			category.name = category.name.toUpperCase() if typeof(category.name) == 'string'
 			$scope.categories[ci] = category
 			for qi, question of category.items
 				question.answers = _shuffle(question.answers) if qset.options.randomize
