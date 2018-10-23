@@ -490,12 +490,18 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 	_buildSaveData = ->
 		# duplicate the model and remove angular hash keys
 		qset = angular.copy $scope.qset
+		console.log qset
 
 		i = 0
 		# for each category
 		while i < qset.items.length
+			catUntouched = qset.items[i].untouched
+			# remove creator-specific properties; save problems for validation phase
+			delete qset.items[i].untouched
+			delete qset.items[i].isEditing
+
 			# remove empty categories; no name, no questions, or never touched
-			if qset.items[i] and qset.items[i].untouched or qset.items[i]?.items.length == 0 and not qset.items[i].name
+			if qset.items[i] and catUntouched or qset.items[i]?.items.length == 0 and not qset.items[i].name
 				qset.items.splice(i,1)
 				i--
 				continue
@@ -503,13 +509,13 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			# for each question
 			j = 0
 			while j < qset.items[i]?.items.length
-				untouched = qset.items[i].items[j].untouched
+				questionUntouched = qset.items[i].items[j].untouched
 				# remove creator-specific properties; save problems for validation phase
 				delete qset.items[i].items[j].untouched
 				delete qset.items[i].items[j].complete
 
 				# remove empty questions; no name, no answers, or never touched
-				if untouched or qset.items[i].items[j].answers.length == 0 and not qset.items[i].items[j].questions[0].text
+				if questionUntouched or qset.items[i].items[j].answers.length == 0 and not qset.items[i].items[j].questions[0].text
 					qset.items[i].items.splice(j,1)
 					j--
 				j++
