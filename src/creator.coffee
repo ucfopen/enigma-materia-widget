@@ -90,6 +90,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		# loop through each question in each category and validate all incoming questions
 		i = 0
 		while i < qset.items.length
+			# also sanitize category names if necessary
+			qset.items[i].name = ' ' unless qset.items[i].name
+
 			j = 0
 			while j < qset.items[i].items.length
 				qset.items[i].items[j] = $scope.checkQuestion qset.items[i].items[j]
