@@ -90,6 +90,9 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 		# loop through each question in each category and validate all incoming questions
 		i = 0
 		while i < qset.items.length
+			# also sanitize category names if necessary
+			qset.items[i].name = ' ' unless qset.items[i].name
+
 			j = 0
 			while j < qset.items[i].items.length
 				qset.items[i].items[j] = $scope.checkQuestion qset.items[i].items[j]
@@ -100,6 +103,21 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			$scope.title = title
 			$scope.qset = qset
 			$scope.buildScaffold()
+
+			# and then just slap an extra empty one onto the end
+			lastIndex = $scope.qset.items.length
+			$scope.qset.items.push
+				items: []
+				untouched: true
+				index: lastIndex
+
+			# create 6 empty questions per category
+			category = $scope.qset.items[lastIndex]
+			k = 0
+			while category.items.length < 6
+				category.items.push $scope.newQuestion()
+			for question in category.items
+				question.index = k++
 
 	# Private helpers
 	_initDragDrop = ->
@@ -279,6 +297,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
 					items: []
+					untouched: true
 					index: $scope.qset.items.length
 				$scope.buildScaffold()
 
@@ -286,17 +305,40 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			category.untouched = false
 			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
 		else
+			# if the category wasn't named properly, make sure it has questions
+			hasValidQuestions = false
+			for question in category.items
+				hasValidQuestions = true unless question.untouched
+			if hasValidQuestions
+				return alert 'Categories with questions must have names!'
+			else
+				$scope.deleteCategory category
 		category.isEditing = false
 
 	$scope.deleteCategory = (category) ->
-		if confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
-			$scope.qset.items.splice(category.index, 1)
+		hasValidQuestions = false
+		for question in category.items
+			hasValidQuestions = true unless question.untouched
+
+		if hasValidQuestions
+			if confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
+				_deleteCategory category
+		else
+			_deleteCategory category
+
+	_deleteCategory = (category) ->
+		$scope.qset.items.splice(category.index, 1)
+		if $scope.qset.items[$scope.qset.items.length-1].name
+			$scope.qset.items.push
+				items: []
+				untouched: true
+				index: $scope.qset.items.length
 			$scope.buildScaffold()
 
-			#reset all of the remaining categories' index properties or Angular will get confused
-			i = 0
-			while i < $scope.qset.items.length
-				$scope.qset.items[i].index = i++
+		#reset all of the remaining categories' index properties or Angular will get confused
+		i = 0
+		while i < $scope.qset.items.length
+			$scope.qset.items[i].index = i++
 
 	$scope.categoryReorder = (index, forward) ->
 		temp = $scope.qset.items[index]
