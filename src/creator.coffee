@@ -101,6 +101,21 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			$scope.qset = qset
 			$scope.buildScaffold()
 
+			# and then just slap an extra empty one onto the end
+			lastIndex = $scope.qset.items.length
+			$scope.qset.items.push
+				items: []
+				untouched: true
+				index: lastIndex
+
+			# create 6 empty questions per category
+			category = $scope.qset.items[lastIndex]
+			k = 0
+			while category.items.length < 6
+				category.items.push $scope.newQuestion()
+			for question in category.items
+				question.index = k++
+
 	# Private helpers
 	_initDragDrop = ->
 		$('.importable').draggable
@@ -279,6 +294,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			if $scope.qset.items[$scope.qset.items.length-1].name
 				$scope.qset.items.push
 					items: []
+					untouched: true
 					index: $scope.qset.items.length
 				$scope.buildScaffold()
 
