@@ -305,6 +305,7 @@ EnigmaCreator.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $t
 			category.untouched = false
 			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
 		else
+			return alert 'Categories must have names!'
 		category.isEditing = false
 
 	$scope.deleteCategory = (category) ->
