@@ -124,7 +124,7 @@ $green: #70bd34;
 	margin: auto;
 	position: relative;
 	display: block;
-	margin-bottom: 40px;
+	margin-bottom: 80px;
 
 	.categories {
 		position: relative;
@@ -1062,14 +1062,16 @@ input[type=checkbox]:checked + label.checktoggle {
 	position: absolute;
 	border-radius: 5px;
 	background: #d1d7e2;
-	width: 170px;
+	// min-width: 170px;
+	// max-width: 510px;
+	width: 650px;
 	padding: 10px 0;
 	z-index: -1;
 	opacity: 0;
 	text-align: center;
 	color: #333;
 
-	left: 50px;
+	left: 110px;
 
 	transition: opacity 0.25s ease;
 
@@ -1111,7 +1113,7 @@ input[type=checkbox]:checked + label.checktoggle {
 
 	&:before {
 		bottom: 100%;
-		left: 59px; /* (parent width / 2) - this border width */
+		// left: 59px; /* (parent width / 2) - this border width */
 		border: solid transparent;
 		border-color: rgba(255, 255, 255, 0);
 		border-bottom-color: #d1d7e2;
@@ -1121,28 +1123,28 @@ input[type=checkbox]:checked + label.checktoggle {
 		pointer-events: none;
 	}
 
-	&.q1 {
-		left: 110px;
+	&.q1:before {
+		left: 60px;
 	}
 
-	&.q2 {
-		left: 210px;
+	&.q2:before {
+		left: 160px;
 	}
 
-	&.q3 {
-		left: 309px;
+	&.q3:before {
+		left: 249px;
 	}
 
-	&.q4 {
-		left: 408px;
+	&.q4:before {
+		left: 348px;
 	}
 
-	&.q5 {
-		left: 506px;
+	&.q5:before {
+		left: 446px;
 	}
 
-	&.q6 {
-		left: 606px;
+	&.q6:before {
+		left: 546px;
 	}
 }
 
