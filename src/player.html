@@ -19,7 +19,7 @@
 
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="modules/player.js"></script>
-		<!-- <script src="directives/scroll.js"></script> -->
+		<script src="directives/scroll.js"></script>
 		<script src="controllers/player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
@@ -81,6 +81,7 @@
 		</section>
 
 		<section class='question-popup-bg'
+			scroll-up="currentQuestion"
 			ng-show="currentQuestion">
 			<div id='t-question-page'
 				class='question-popup'>

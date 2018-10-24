@@ -7,6 +7,6 @@ Enigma.directive 'scrollUp', ['$timeout', '$parse', ($timeout, $parse) ->
 			if value
 				$timeout ->
 					#scroll the containing page to the top of the iframe the widget is sitting in
-					window.parent.scrollTo 0, window.parent.document.getElementById('container').offsetTop
+					Materia.Engine.setVerticalScroll(0)
 			value
 ]
