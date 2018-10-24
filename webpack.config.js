@@ -5,19 +5,19 @@ const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
 const rules = widgetWebpack.getDefaultRules()
 const entries = widgetWebpack.getDefaultEntries()
 
-// cusomize the config
-delete entries['creator.js']
-delete entries['player.js']
+// cusomize entries
+entries['creator.js'] = [
+	path.join(__dirname, 'src', 'modules', 'creator.coffee'),
+	path.join(__dirname, 'src', 'directives', 'enter.coffee'),
+	path.join(__dirname, 'src', 'directives', 'focus.coffee'),
+	path.join(__dirname, 'src', 'controllers', 'creator.coffee')
+]
 
-entries['directives/enter.js'] = [path.join(srcPath, 'directives', 'enter.coffee')]
-entries['directives/focus.js'] = [path.join(srcPath, 'directives', 'focus.coffee')]
-entries['directives/scroll.js'] = [path.join(srcPath, 'directives', 'scroll.coffee')]
-
-entries['modules/creator.js'] = [path.join(srcPath, 'modules', 'creator.coffee')]
-entries['modules/player.js'] = [path.join(srcPath, 'modules', 'player.coffee')]
-
-entries['controllers/creator.js'] = [path.join(srcPath, 'controllers', 'creator.coffee')]
-entries['controllers/player.js'] = [path.join(srcPath, 'controllers', 'player.coffee')]
+entries['player.js'] = [
+	path.join(__dirname, 'src', 'modules', 'player.coffee'),
+	path.join(__dirname, 'src', 'directives', 'scroll.coffee'),
+	path.join(__dirname, 'src', 'controllers', 'player.coffee')
+]
 
 let customHTMLAndReplaceRule = {
 	test: /\.html$/i,

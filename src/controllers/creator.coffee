@@ -490,7 +490,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 	_buildSaveData = ->
 		# duplicate the model and remove angular hash keys
 		qset = angular.copy $scope.qset
-		console.log qset
 
 		i = 0
 		# for each category

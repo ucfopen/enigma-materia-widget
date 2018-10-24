@@ -5,31 +5,38 @@
   },
   "version": "2.0.1",
   "dependencies": {
-    "materia-widget-development-kit": "v1.2.2"
+    "materia-widget-development-kit": "v2.0.0-alpha4"
   },
   "scripts": {
     "start": "webpack-dev-server",
-    "build-dev": "webpack",
     "build": "webpack -p",
-    "pretest": "npm run build-dev",
-    "test": "karma start ./karma.conf.js --no-auto-watch --single-run",
-    "pretest-full": "npm run build-dev",
-    "test-full": "karma start ./karma-full.conf.js"
+    "build-dev": "webpack",
+    "test": "TZ='America/New_York' jest --verbose",
+    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura"
+  },
+  "jest": {
+    "coverageReporters": ["text-summary", "lcov"],
+    "verbose": false,
+    "collectCoverageFrom": [
+      "src/**/*.coffee"
+    ],
+    "transform": {
+      "^.+\\.coffee$": "<rootDir>/node_modules/jest-coffee-preprocessor/index.js"
+    },
+    "coverageThreshold": {
+      "global": {
+        "statements": 99,
+        "branches": 89,
+        "functions": 100,
+        "lines": 99
+      }
+    }
   },
   "devDependencies": {
-    "angular": "~1.5.0",
-    "angular-drag-and-drop-lists": "^1.4.0",
-    "angular-loader": "~1.5.0",
-    "angular-mocks": "~1.5.0",
-    "angular-route": "~1.5.0",
-    "jasmine-core": "^2.4.1",
-    "karma": "^0.13.22",
-    "karma-coverage": "^0.5.5",
-    "karma-eslint": "^2.1.0",
-    "karma-jasmine": "^0.3.8",
-    "karma-json-fixtures-preprocessor": "0.0.6",
-    "karma-mocha-reporter": "^2.1.0",
-    "karma-phantomjs-launcher": "^1.0.2"
+    "angular": "1.6.9",
+    "angular-mocks": "1.6.9",
+    "jest": "^23.6.0",
+    "jest-coffee-preprocessor": "^1.0.0"
   },
   "license": "AGPL-3.0"
 }

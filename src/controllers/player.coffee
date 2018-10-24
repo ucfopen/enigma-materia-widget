@@ -23,7 +23,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
 		$scope.title = instance.name
-
 		# Make an array of each category, questions, and count the questions.
 		for ci, category of qset.items
 			category.name = category.name.toUpperCase() if typeof(category.name) == 'string'
