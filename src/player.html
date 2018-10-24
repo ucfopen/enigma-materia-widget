@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!-- INJECTS IE CLASSES ONTO HTML TAG -->
-<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
-<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class=''> <!--<![endif]-->
+<html>
 	<head>
 		<title>Enigma Widget Player</title>
 		<meta charset='utf-8' />
@@ -14,13 +11,11 @@
 		<script src="materia.enginecore.js"></script>
 
 		<!-- YOUR PREREQUISITES -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.3/angular-animate.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular-animate.min.js"></script>
 
 		<!-- MAIN PLAYER SCRIPT -->
-		<script src="modules/player.js"></script>
-		<script src="directives/scroll.js"></script>
-		<script src="controllers/player.js"></script>
+		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
 		<header>
