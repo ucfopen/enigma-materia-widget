@@ -1,5 +1,5 @@
 const path = require('path')
-const srcPath = path.join(__dirname, 'src')
+const srcPath = path.join(__dirname, 'src') + path.sep
 const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
 
 const rules = widgetWebpack.getDefaultRules()
@@ -7,18 +7,20 @@ const entries = widgetWebpack.getDefaultEntries()
 
 // cusomize entries
 entries['creator.js'] = [
-	path.join(__dirname, 'src', 'modules', 'creator.coffee'),
-	path.join(__dirname, 'src', 'directives', 'enter.coffee'),
-	path.join(__dirname, 'src', 'directives', 'focus.coffee'),
-	path.join(__dirname, 'src', 'controllers', 'creator.coffee')
+	srcPath + 'modules/creator.coffee',
+	srcPath + 'directives/enter.coffee',
+	srcPath + 'directives/focus.coffee',
+	srcPath + 'controllers/creator.coffee'
 ]
 
 entries['player.js'] = [
-	path.join(__dirname, 'src', 'modules', 'player.coffee'),
-	path.join(__dirname, 'src', 'directives', 'scroll.coffee'),
-	path.join(__dirname, 'src', 'controllers', 'player.coffee')
+	srcPath + 'modules/player.coffee',
+	srcPath + 'directives/scroll.coffee',
+	srcPath + 'controllers/player.coffee'
 ]
 
+// this is needed to prevent html-loader from causing issues with
+// style tags in the player using angular
 let customHTMLAndReplaceRule = {
 	test: /\.html$/i,
 	exclude: /node_modules/,
@@ -58,6 +60,4 @@ let options = {
 	moduleRules: customRules
 }
 
-const ourFinalWebpackConfig = widgetWebpack.getLegacyWidgetBuildConfig(options)
-
-module.exports = ourFinalWebpackConfig
+module.exports = widgetWebpack.getLegacyWidgetBuildConfig(options)

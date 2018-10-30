@@ -5,7 +5,7 @@
   },
   "version": "2.0.1",
   "dependencies": {
-    "materia-widget-development-kit": "v2.0.0-alpha4"
+    "materia-widget-development-kit": "^2.0.0"
   },
   "scripts": {
     "start": "webpack-dev-server",
@@ -21,7 +21,7 @@
       "src/**/*.coffee"
     ],
     "transform": {
-      "^.+\\.coffee$": "<rootDir>/node_modules/jest-coffee-preprocessor/index.js"
+      "^.+\\.coffee$": "jest-coffee-preprocessor"
     },
     "coverageThreshold": {
       "global": {
