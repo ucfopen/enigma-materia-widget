@@ -38,5 +38,6 @@
     "jest": "^23.6.0",
     "jest-coffee-preprocessor": "^1.0.0"
   },
-  "license": "AGPL-3.0"
+  "license": "AGPL-3.0",
+  "author": "University of Central Florida, Center for Distributed Learning"
 }
