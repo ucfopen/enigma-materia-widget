@@ -42,23 +42,25 @@
 					<circle cx='60' cy='60' r='50' fill='#333333'/>
 				</svg>
 
-				<center>
-					<span class='hidden'>Score:</span>
-					<span class='value'
-						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
-						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
-					</span>
-					<div class='remaining'>remaining</div>
-				</center>
-			</div>
-			<div class='menu off'></div>
-		</header>
-		<section class='gameboard'>
-			<!-- categories -->
-			<section class='category'
-				ng-repeat="category in categories">
-				<div class='title'>
-					{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
+<script type="text/template" id="t-board"><div class="screen board">
+	<header class="header">
+		<h1><span><%= title %></span></h1>
+		<div id="scorebox" class="score" role="status">
+			<center>
+			<span class="hidden">Score:</span>
+			<span class="value">0</span>
+			<div class="remaining">remaining</div>
+			</center>
+		</div>
+		<div class="menu off"></div>
+	</header>
+	<section class="gameboard">
+		<!-- categories -->
+		<% for(var i in categories){ var cat = categories[i]; %>
+			<section class="category" data-id="<%= i %>">
+				<div class="title">
+					<%= cat.name && typeof(cat.name) == 'string' ? cat.name.toUpperCase() : cat.name %>
+					<div class="arrow-right"></div>
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
