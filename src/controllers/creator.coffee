@@ -78,7 +78,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		$scope.$apply ->
 			$scope.title = title
 			$scope.qset = qset
-			$scope.buildScaffold()
+			_buildScaffold()
 
 			# and then just slap an extra empty one onto the end
 			lastIndex = $scope.qset.items.length
@@ -95,95 +95,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			for question in category.items
 				question.index = k++
 
-	# Private helpers
-	_initDragDrop = ->
-		$('.importable').draggable
-			start: (event, ui) ->
-				$scope.shownImportTutorial = true
-				$scope.curDragging = +this.getAttribute('data-index')
-				this.style.position = 'absolute'
-				this.style.zIndex = ++zIndex
-				this.style.marginLeft = $(this).position().left + 'px'
-				this.style.marginTop = $(this).position().top + 'px'
-				this.className += ' dragging'
-			stop: (event, ui) ->
-				this.style.position = 'relative'
-				this.style.marginTop =
-				this.style.marginLeft =
-				this.style.top =
-				this.style.left = ''
-				this.className = 'importable'
-		$('.question').droppable
-			drop: (event, ui) ->
-				$(ui.draggable).removeClass('green').removeClass('red')
-
-				# get the category and question indices of the question we're dropping into; cast them as numbers
-				category_index = +this.getAttribute('data-category')
-				question_index = +this.getAttribute('data-question')
-				questionobj = $scope.qset.items[category_index].items[question_index]
-
-				if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
-					return
-
-				# if the dragged question was dropped onto an empty slot
-				if questionobj.untouched
-					$scope.$apply ->
-						# add Enigma-specific properties to this question before adding it
-						importing = $scope.imported[$scope.curDragging]
-						importing.problems = []
-						importing.untouched = false
-						importing.complete = true
-						importing.index = question_index
-						# make sure the question at least has the ability to store answers if it somehow wasn't saved with any
-						importing.answers = [] unless importing.answers
-
-						# make sure imported answers have all necessary options set
-						importing.answers?.map (answer) ->
-							answer.options.custom = answer.value isnt 100 and answer.value isnt 0
-							answer.options.correct = answer.value is 100
-							answer
-
-						# finally validate the imported question
-						importing = $scope.checkQuestion importing
-
-						$scope.qset.items[category_index].items[question_index] = importing
-						$scope.step = 4 if $scope.step is 3 # the first question has been added - no further instructions
-
-						$scope.imported.splice($scope.curDragging,1)
-					_initDragDrop()
-
-			over: (event, ui) ->
-				# get the category and question indices of the question we're hovering over; cast them as numbers
-				category_index = +this.getAttribute('data-category')
-				question_index = +this.getAttribute('data-question')
-
-				questionobj = $scope.qset.items[category_index].items[question_index]
-
-				if questionobj.questions[0].text != ''
-					$(ui.draggable).addClass('red').removeClass('green')
-				else
-					return if not $scope.questionShowAdd($scope.qset.items[category_index], questionobj, question_index)
-					$(ui.draggable).addClass('green').removeClass('red')
-
-			out: (event, ui) ->
-				$(ui.draggable).removeClass('green').removeClass('red')
-
-	# prepare some checks to make sure the given question is 'complete':
-	$scope.checkQuestion = (question) ->
-		# has question text
-		hasQuestion = question.questions[0].text != ''
-		# has at least one answer worth 100%
-		fullCredit = false
-		# doesn't have any repeat answers
-		repeatChecks = []
-		hasRepeats = false
-		# or blank answers
-		blankAnswer = false
-		# and has answers at all
-		noAnswers = question.answers.length == 0
-
-		# store whatever problems remain in the question for later
-		problems = []
 
 	# set default values for the widget - 5 empty categories with 6 empty questions each
 	_buildScaffold = ->
@@ -310,27 +221,28 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			category.untouched = false
 			$scope.step = 3 if $scope.step is 2 # the first category has been named - display instructions for adding the first question
 		else
-			# if the category wasn't named properly, make sure it has questions
-			hasValidQuestions = false
-			for question in category.items
-				hasValidQuestions = true unless question.untouched
-			if hasValidQuestions
-				return alert 'Categories with questions must have names!'
+			if _hasQuestions category
+				category.name = _categoryTempName unless $scope.deleteCategory category
 			else
-				$scope.deleteCategory category
+				# delete it if it was named before, otherwise this is because we canceled naming a new category
+				_deleteCategory category unless category.untouched
 		category.isEditing = false
 		_categoryTempName = ''
 
 	$scope.deleteCategory = (category) ->
-		hasValidQuestions = false
-		for question in category.items
-			hasValidQuestions = true unless question.untouched
-
-		if hasValidQuestions
-			if confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
+		if _hasQuestions category
+			if window.confirm "Deleting this category will also delete all of the questions it contains!\n\nAre you sure?"
 				_deleteCategory category
+			else
+				return false
 		else
 			_deleteCategory category
+		true
+
+	_hasQuestions = (category) ->
+		for question in category.items
+			return true unless question.untouched
+		false
 
 	_deleteCategory = (category) ->
 		$scope.qset.items.splice(category.index, 1)
@@ -339,12 +251,18 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 				items: []
 				untouched: true
 				index: $scope.qset.items.length
-			$scope.buildScaffold()
+		_buildScaffold()
+
+		wasOnly = true
 
 		#reset all of the remaining categories' index properties or Angular will get confused
 		i = 0
 		while i < $scope.qset.items.length
+			wasOnly = false if $scope.qset.items[i].untouched is false
 			$scope.qset.items[i].index = i++
+
+		# if they're still in tutorial mode and they haven't added a question yet, step back
+		$scope.step = 1 if wasOnly and $scope.step is 3
 
 	$scope.categoryReorder = (index, forward) ->
 		temp = $scope.qset.items[index]
@@ -448,29 +366,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		untouched: true
 		complete: false
 		problems: []
-		index: i
-
-	$scope.newCategory = (index, category) ->
-		setTimeout ->
-			$('#category_'+index).focus()
-		,10
-		category.isEditing = true
-		$scope.step = 2 if $scope.step is 1 # the first category has been clicked - display instructions for giving it a name
-
-	# set default values for the widget - 5 empty categories with 6 empty questions each
-	$scope.buildScaffold = ->
-		# create 5 empty categories
-		# start category indices at 0
-		i = 0
-		# unless there are already categories, in which case start after the highest
-		if $scope.qset.items.length > 0
-			i = $scope.qset.items[$scope.qset.items.length-1].index + 1
-
-		while $scope.qset.items.length < 5
-			$scope.qset.items.push
-				items: []
-				untouched: true
-				index: i++
+		index: 0
 
 	$scope.addAnswer = ->
 		$scope.curQuestion.answers.push _newAnswer()
