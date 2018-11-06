@@ -91,7 +91,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			category = $scope.qset.items[lastIndex]
 			k = 0
 			while category.items.length < 6
-				category.items.push $scope.newQuestion()
+				category.items.push _newQuestion()
 			for question in category.items
 				question.index = k++
 
