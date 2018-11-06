@@ -80,22 +80,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			$scope.qset = qset
 			_buildScaffold()
 
-			# and then just slap an extra empty one onto the end
-			lastIndex = $scope.qset.items.length
-			$scope.qset.items.push
-				items: []
-				untouched: true
-				index: lastIndex
-
-			# create 6 empty questions per category
-			category = $scope.qset.items[lastIndex]
-			k = 0
-			while category.items.length < 6
-				category.items.push _newQuestion()
-			for question in category.items
-				question.index = k++
-
-
 	# set default values for the widget - 5 empty categories with 6 empty questions each
 	_buildScaffold = ->
 		# create 5 empty categories
