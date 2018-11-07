@@ -39,5 +39,6 @@
     "jest-coffee-preprocessor": "^1.0.0"
   },
   "license": "AGPL-3.0",
+  "description": "Enigma is a Jeopardy-like study and quiz widget for use in Materia.",
   "author": "University of Central Florida, Center for Distributed Learning"
 }
