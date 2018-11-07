@@ -1,25 +1,20 @@
 <!DOCTYPE html>
-<!-- INJECTS IE CLASSES ONTO HTML TAG -->
-<!--[if IE 8 ]>    <html class="IE8"> <![endif]-->
-<!--[if IE 9 ]>    <html class="IE9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class=""> <!--<![endif]-->
+<html>
 	<head>
 		<title>Enigma Widget Creator</title>
 		<meta charset="utf-8" />
 
 		<!-- STYLESHEETS -->
-		<link rel="stylesheet" type="text/css" href="creator.css">
 		<link href="//fonts.googleapis.com/css?family=Lato:100,300,400,700" rel="stylesheet" type="text/css">
-		<link href="assets/jquery-ui-1.10.4.custom.css" rel="stylesheet" type="text/css">
+		<link rel="stylesheet" type="text/css" href="creator.css">
 
 		<!-- REQUIRED MATERIA JAVASCRIPT -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 		<script src="materia.creatorcore.js"></script>
 
 		<!-- YOUR PREREQUISITES -->
-		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.2.0rc3/angular-animate.min.js"></script>
-		<script src="assets/jquery-ui-1.10.4.custom.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular-animate.min.js"></script>
+		<script src="//cdnjs.cloudflare.com/ajax/libs/angular-drag-and-drop-lists/1.4.0/angular-drag-and-drop-lists.min.js"></script>
 
 		<!-- MAIN CREATOR SCRIPT -->
 		<script src="creator.js"></script>
@@ -48,26 +43,31 @@
 		<div id="board">
 			<div class="imported_pane" ng-class="{ show: imported.length }">
 				<div class="arrow_box_tip" ng-show="!shownImportTutorial">
-					Drag &amp; drop these over empty questions to add them to your game board
+					Drag &amp; drop these over categories with empty questions to add them to your game board
 				</div>
 				<div class="background"></div>
 				<div class="imported">
 					<button ng-click="imported=[]">Done Importing</button>
-					<input type="button" ng-click="imported = []" value="Done Importing">
 					<b>Imported questions</b><br>
-					<div class="overflower">
-						<div class="importable"
+					<ul class="overflower" dnd-list="imported" dnd-horizontal-list>
+						<li class="importable"
 							ng-repeat="question in imported"
+
+							dnd-draggable="question"
+							dnd-moved="imported.splice($index, 1)"
+							dnd-effect-allowed="move"
+							dnd-dragstart="curDragging = question"
+
 							data-index="{{$index}}">
 							<strong>{{ question.questions[0].text }}</strong>
-							<a href="javascript:;" ng-click="imported.splice($index,1)">x</a>
-						</div>
-					</div>
+							<span ng-click="imported.splice($index,1)">x</span>
+						</li>
+					</ul>
 				</div>
 			</div>
 			<div class="categories">
 				<div class="category" ng-repeat="category in qset.items">
-					<div class="label" style="opacity:{{ categoryOpacity(category,$index) }}">
+					<div class="label" ng-style="{opacity: categoryOpacity(category,$index)}">
 						<button class="shift-up"
 							ng-show="!category.isEditing && !category.untouched && category.index > 0"
 							ng-click="categoryReorder($index, false)"></button>
@@ -82,27 +82,33 @@
 							ng-disabled="!categoryEnabled(category,$index)"
 							ng-focus="editCategory(category)"
 							ng-blur="stopCategory(category)"
-							ng-enter></textarea>
+							ng-enter
+							focus-me="category.isEditing"></textarea>
 					</div>
 					<button ng-show="categoryShowAdd(category,$index)" class="add"></button>
 					<div ng-show="categoryShowAdd(category,$index)"
 						class="newcat"
-						ng-click="newCategory({{$index}}, category)">
+						ng-click="newCategory($index, category)">
 						New Category
 					</div>
-					<div class="questionholder"
-						ng-repeat="question in category.items"
-						ng-click="editQuestion(category,question,$index)">
-						<div class="question"
-							ng-class="{ show: !question.untouched, incomplete: !question.complete }"
-							data-category="{{category.index}}"
-							data-question="{{$index}}"
-							ng-mouseover="markQuestion(category, question)"
-							ng-mouseout="unmarkQuestion()">
-							<div class="number">{{ $index+1 }}</div>
-						</div>
-						<button ng-show="questionShowAdd(category, question, $index)" class="add"></button>
-					</div>
+					<ul dnd-list="category.items" dnd-horizontal-list
+						dnd-drop="importDropped(category, item)"
+						dnd-disable-if="!category.items[5].untouched">
+						<li class="questionholder"
+							ng-repeat="question in category.items"
+							ng-click="editQuestion(category,question,$index)"
+							ng-hide="$index == 5 && category.items.length > 6">
+							<div class="question"
+								ng-class="{ show: !question.untouched, incomplete: !question.complete }"
+								data-category="{{category.index}}"
+								data-question="{{$index}}"
+								ng-mouseover="markQuestion(category, question)"
+								ng-mouseout="unmarkQuestion()">
+								<div class="number">{{ $index+1 }}</div>
+							</div>
+							<button ng-show="questionShowAdd(category, question, $index)" class="add"></button>
+						</li>
+					</ul>
 				</div>
 				<div id="question_tooltip"
 					ng-class="{ show: hoverQuestion, problems: !hoverQuestion.complete }"
@@ -166,7 +172,7 @@
 									<a href="javascript:;" ng-click="answer.options.custom = true">Set percentage</a>
 
 									<div class="text" ng-show="answer.options.custom">
-										<input type="text" ng-model="answer.value" ng-change="numbersOnly(answer)" ng-blur="">%
+										<input type="text" ng-model="answer.value" ng-change="numbersOnly(answer)">%
 									</div>
 								</div>
 								<button class="delete" ng-click="deleteAnswer($index)"></button>
@@ -200,7 +206,7 @@
 								Next
 							</button>
 						</div>
-						<button class="remove" ng-click="deleteQuestion(curQuestion.index)">Delete</button>
+						<button class="remove" ng-click="deleteQuestion()">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>
 				</div>

@@ -124,7 +124,7 @@ $green: #70bd34;
 	margin: auto;
 	position: relative;
 	display: block;
-	margin-bottom: 40px;
+	margin-bottom: 80px;
 
 	.categories {
 		position: relative;
@@ -361,6 +361,7 @@ h1 {
 }
 
 label.checktoggle {
+	cursor: pointer;
 	display: inline-block;
 	width: 80px;
 	height: 17px;
@@ -425,10 +426,9 @@ input[type=checkbox]:checked + label.checktoggle {
 		animation: slide 0.5s;
 	}
 
-	.arrow_box {
+	.arrow_box_tip {
 		width: 184px;
 		text-align: left;
-		border: solid 2px #c59fca;
 		top: -40px;
 		left: 250px;
 		font-weight: 400;
@@ -439,15 +439,9 @@ input[type=checkbox]:checked + label.checktoggle {
 			border-width: 15px;
 			margin-left: -15px;
 		}
-		&:before {
-			border-color: rgba(157, 82, 164, 0);
-			border-top-color: #c59fca;
-			border-width: 18px;
-			margin-left: -18px;
-		}
 	}
 
-	input {
+	button {
 		position:absolute;
 		top: 5px;
 		right: 5px;
@@ -478,9 +472,11 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		.overflower {
+			position: relative;
 			width: 1000px;
 
 			.importable {
+				position: relative;
 				background: #fff;
 				color: #333;
 				display: inline-block;
@@ -495,7 +491,8 @@ input[type=checkbox]:checked + label.checktoggle {
 				z-index: 10;
 				font-size: 13px;
 
-				a {
+				span {
+					cursor: pointer;
 					color: #fff;
 					background: #333;
 					opacity: 0;
@@ -506,12 +503,12 @@ input[type=checkbox]:checked + label.checktoggle {
 					text-decoration: none;
 				}
 				&:hover {
-					a {
+					span {
 						opacity: 1;
 					}
 				}
 				&.dragging:hover {
-					a {
+					span {
 						opacity: 0;
 					}
 				}
@@ -534,6 +531,10 @@ input[type=checkbox]:checked + label.checktoggle {
 	padding-left: 20px;
 	overflow-x: hidden;
 	white-space: nowrap;
+
+	.dndPlaceholder {
+		display: none;
+	}
 
 	div.newcat {
 		display: block;
@@ -1062,14 +1063,14 @@ input[type=checkbox]:checked + label.checktoggle {
 	position: absolute;
 	border-radius: 5px;
 	background: #d1d7e2;
-	width: 170px;
+	width: 650px;
 	padding: 10px 0;
 	z-index: -1;
 	opacity: 0;
 	text-align: center;
 	color: #333;
 
-	left: 50px;
+	left: 110px;
 
 	transition: opacity 0.25s ease;
 
@@ -1111,7 +1112,6 @@ input[type=checkbox]:checked + label.checktoggle {
 
 	&:before {
 		bottom: 100%;
-		left: 59px; /* (parent width / 2) - this border width */
 		border: solid transparent;
 		border-color: rgba(255, 255, 255, 0);
 		border-bottom-color: #d1d7e2;
@@ -1121,28 +1121,28 @@ input[type=checkbox]:checked + label.checktoggle {
 		pointer-events: none;
 	}
 
-	&.q1 {
-		left: 110px;
+	&.q1:before {
+		left: 60px;
 	}
 
-	&.q2 {
-		left: 210px;
+	&.q2:before {
+		left: 160px;
 	}
 
-	&.q3 {
-		left: 309px;
+	&.q3:before {
+		left: 249px;
 	}
 
-	&.q4 {
-		left: 408px;
+	&.q4:before {
+		left: 348px;
 	}
 
-	&.q5 {
-		left: 506px;
+	&.q5:before {
+		left: 446px;
 	}
 
-	&.q6 {
-		left: 606px;
+	&.q6:before {
+		left: 546px;
 	}
 }
 
