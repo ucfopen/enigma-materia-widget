@@ -9,7 +9,7 @@
           "items": [
             {
               "materiaType": "question",
-              "id": 0,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -18,7 +18,7 @@
               ],
               "answers": [
                 {
-                  "id": "Wellville",
+                  "id": null,
                   "value": 0,
                   "text": "Wellville",
                   "options": {
@@ -26,15 +26,15 @@
                   }
                 },
                 {
-                  "id": "Arlen",
-                  "value": 0,
+                  "id": null,
+                  "value": 30,
                   "text": "Arlen",
                   "options": {
                     "letter": "B"
                   }
                 },
                 {
-                  "id": "Springfield",
+                  "id": null,
                   "value": 100,
                   "text": "Springfield",
                   "options": {
@@ -42,7 +42,7 @@
                   }
                 },
                 {
-                  "id": "Gotham",
+                  "id": null,
                   "value": 0,
                   "text": "Gotham",
                   "options": {
@@ -56,7 +56,7 @@
             },
             {
               "materiaType": "question",
-              "id": 1,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -65,7 +65,7 @@
               ],
               "answers": [
                 {
-                  "id": "2,000 AD",
+                  "id": null,
                   "value": 0,
                   "text": "2,000 AD",
                   "options": {
@@ -73,7 +73,7 @@
                   }
                 },
                 {
-                  "id": "2,500 AD",
+                  "id": null,
                   "value": 0,
                   "text": "2,500 AD",
                   "options": {
@@ -81,7 +81,7 @@
                   }
                 },
                 {
-                  "id": "3,000 AD",
+                  "id": null,
                   "value": 100,
                   "text": "3,000 AD",
                   "options": {
@@ -89,7 +89,7 @@
                   }
                 },
                 {
-                  "id": "15,000 AD",
+                  "id": null,
                   "value": 0,
                   "text": "15,000 AD",
                   "options": {
@@ -103,7 +103,7 @@
             },
             {
               "materiaType": "question",
-              "id": 2,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -112,7 +112,7 @@
               ],
               "answers": [
                 {
-                  "id": "Hank Hill",
+                  "id": null,
                   "value": 100,
                   "text": "Hank Hill",
                   "options": {
@@ -120,7 +120,7 @@
                   }
                 },
                 {
-                  "id": "Peter Griffin",
+                  "id": null,
                   "value": 0,
                   "text": "Peter Griffin",
                   "options": {
@@ -128,7 +128,7 @@
                   }
                 },
                 {
-                  "id": "Homer Simpson",
+                  "id": null,
                   "value": 0,
                   "text": "Homer Simpson",
                   "options": {
@@ -136,7 +136,7 @@
                   }
                 },
                 {
-                  "id": "Jay Sherman",
+                  "id": null,
                   "value": 0,
                   "text": "Jay Sherman",
                   "options": {
@@ -158,7 +158,7 @@
           "items": [
             {
               "materiaType": "question",
-              "id": 3,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -167,7 +167,7 @@
               ],
               "answers": [
                 {
-                  "id": "Please Shoot Me",
+                  "id": null,
                   "value": 0,
                   "text": "Please Shoot Me",
                   "options": {
@@ -175,7 +175,7 @@
                   }
                 },
                 {
-                  "id": "Suddenly Susan",
+                  "id": null,
                   "value": 0,
                   "text": "Suddenly Susan",
                   "options": {
@@ -183,7 +183,7 @@
                   }
                 },
                 {
-                  "id": "Caroline in the City",
+                  "id": null,
                   "value": 0,
                   "text": "Caroline in the City",
                   "options": {
@@ -191,7 +191,7 @@
                   }
                 },
                 {
-                  "id": "Friends",
+                  "id": null,
                   "value": 100,
                   "text": "Friends",
                   "options": {
@@ -205,7 +205,7 @@
             },
             {
               "materiaType": "question",
-              "id": 4,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -214,7 +214,7 @@
               ],
               "answers": [
                 {
-                  "id": 1986,
+                  "id": null,
                   "value": 0,
                   "text": 1986,
                   "options": {
@@ -222,7 +222,7 @@
                   }
                 },
                 {
-                  "id": 1989,
+                  "id": null,
                   "value": 100,
                   "text": 1989,
                   "options": {
@@ -230,7 +230,7 @@
                   }
                 },
                 {
-                  "id": 1991,
+                  "id": null,
                   "value": 0,
                   "text": 1991,
                   "options": {
@@ -238,7 +238,7 @@
                   }
                 },
                 {
-                  "id": 1994,
+                  "id": null,
                   "value": 0,
                   "text": 1994,
                   "options": {
@@ -252,7 +252,7 @@
             },
             {
               "materiaType": "question",
-              "id": 5,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -261,7 +261,7 @@
               ],
               "answers": [
                 {
-                  "id": "Tom Selleck",
+                  "id": null,
                   "value": 0,
                   "text": "Tom Selleck",
                   "options": {
@@ -269,7 +269,7 @@
                   }
                 },
                 {
-                  "id": "Ted Danson",
+                  "id": null,
                   "value": 100,
                   "text": "Ted Danson",
                   "options": {
@@ -277,7 +277,7 @@
                   }
                 },
                 {
-                  "id": "Burt Reynolds",
+                  "id": null,
                   "value": 0,
                   "text": "Burt Reynolds",
                   "options": {
@@ -285,7 +285,7 @@
                   }
                 },
                 {
-                  "id": "David Hasselhoff",
+                  "id": null,
                   "value": 0,
                   "text": "David Hasselhoff",
                   "options": {
@@ -307,7 +307,7 @@
           "items": [
             {
               "materiaType": "question",
-              "id": 6,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -316,7 +316,7 @@
               ],
               "answers": [
                 {
-                  "id": 15,
+                  "id": null,
                   "value": 0,
                   "text": 15,
                   "options": {
@@ -324,7 +324,7 @@
                   }
                 },
                 {
-                  "id": 25,
+                  "id": null,
                   "value": 0,
                   "text": 25,
                   "options": {
@@ -332,7 +332,7 @@
                   }
                 },
                 {
-                  "id": 35,
+                  "id": null,
                   "value": 100,
                   "text": 35,
                   "options": {
@@ -340,7 +340,7 @@
                   }
                 },
                 {
-                  "id": 45,
+                  "id": null,
                   "value": 0,
                   "text": 45,
                   "options": {
@@ -354,7 +354,7 @@
             },
             {
               "materiaType": "question",
-              "id": 7,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -363,7 +363,7 @@
               ],
               "answers": [
                 {
-                  "id": "Monty Hall",
+                  "id": null,
                   "value": 100,
                   "text": "Monty Hall",
                   "options": {
@@ -371,7 +371,7 @@
                   }
                 },
                 {
-                  "id": "Bob Barker",
+                  "id": null,
                   "value": 0,
                   "text": "Bob Barker",
                   "options": {
@@ -379,7 +379,7 @@
                   }
                 },
                 {
-                  "id": "Wink Martendale",
+                  "id": null,
                   "value": 0,
                   "text": "Wink Martendale",
                   "options": {
@@ -387,7 +387,7 @@
                   }
                 },
                 {
-                  "id": "Dick Clark",
+                  "id": null,
                   "value": 0,
                   "text": "Dick Clark",
                   "options": {
@@ -401,7 +401,7 @@
             },
             {
               "materiaType": "question",
-              "id": 8,
+              "id": null,
               "type": "MC",
               "questions": [
                 {
@@ -410,7 +410,7 @@
               ],
               "answers": [
                 {
-                  "id": 1975,
+                  "id": null,
                   "value": 100,
                   "text": 1975,
                   "options": {
@@ -418,7 +418,7 @@
                   }
                 },
                 {
-                  "id": 1981,
+                  "id": null,
                   "value": 0,
                   "text": 1981,
                   "options": {
@@ -426,7 +426,7 @@
                   }
                 },
                 {
-                  "id": 1985,
+                  "id": null,
                   "value": 0,
                   "text": 1985,
                   "options": {
@@ -434,7 +434,7 @@
                   }
                 },
                 {
-                  "id": 1989,
+                  "id": null,
                   "value": 0,
                   "text": 1989,
                   "options": {
