@@ -1,26 +1,4 @@
 <?php
-/**
- * Materia
- * It's a thing
- *
- * @package	    Materia
- * @version    1.0
- * @author     UCF New Media
- * @copyright  2011 New Media
- * @link       http://kogneato.com
- */
-
-
-/**
- * NEEDS DOCUMENTATION
- *
- * The widget managers for the Materia package.
- *
- * @package	    Main
- * @subpackage  scoring
- * @category    Modules
-  * @author      ADD NAME HERE
- */
 
 namespace Materia;
 
@@ -29,13 +7,6 @@ class Score_Modules_EnigmaGS extends Score_Module
 
 	private $new_logs = [];
 	private $q_ids = null;
-
-	private function hide_correct()
-	{
-		$options = $this->inst->qset->data['options'];
-		$hide = isset($options['hide_correct']) && $options['hide_correct'] == true;
-		return $hide;
-	}
 
 	public function check_answer($log)
 	{
@@ -65,8 +36,9 @@ class Score_Modules_EnigmaGS extends Score_Module
 
 	protected function details_for_question_answered($log)
 	{
-		if ( ! $this->hide_correct() )
+		if ( ! $this->hide_correct()){
 			return parent::details_for_question_answered($log);
+		}
 
 		$q     = $this->questions[$log->item_id];
 		$score = $this->check_answer($log);
@@ -90,8 +62,9 @@ class Score_Modules_EnigmaGS extends Score_Module
 
 	protected function get_score_details()
 	{
-		if ( ! $this->hide_correct() )
+		if ( ! $this->hide_correct()){
 			return parent::get_score_details();
+		}
 
 		$details = [];
 
