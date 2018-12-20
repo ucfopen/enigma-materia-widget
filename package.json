@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "enigma"
   },
-  "version": "2.0.1",
+  "version": "2.1.0",
   "dependencies": {
     "materia-widget-development-kit": "^2.0.0"
   },
@@ -15,7 +15,10 @@
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura"
   },
   "jest": {
-    "coverageReporters": ["text-summary", "lcov"],
+    "coverageReporters": [
+      "text-summary",
+      "lcov"
+    ],
     "verbose": false,
     "collectCoverageFrom": [
       "src/**/*.coffee"
