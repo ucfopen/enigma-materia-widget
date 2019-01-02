@@ -52,6 +52,7 @@ describe('Creator Controller', function() {
 		ans.value = val;
 		$scope.numbersOnly(ans);
 		expect(ans.value).toBe(exp);
+		if(val < 100) expect(ans.options.correct).toBe(false);
 	}
 
 	var quickCategory = function(index, name) {
@@ -2205,6 +2206,7 @@ describe('Creator Controller', function() {
 	//this shouldn't be possible currently, but old qsets may exist in this state
 	//if a category is unnamed, the creator checks to see if it has questions
 	//if so, it is allowed
+	//...actually - not any more; empty categories are allowed now and dealt with differently
 	it('should react properly if a category has questions but no name', function(){
 		var existing = {};
 		angular.copy(qset, existing);
@@ -2214,30 +2216,33 @@ describe('Creator Controller', function() {
 
 		$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
 
-		expect($scope.qset.items[0].name).toBe('');
+		//expected behavior is for all category names to be non-empty
+		//empty names will automatically be changed to a single space
+		expect($scope.qset.items[0].name).toBe(' ');
 		expect($scope.numQuestions()).toBe(9);
 	});
 
 	//if not, it should be deleted
-	it('should react properly if a category has no name or questions', function(){
-		var existing = {};
-		angular.copy(qset, existing);
+	//this behavior was changed - see test above
+	// it('should react properly if a category has no name or questions', function(){
+	// 	var existing = {};
+	// 	angular.copy(qset, existing);
 
-		//unset the name of the first category, and get rid of all of its questions
-		existing.data.items[0].name = '';
-		existing.data.items[0].items = [];
+	// 	//unset the name of the first category, and get rid of all of its questions
+	// 	existing.data.items[0].name = '';
+	// 	existing.data.items[0].items = [];
 
-		var test = existing.data.items[1];
+	// 	var test = existing.data.items[1];
 
-		$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
+	// 	$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
 
-		//the new first category should be the second category from the incoming qset
-		expect($scope.qset.items[0]).toEqual(test);
-		expect($scope.numQuestions()).toBe(6);
+	// 	//the new first category should be the second category from the incoming qset
+	// 	expect($scope.qset.items[0]).toEqual(test);
+	// 	expect($scope.numQuestions()).toBe(6);
 
-		//just to be sure
-		expect($scope.qset.items[0].name).toBe('Sitcoms');
-	});
+	// 	//just to be sure
+	// 	expect($scope.qset.items[0].name).toBe('Sitcoms');
+	// });
 
 	//Enigma qsets should be generated such that the 'data' property contains the categories
 	//if for some reason the qset structure is different, accept it anyway

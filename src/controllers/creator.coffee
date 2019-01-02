@@ -374,6 +374,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		# constrain it between 0 and 100
 		answer.value = 100 if ~~answer.value > 100
 		answer.value = 0 if ~~answer.value < 0
+		answer.options.correct = answer.value is 100
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->
