@@ -766,6 +766,27 @@ describe('Creator Controller', function() {
 		expect($scope.curQuestion.answers[0].options.custom).toBe(false);
 	});
 
+	it.only('should set answer value correctly when toggling between correct and werong', function(){
+		$scope.initNewWidget(widgetInfo);
+		$scope.hideCover()
+		$scope.newCategory(0, $scope.qset.items[0]);
+		$scope.stopCategory($scope.qset.items[0]);
+		$scope.newCategory(0, $scope.qset.items[0]);
+		$scope.qset.items[0].name = 'Test';
+		$scope.stopCategory($scope.qset.items[0]);
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
+		$scope.addAnswer();
+		quickValue($scope.curQuestion.answers[0], '100', 100);
+
+		expect($scope.curQuestion.answers[0].value).toBe(100);
+		//this is normally attached to an input in the frontend thanks to ngModel
+		//changing to to 'false' by hand here simulates the automatic change that facilitates
+		$scope.curQuestion.answers[0].options.correct = false;
+		$scope.toggleCorrect($scope.curQuestion.answers[0]);
+
+		expect($scope.curQuestion.answers[0].value).toBe(0);
+	});
+
 	it('should no longer point out the "Blank answer" error', function(){
 		$scope.initNewWidget(widgetInfo);
 		$scope.hideCover()

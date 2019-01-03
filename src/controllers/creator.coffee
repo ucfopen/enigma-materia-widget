@@ -367,6 +367,9 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			custom: false
 			correct: false
 
+	$scope.toggleCorrect = (answer) ->
+		if answer.options.correct then answer.value = 100 else answer.value =  0
+
 	# called when an answer's custom value is changed - makes sure no non-numbers are present
 	$scope.numbersOnly = (answer) ->
 		# strip out any non-numbers and cast it to a number
@@ -394,6 +397,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		problems = []
 
 		for answer in question.answers
+			console.log answer.options.correct, answer.value
 			# make sure we interpret the given answer as a string, then remove extraneous whitespace
 			answer.text += ''
 			trimmedAnswer = answer.text.trim()
