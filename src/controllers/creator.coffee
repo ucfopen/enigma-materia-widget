@@ -397,7 +397,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		problems = []
 
 		for answer in question.answers
-			console.log answer.options.correct, answer.value
 			# make sure we interpret the given answer as a string, then remove extraneous whitespace
 			answer.text += ''
 			trimmedAnswer = answer.text.trim()
