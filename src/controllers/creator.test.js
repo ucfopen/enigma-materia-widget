@@ -766,7 +766,7 @@ describe('Creator Controller', function() {
 		expect($scope.curQuestion.answers[0].options.custom).toBe(false);
 	});
 
-	it.only('should set answer value correctly when toggling between correct and wrong', function(){
+	it('should set answer value correctly when toggling between correct and wrong', function(){
 		$scope.initNewWidget(widgetInfo);
 		$scope.hideCover()
 		$scope.newCategory(0, $scope.qset.items[0]);
