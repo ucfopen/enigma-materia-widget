@@ -52,6 +52,7 @@ describe('Creator Controller', function() {
 		ans.value = val;
 		$scope.numbersOnly(ans);
 		expect(ans.value).toBe(exp);
+		if(val < 100) expect(ans.options.correct).toBe(false);
 	}
 
 	var quickCategory = function(index, name) {
@@ -765,6 +766,27 @@ describe('Creator Controller', function() {
 		expect($scope.curQuestion.answers[0].options.custom).toBe(false);
 	});
 
+	it('should set answer value correctly when toggling between correct and wrong', function(){
+		$scope.initNewWidget(widgetInfo);
+		$scope.hideCover()
+		$scope.newCategory(0, $scope.qset.items[0]);
+		$scope.stopCategory($scope.qset.items[0]);
+		$scope.newCategory(0, $scope.qset.items[0]);
+		$scope.qset.items[0].name = 'Test';
+		$scope.stopCategory($scope.qset.items[0]);
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
+		$scope.addAnswer();
+		quickValue($scope.curQuestion.answers[0], '100', 100);
+
+		expect($scope.curQuestion.answers[0].value).toBe(100);
+		//this is normally attached to an input in the frontend thanks to ngModel
+		//changing to to 'false' by hand here simulates the automatic change that facilitates
+		$scope.curQuestion.answers[0].options.correct = false;
+		$scope.toggleCorrect($scope.curQuestion.answers[0]);
+
+		expect($scope.curQuestion.answers[0].value).toBe(0);
+	});
+
 	it('should no longer point out the "Blank answer" error', function(){
 		$scope.initNewWidget(widgetInfo);
 		$scope.hideCover()
@@ -1114,7 +1136,7 @@ describe('Creator Controller', function() {
 		expect($scope.qset.items[4].name).toBe('Cat4');
 	});
 
-	it.skip('should edit the name of a category', function(){
+	it('should edit the name of a category', function(){
 		$scope.initNewWidget(widgetInfo);
 		$scope.hideCover()
 		$scope.newCategory(0, $scope.qset.items[0]);
@@ -1153,10 +1175,12 @@ describe('Creator Controller', function() {
 		//this method is normally called by clicking a category label
 		$scope.editCategory($scope.qset.items[0]);
 
+		expect($scope.qset.items[0].name).toBe('Cat1');
+
 		$scope.qset.items[0].name = 'NewCat1';
 		$scope.stopCategory($scope.qset.items[0]);
 
-		// needs some expects ?!
+		expect($scope.qset.items[0].name).toBe('NewCat1');
 	});
 
 	it('should not allow a category to have no name if it has questions in it', function(){
@@ -2041,82 +2065,11 @@ describe('Creator Controller', function() {
 		expect(Materia.CreatorCore.save).toHaveBeenCalled();
 	});
 
-	it.skip('should not save if there are no categories', function(){
+	it('should not save if there are no categories', function(){
 		$scope.initNewWidget(widgetInfo);
-		$scope.hideCover()
-		$scope.newCategory(0, $scope.qset.items[0]);
-		$scope.stopCategory($scope.qset.items[0]);
-		$scope.newCategory(0, $scope.qset.items[0]);
-		$scope.qset.items[0].name = 'Test';
-		$scope.stopCategory($scope.qset.items[0]);
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.editComplete();
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.curQuestion.questions[0].text = 'Test';
-		$scope.editComplete();
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.deleteAnswer(2);
-		$scope.deleteAnswer(1);
-		$scope.deleteAnswer(0);
-		$scope.editComplete();
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.addAnswer();
-		quickValue($scope.curQuestion.answers[0], '30', 30);
-		quickValue($scope.curQuestion.answers[0], '100', 100);
-		$scope.editComplete();
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.curQuestion.answers[0].text = 'Answer1';
-		$scope.editComplete();
-		jest.spyOn(window, 'confirm')
-		window.confirm.mockReturnValueOnce(true)
-		$scope.deleteCategory($scope.qset.items[0]);
-		quickCategory(0, 'Cat1');
-		quickCategory(1, 'Cat2');
-		quickCategory(2, 'Cat3');
-		quickCategory(3, 'Cat4');
-		quickCategory(4, 'Cat5');
-		$scope.editCategory($scope.qset.items[0]);
-		$scope.qset.items[0].name = 'NewCat1';
-		$scope.stopCategory($scope.qset.items[0]);
-		quickQuestion(0, 0, 'Question1');
-		quickQuestion(0, 1, 'Question2');
-		quickQuestion(0, 2, 'Question3');
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
-		$scope.questionReorder(true);
-		$scope.questionReorder(true);
-		$scope.editComplete();
-		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[1], 1);
-		$scope.questionReorder(false);
-		$scope.deleteQuestion();
-		$scope.markQuestion($scope.qset.items[0], $scope.qset.items[0].items[0]);
-		$scope.onQuestionImportComplete(qset.data.items[0].items);
-		$scope.onQuestionImportComplete([qset.data.items[1].items[0], qset.data.items[1].items[1]]);
-		$scope.importDropped($scope.qset.items[0], $scope.imported[0]);
-		$scope.imported.splice(0, 1);
-		quickQuestion(0, 3, 'Question1');
-		quickQuestion(0, 4, 'Question1');
-		quickQuestion(0, 5, 'Question1');
-		$scope.importDropped($scope.qset.items[0], $scope.imported[0]);
-		$scope.imported = [];
-		$scope.editQuestion($scope.qset.items[1], $scope.qset.items[1].items[0], 0);
-		$scope.editComplete();
-		$scope.onSaveClicked('save');
-		$scope.editQuestion($scope.qset.items[1], $scope.qset.items[1].items[0], 0);
-		$scope.deleteQuestion();
-		$scope.onSaveClicked();
-		// end setup
 
-		expect($scope.qset.items).toHaveLength(6)
-
-		//we should still have three categories left from before, delete all of them first
-		window.confirm.mockReturnValueOnce(true)
-		$scope.deleteCategory($scope.qset.items[0]);
-		window.confirm.mockReturnValueOnce(true)
-		$scope.deleteCategory($scope.qset.items[0]);
-		window.confirm.mockReturnValueOnce(true)
-		$scope.deleteCategory($scope.qset.items[0]);
-
-		expect($scope.qset.items).toHaveLength(1)
+		//not that this should ever happen, but...
+		$scope.qset.items = []
 
 		$scope.onSaveClicked();
 		expect(Materia.CreatorCore.cancelSave).toHaveBeenCalledWith('No categories found.');
@@ -2175,6 +2128,34 @@ describe('Creator Controller', function() {
 		expect($scope.numQuestions()).toBe(0);
 	});
 
+	//not that this should even be possible, but...
+	it('should make sure scaffolded categories have no questions', function() {
+		$scope.initNewWidget(widgetInfo);
+		$scope.hideCover()
+		quickCategory(0, 'Cat1');
+		quickCategory(1, 'Cat2');
+		quickCategory(2, 'Cat3');
+		quickCategory(3, 'Cat4');
+		quickCategory(4, 'Cat5');
+
+		//unnamed categories ahead of named categories should be removed
+		$scope.qset.items[0].name = ''
+
+		jest.spyOn(window, 'confirm')
+		window.confirm.mockReturnValueOnce(true)
+		$scope.deleteCategory($scope.qset.items[4]);
+
+		expect($scope.qset.items[0].name).toBe('Cat2');
+
+		//...unless they have questions in them
+		$scope.qset.items[1].name = ''
+		$scope.qset.items[1].items[0].questions[0].text = 'text'
+
+		$scope.deleteCategory($scope.qset.items[3]);
+
+		expect($scope.qset.items[1].name).toBe('');
+	});
+
 	//by default an Enigma widget will have 5 empty categories
 	//if an existing widget has fewer, it will add empties to get to 5
 	//if it has 5 or more, it should add an empty to the end
@@ -2205,6 +2186,7 @@ describe('Creator Controller', function() {
 	//this shouldn't be possible currently, but old qsets may exist in this state
 	//if a category is unnamed, the creator checks to see if it has questions
 	//if so, it is allowed
+	//...actually - not any more; empty categories are allowed now and dealt with differently
 	it('should react properly if a category has questions but no name', function(){
 		var existing = {};
 		angular.copy(qset, existing);
@@ -2214,29 +2196,10 @@ describe('Creator Controller', function() {
 
 		$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
 
-		expect($scope.qset.items[0].name).toBe('');
+		//expected behavior is for all category names to be non-empty
+		//empty names will automatically be changed to a single space
+		expect($scope.qset.items[0].name).toBe(' ');
 		expect($scope.numQuestions()).toBe(9);
-	});
-
-	//if not, it should be deleted
-	it('should react properly if a category has no name or questions', function(){
-		var existing = {};
-		angular.copy(qset, existing);
-
-		//unset the name of the first category, and get rid of all of its questions
-		existing.data.items[0].name = '';
-		existing.data.items[0].items = [];
-
-		var test = existing.data.items[1];
-
-		$scope.initExistingWidget(widgetInfo.name, widgetInfo, existing);
-
-		//the new first category should be the second category from the incoming qset
-		expect($scope.qset.items[0]).toEqual(test);
-		expect($scope.numQuestions()).toBe(6);
-
-		//just to be sure
-		expect($scope.qset.items[0].name).toBe('Sitcoms');
 	});
 
 	//Enigma qsets should be generated such that the 'data' property contains the categories

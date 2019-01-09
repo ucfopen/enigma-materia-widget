@@ -164,7 +164,7 @@
 							<td>
 								<div class="controls">
 									<div class="slide-toggle" ng-show="!answer.options.custom">
-										<input type="checkbox" id="qtoggle{{$index}}" ng-model="answer.options.correct"/>
+										<input type="checkbox" id="qtoggle{{$index}}" ng-model="answer.options.correct" ng-change="toggleCorrect(answer)"/>
 										<label for="qtoggle{{$index}}" class="checktoggle">
 											<span></span>
 										</label>

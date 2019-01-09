@@ -367,6 +367,9 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			custom: false
 			correct: false
 
+	$scope.toggleCorrect = (answer) ->
+		if answer.options.correct then answer.value = 100 else answer.value =  0
+
 	# called when an answer's custom value is changed - makes sure no non-numbers are present
 	$scope.numbersOnly = (answer) ->
 		# strip out any non-numbers and cast it to a number
@@ -374,6 +377,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		# constrain it between 0 and 100
 		answer.value = 100 if ~~answer.value > 100
 		answer.value = 0 if ~~answer.value < 0
+		answer.options.correct = answer.value is 100
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->
