@@ -67,6 +67,9 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 			# also sanitize category names if necessary
 			qset.items[i].name = ' ' unless qset.items[i].name
 
+			# also make sure every category has an index
+			qset.items[i].index = i unless qset.items[i].index
+
 			j = 0
 			while j < qset.items[i].items.length
 				qset.items[i].items[j] = _checkQuestion qset.items[i].items[j]
