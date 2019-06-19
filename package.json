@@ -5,7 +5,9 @@
   },
   "version": "2.1.1",
   "dependencies": {
-    "materia-widget-development-kit": "^2.3.0"
+    "html-webpack-plugin": "^3.2.0",
+    "materia-widget-development-kit": "^2.3.0",
+    "meta-marked": "^0.4.2"
   },
   "scripts": {
     "start": "webpack-dev-server",
