@@ -4,7 +4,7 @@ Enigma is a Jeopardy-like study and quiz tool. Question are separated into categ
 
 ## Main Board ##
 
-![enigma screen]({{BASE_PATH}}/assets/img/widget_guides_enigma.png "enigma screen")
+![enigma screen](assets/widget_guides_enigma.png "enigma screen")
 
 1. Title of the widget
 2. Current earned score percentage
@@ -16,7 +16,7 @@ Enigma is a Jeopardy-like study and quiz tool. Question are separated into categ
 
 ## Question Screen ##
 
-![enigma question screen]({{BASE_PATH}}/assets/img/widget_guides_enigma_question_screen.png "enigma question screen")
+![enigma question screen](assets/widget_guides_enigma_question_screen.png "enigma question screen")
 
 1. Question number and category name
 2. Question text

@@ -2,7 +2,7 @@
 
 Enigma is a Jeopardy-like study or quiz tool. Questions are separated into categories.
 
-![enigma creator screen]({{BASE_PATH}}/assets/img/create_widget_enigma.png "enigma creator screen")
+![enigma creator screen](assets/create_widget_enigma.png "enigma creator screen")
 
 1. Title of the widget
 1. Randomize Answer Order
@@ -21,7 +21,7 @@ Categories can be used to group questions according to similarities in their con
 
 ### Questions ###
 
-![enigma question screen]({{BASE_PATH}}/assets/img/create_widget_enigma_question.png "enigma question screen")
+![enigma question screen](assets/create_widget_enigma_question.png "enigma question screen")
 
 1. Question Text
 2. Answer Text
