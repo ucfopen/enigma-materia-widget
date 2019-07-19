@@ -1,13 +1,14 @@
 language: node_js
 node_js:
-  - '6'
+  - '12'
 cache:
   yarn: true
   directories:
     - node_modules
 before_install:
+  - npm install -g yarn
   - npm config set spin false
-  - npm install -g npm@^5
+  - npm install -g npm@^6.9.0
 script:
   - yarn test-ci
   - yarn build
