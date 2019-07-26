@@ -1,6 +1,6 @@
 ## Overview ##
 
-Enigma is a Jeopardy-like study or quiz tool. Questions are separated into categories. Unlike Jeaopardy, every question in a row is given the same score weight.
+Enigma is a Jeopardy-like multiple choice quiz tool. Questions are separated into categories. Unlike Jeopardy, every question in a row is given the same score weight.
 
 ![enigma creator screen](assets/create_widget_enigma.png "enigma creator screen")
 
@@ -16,7 +16,7 @@ Enigma is a Jeopardy-like study or quiz tool. Questions are separated into categ
 
 ### Categories ###
 
-Categories can be used to group questions according to similarities in their content or purpose.  Each category can have up to six questions.
+Categories can be used to group questions according to similarities in their content or purpose. Each category can have up to six questions. You can alter the vertical arrangement of categories by clicking the up or down arrows on the right side of the category text.
 
 ### Questions ###
 

@@ -1,6 +1,6 @@
 # Overview #
 
-Enigma is a Jeopardy-like study and quiz tool. Question are separated into categorical rows.
+Enigma is a Jeopardy-like multiple choice quiz tool. Questions are separated into categories. Unlike Jeopardy, every question in a row is given the same score weight.
 
 ## Main Board ##
 
