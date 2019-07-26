@@ -4,34 +4,24 @@ Enigma is a Jeopardy-like study and quiz tool. Question are separated into categ
 
 ## Main Board ##
 
-![enigma screen](assets/widget_guides_enigma.png "enigma screen")
+![enigma screen](assets/play_widget_enigma.png "enigma screen")
 
 1. Title of the widget
-2. Current earned score percentage
-3. Category Name
+2. Category name
+3. Category questions
 4. Question tile, incorrect response given
 5. Question tile, correct response given
-6. Audio on/off
-
-
-## Question Screen ##
-
-![enigma question screen](assets/widget_guides_enigma_question_screen.png "enigma question screen")
-
-1. Question number and category name
-2. Question text
-3. Answer in answer list
+6. Question tile that has yet to be completed
+7. Remaining question indicator
 
 ## Details ##
 
 ### Gameplay ###
 
-Select a question on the game board to answer a question. This will take you to the Question screen for that question.
+![enigma question screen](assets/play_widget_enigma_question.png "enigma question screen")
 
-### Answer List ###
-
-Click the correct answer by clicking on the text or the radio button associated with the answer. To submit the answer, click the **Submit Answer** button at the bottom right.
+Selecting a question brings up the question screen. Select an answer choice and click "Submit Final Answer" to return to the main board.
 
 ### Submitting ###
 
-When all questions are answered you will be prompted to submit your answers. This will take you to the score screen to review how you did.
+When all questions are answered you will be prompted to submit your answers. This will take you to the score screen to review your score.
