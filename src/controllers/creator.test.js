@@ -2218,4 +2218,11 @@ describe('Creator Controller', function() {
 
 		expect($scope.numQuestions()).toBe(9);
 	});
+
+	it('should make sure all categories are indexed properly', function(){
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+		expect($scope.qset.items[0].index).toBe(0);
+		expect($scope.qset.items[1].index).toBe(1);
+		expect($scope.qset.items[2].index).toBe(2);
+	});
 });
