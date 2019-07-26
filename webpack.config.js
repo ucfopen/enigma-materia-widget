@@ -1,63 +1,55 @@
+const fs = require('fs')
 const path = require('path')
-const srcPath = path.join(__dirname, 'src') + path.sep
 const widgetWebpack = require('materia-widget-development-kit/webpack-widget')
+const copy = widgetWebpack.getDefaultCopyList()
 
-const rules = widgetWebpack.getDefaultRules()
-const entries = widgetWebpack.getDefaultEntries()
+const outputPath = path.join(process.cwd(), 'build')
 
-// cusomize entries
-entries['creator.js'] = [
-	srcPath + 'modules/creator.coffee',
-	srcPath + 'directives/enter.coffee',
-	srcPath + 'directives/focus.coffee',
-	srcPath + 'controllers/creator.coffee'
-]
+const customCopy = copy.concat([
+	{
+		from: path.join(__dirname, 'src', '_guides', 'assets'),
+		to: path.join(outputPath, 'guides', 'assets'),
+		toType: 'dir'
+	},
+])
 
-entries['player.js'] = [
-	srcPath + 'modules/player.coffee',
-	srcPath + 'directives/scroll.coffee',
-	srcPath + 'controllers/player.coffee'
-]
-
-// this is needed to prevent html-loader from causing issues with
-// style tags in the player using angular
-let customHTMLAndReplaceRule = {
-	test: /\.html$/i,
-	exclude: /node_modules/,
-	use: [
-		{
-			loader: 'file-loader',
-			options: { name: '[name].html' }
-		},
-		{
-			loader: 'extract-loader'
-		},
-		{
-			loader: 'string-replace-loader',
-			options: { multiple: widgetWebpack.materiaJSReplacements }
-		},
-		{
-			loader: 'html-loader',
-			options: {
-				minifyCSS: false
-			}
-		}
+const entries = {
+	'creator.js': [
+		path.join(__dirname, 'src', 'directives/enter.coffee'),
+		path.join(__dirname, 'src', 'directives/focus.coffee'),
+		path.join(__dirname, 'src', 'modules/creator.coffee'),
+		path.join(__dirname, 'src', 'controllers/creator.coffee')
+	],
+	'player.js': [
+		path.join(__dirname, 'src', 'modules/player.coffee'),
+		path.join(__dirname, 'src', 'directives/scroll.coffee'),
+		path.join(__dirname, 'src', 'controllers/player.coffee')
+	],
+	'creator.css': [
+		path.join(__dirname, 'src', 'creator.html'),
+		path.join(__dirname, 'src', 'creator.scss')
+	],
+	'player.css': [
+		path.join(__dirname, 'src', 'player.html'),
+		path.join(__dirname, 'src', 'player.scss')
+	],
+	'guides/guideStyles.css': [
+		path.join(__dirname, 'src', '_guides', 'guideStyles.scss')
+	],
+	'guides/player.temp.html': [
+		path.join(__dirname, 'src', '_guides', 'player.md')
+	],
+	'guides/creator.temp.html': [
+		path.join(__dirname, 'src', '_guides', 'creator.md')
 	]
 }
 
-let customRules = [
-	rules.loaderDoNothingToJs,
-	rules.loaderCompileCoffee,
-	rules.copyImages,
-	customHTMLAndReplaceRule, // <--- replaces "rules.loadHTMLAndReplaceMateriaScripts"
-	rules.loadAndPrefixCSS,
-	rules.loadAndPrefixSASS,
-]
-
-// options for the build
-let options = {
-	entries: entries,
-	moduleRules: customRules
+const options = {
+	copyList: customCopy,
+	entries: entries
 }
 
-module.exports = widgetWebpack.getLegacyWidgetBuildConfig(options)
+let buildConfig = widgetWebpack.getLegacyWidgetBuildConfig(options)
+module.exports = buildConfig
+
+// module.exports = widgetWebpack.getLegacyWidgetBuildConfig(options)
