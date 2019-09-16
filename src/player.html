@@ -18,7 +18,7 @@
 		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
-		<header>
+		<header ng-show="delayedHeaderInit">
 			<h1>{{ title }}</h1>
 			<div id='scorebox' class='score' role='status'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
