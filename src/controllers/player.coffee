@@ -20,6 +20,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 	$scope.percentCorrect = 0
 	$scope.percentIncorrect = 0
 
+	$scope.delayedHeaderInit = false
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
 		$scope.title = instance.name
@@ -32,8 +34,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 				$scope.totalQuestions++
 
 		$scope.$apply()
-
 		Materia.Engine.setHeight()
+
+		# delay header draw until after gameboard is rendered, forcing recalculation of visible area. This appears to be a chrome 76 bug related to changing iframe height
+		$timeout ->
+			$scope.delayedHeaderInit = true
 
 	# randomize the order of a question's answers
 	_shuffle = (a) ->
