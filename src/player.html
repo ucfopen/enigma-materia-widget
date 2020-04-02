@@ -53,7 +53,7 @@
 			</div>
 			<div class='menu off'></div>
 		</header>
-		<section class='gameboard'>
+		<section id='gameboard' class='gameboard'>
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
@@ -66,10 +66,10 @@
 					role='button'
 					class='question'
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
-					ng-click="selectQuestion(category, question)">
+					ng-click="selectQuestion(category, question)" ng-keyup="checkKey($event.keyCode, category, question)" ng-attr-tabindex="{{ checkTab && !finalTab ? 0 : -1 }}">
 					<span ng-hide="question.answered">{{ $index + 1 }}</span>
 					<span ng-show="question.score === 100">&#x2713;</span>
-					<span ng-show="question.score > 0 && question.score < 100">{{ question.score }}&#x25;</span>
+					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
 					<span ng-show="question.score === 0">X</span>
 				</div>
 			</section>
@@ -81,14 +81,14 @@
 			<div id='t-question-page'
 				class='question-popup'>
 				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
-				<div class='question-text'>
+				<div id="question-text" class='question-text' ng-attr-tabindex="{{ checkTab ? 0 : -1 }}">
 					{{ currentQuestion.questions[0].text }}
 				</div>
 				<div class='answers'>
 					<ul ng-class="{answered: currentQuestion.answered}">
-						<li ng-repeat='answer in currentQuestion.answers'
+						<li class="question-li" ng-repeat='answer in currentQuestion.answers'
 							ng-class="{selected: answer == currentAnswer}"
-							ng-click="selectAnswer(answer)">
+							ng-click="selectAnswer(answer)" ng-keyup="checkKeyAnswer($event.keyCode, answer)" ng-attr-tabindex="{{ !checkTab && !finalTab ? 0 : -1 }}">
 							<span class='mark-holder' ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
 								<span class="correct mark" ng-show="currentQuestion.score == 100">
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
@@ -122,14 +122,14 @@
 					</ul>
 				</div>
 				<div class="menu">
-					<button class="button return"
+					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
 						ng-click="cancelQuestion()">
 						Return
 					</button>
 					<button class="button submit"
 						ng-disabled="!currentAnswer || currentQuestion.answered"
-						ng-click="submitAnswer()">
+						ng-click="submitAnswer()" ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
 						Submit Final Answer
 					</button>
 				</div>
@@ -154,7 +154,7 @@
 				</div>
 			</div>
 			<h1>All Questions Answered</h1>
-			<button ng-click="end()">Submit for Review</button>
+			<button id="end-button" ng-click="end()">Submit for Review</button>
 		</section>
 	</body>
 </html>

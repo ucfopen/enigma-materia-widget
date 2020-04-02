@@ -22,6 +22,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 	$scope.delayedHeaderInit = false
 
+	# variable to check which screen the user is on (true = gameboard)
+	$scope.checkTab = true
+	# variable checks if on final submit for grading screen
+	$scope.finalTab = false
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
 		$scope.title = instance.name
@@ -47,11 +52,26 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			[a[i], a[j]] = [a[j], a[i]]
 		a
 
+	# the following two functions check for enter/space key input when selecting a
+	# question and an answer, respectively
+	# i know there is probably a better way to do this
+	$scope.checkKey = (e, category, question) ->
+		console.log e
+		if e == 13 || e == 32
+			$scope.selectQuestion(category, question)
+
+	$scope.checkKeyAnswer = (e, answer) ->
+		if e == 13 || e == 32
+			$scope.selectAnswer(answer)
+
 	$scope.selectQuestion = (category, question) ->
 		throw Error 'A question is already selected!' if $scope.currentQuestion
 		unless question.answered
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
+			# this changes the focus automatically to the right area
+			setTimeout (-> document.getElementById('question-text').focus()), 100
+			$scope.setTabIndex()
 
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
@@ -67,6 +87,15 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		_updateScore() if _wasUpdated
 
 		_gameOver() if $scope.scores.length == $scope.totalQuestions
+		$scope.findQuestion()
+		$scope.setTabIndex()
+
+	# function to find the first unanswered question in list and shift focus to it
+	$scope.findQuestion = ->
+		for item in document.getElementsByClassName('question')
+			if item.title.includes('Unanswered')
+				setTimeout (-> item.focus()), 100
+				break
 
 	$scope.submitAnswer = ->
 		throw Error 'Question already answered!' if $scope.currentQuestion.answered
@@ -79,8 +108,14 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 			$scope.currentQuestion.score = check.score
 			$scope.answeredQuestions.push $scope.currentQuestion
+			setTimeout (-> document.getElementById('return').focus()), 100
 		else
 			throw Error 'Submitted answer not in this question!'
+
+	# changes checkTab to false when on question screen and true when on gameboard so
+	# that you can't tab through the hidden screen
+	$scope.setTabIndex = ->
+		$scope.checkTab = !$scope.checkTab
 
 	_updateScore = ->
 		total = 0
@@ -109,6 +144,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 	_gameOver = ->
 		$scope.allAnswered = true
+		setTimeout (-> document.getElementById('end-button').focus()), 100
+		$scope.finalTab = true
 
 		# End, but don't show the score screen yet
 		Materia.Engine.end no
