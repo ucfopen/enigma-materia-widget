@@ -52,18 +52,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			[a[i], a[j]] = [a[j], a[i]]
 		a
 
-	# the following two functions check for enter/space key input when selecting a
-	# question and an answer, respectively
-	# i know there is probably a better way to do this
-	$scope.checkKey = (e, category, question) ->
-		console.log e
-		if e == 13 || e == 32
-			$scope.selectQuestion(category, question)
-
-	$scope.checkKeyAnswer = (e, answer) ->
-		if e == 13 || e == 32
-			$scope.selectAnswer(answer)
-
 	$scope.selectQuestion = (category, question) ->
 		throw Error 'A question is already selected!' if $scope.currentQuestion
 		unless question.answered
