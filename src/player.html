@@ -18,8 +18,9 @@
 		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
-		<header ng-show="delayedHeaderInit">
+		<header aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
 			<h1>{{ title }}</h1>
+			<span class="clip">Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget. Good luck!</span>
 			<div id='scorebox' class='score' role='status'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
 				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
@@ -43,26 +44,27 @@
 				</svg>
 
 				<div class='remaining-box'>
+					<span aria-label="Questions Remaining: {{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}"></span>
 					<span class='hidden'>Score:</span>
-					<span class='value'
+					<span aria-hidden="true" class='value'
 						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
 						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
 					</span>
-					<div class='remaining'>remaining</div>
+					<div aria-hidden="true" class='remaining'>remaining</div>
 				</div>
 			</div>
 			<div class='menu off'></div>
 		</header>
-		<section id='gameboard' class='gameboard'>
+		<section aria-label='Game Board' id='gameboard' class='gameboard' tabindex="0">
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
-				<div class='title'>
+				<div aria-label="Category" class='title'>
 					{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
-					title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
+					aria-label="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}" title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
 					role='button'
 					class='question'
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
