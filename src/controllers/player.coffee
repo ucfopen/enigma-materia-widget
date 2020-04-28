@@ -57,7 +57,9 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		unless question.answered
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
-			# this changes the focus automatically to the right area
+
+			# this changes the focus automatically to the active area, otherwise
+			# focus remains on previous screen after question is selected
 			setTimeout (-> document.getElementById('question-text').focus()), 100
 			$scope.setTabIndex()
 
@@ -77,6 +79,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		_gameOver() if $scope.scores.length == $scope.totalQuestions
 		$scope.findQuestion()
 		$scope.setTabIndex()
+		# resets status div that gives answer feedback so it can't be tabbed to
+		document.getElementById('checkAns').innerHTML = ""
 
 	# function to find the first unanswered question in list and shift focus to it
 	$scope.findQuestion = ->
@@ -91,12 +95,23 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		if check
 			$scope.currentQuestion.answered = true
 
+			# the following provides feedback upon submitting an answer
+
+			returnMessage = " Tab back to the Return button to return to the game board."
+
+			if check.score == 100 
+				document.getElementById('checkAns').innerHTML = check.text + " is correct!" + returnMessage
+			else if check.score > 0 && check.score < 100
+				document.getElementById('checkAns').innerHTML = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
+			else
+				document.getElementById('checkAns').innerHTML = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
+
 			Materia.Score.submitQuestionForScoring $scope.currentQuestion.id, check.text
 			$scope.scores.push check.score
 
 			$scope.currentQuestion.score = check.score
 			$scope.answeredQuestions.push $scope.currentQuestion
-			setTimeout (-> document.getElementById('return').focus()), 100
+			# setTimeout (-> document.getElementById('return').focus()), 100
 		else
 			throw Error 'Submitted answer not in this question!'
 
@@ -121,14 +136,20 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		, 300
 
 	_checkAnswer = ->
+		correctAnswer = null
+
 		for answer in $scope.currentQuestion.answers
+			if answer.value == 100
+				correctAnswer = answer.text
 			if answer is $scope.currentAnswer
-				return {
+				selected = {
 					score: parseInt answer.value, 10
 					text: answer.text
 					feedback: answer.options.feedback
 				}
+		selected.correct = correctAnswer
 		false
+		return selected
 
 	_gameOver = ->
 		$scope.allAnswered = true

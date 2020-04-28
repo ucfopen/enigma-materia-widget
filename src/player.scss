@@ -581,7 +581,8 @@ header {
 	100% {-webkit-transform: rotateX(0deg);}
 }
 
-
+/* this is a class created on webaim to hide content from sighted users while allowed
+ content to be seen by screen readers */
 .clip {
 clip: rect(1px, 1px, 1px, 1px);
 clip-path: inset(50%);

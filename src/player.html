@@ -19,11 +19,12 @@
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
 		<header aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
+			<span class="clip" aria-label="Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget."></span>
 			<h1>{{ title }}</h1>
-			<span class="clip">Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget. Good luck!</span>
-			<div id='scorebox' class='score' role='status'>
+			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1"></div>
+			<div id='scorebox' class='score'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
-				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
+				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="Questions Remaining: {{ totalQuestions - answeredQuestions.length }}">
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
@@ -44,7 +45,7 @@
 				</svg>
 
 				<div class='remaining-box'>
-					<span aria-label="Questions Remaining: {{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}"></span>
+					<span></span>
 					<span class='hidden'>Score:</span>
 					<span aria-hidden="true" class='value'
 						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
@@ -59,8 +60,8 @@
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
-				<div aria-label="Category" class='title'>
-					{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
+				<div aria-label="Category: {{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}" class='title'>
+					<span aria-hidden="true">{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}</span>
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
@@ -129,7 +130,7 @@
 						ng-click="cancelQuestion()">
 						Return
 					</button>
-					<button class="button submit"
+					<button id="submit" class="button submit"
 						ng-disabled="!currentAnswer || currentQuestion.answered"
 						ng-click="submitAnswer()" ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
 						Submit Final Answer
