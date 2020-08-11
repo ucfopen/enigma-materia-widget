@@ -97,7 +97,18 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 
 			# the following provides feedback upon submitting an answer
 
-			returnMessage = " Tab back to the Return button to return to the game board."
+			Materia.Score.submitQuestionForScoring $scope.currentQuestion.id, check.text
+			$scope.scores.push check.score
+
+			$scope.currentQuestion.score = check.score
+			$scope.answeredQuestions.push $scope.currentQuestion
+
+			console.log($scope.answeredQuestions.length + ' ' + $scope.totalQuestions)
+
+			if $scope.answeredQuestions.length == $scope.totalQuestions
+				returnMessage = " Tab back to the Return button to continue to the submit screen."
+			else
+				returnMessage = " Tab back to the Return button to return to the game board."
 
 			if check.score == 100 
 				document.getElementById('checkAns').innerHTML = check.text + " is correct!" + returnMessage
@@ -105,12 +116,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 				document.getElementById('checkAns').innerHTML = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
 			else
 				document.getElementById('checkAns').innerHTML = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
-
-			Materia.Score.submitQuestionForScoring $scope.currentQuestion.id, check.text
-			$scope.scores.push check.score
-
-			$scope.currentQuestion.score = check.score
-			$scope.answeredQuestions.push $scope.currentQuestion
 			# setTimeout (-> document.getElementById('return').focus()), 100
 		else
 			throw Error 'Submitted answer not in this question!'

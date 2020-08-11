@@ -18,13 +18,13 @@
 		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
-		<header aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
+		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
 			<span class="clip" aria-label="Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget."></span>
 			<h1>{{ title }}</h1>
 			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1"></div>
 			<div id='scorebox' class='score'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
-				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="Questions Remaining: {{ totalQuestions - answeredQuestions.length }}">
+				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="{{ allAnswered == false ? (totalQuestions - answeredQuestions.length) + ' questions remaining.' : 'All questions have been answered.'}}">
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
@@ -56,7 +56,7 @@
 			</div>
 			<div class='menu off'></div>
 		</header>
-		<section aria-label='Game Board' id='gameboard' class='gameboard' tabindex="0">
+		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Game Board' id='gameboard' class='gameboard' tabindex="0">
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
@@ -151,13 +151,13 @@
 							"/>
 						<circle cx='60' cy='60' r='50' fill='#333333'/>
 					</svg>
-					<span class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
-					<span class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
-					<span class='percent-wrong' ng-show="percentCorrect < 100 && percentCorrect > 0">{{ 100 - percentCorrect }}% Wrong</span>
+					<span aria-hidden="true" class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
+					<span aria-hidden="true" class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
+					<span aria-hidden="true" class='percent-wrong' ng-show="percentCorrect < 100 && percentCorrect > 0">{{ 100 - percentCorrect }}% Wrong</span>
 				</div>
 			</div>
 			<h1>All Questions Answered</h1>
-			<button id="end-button" ng-click="end()">Submit for Review</button>
+			<button aria-label="You answered {{ percentCorrect }}% of the questions correctly. Submit for review." id="end-button" ng-click="end()">Submit for Review</button>
 		</section>
 	</body>
 </html>
