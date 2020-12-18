@@ -1,6 +1,7 @@
 describe('Player Controller', function() {
 	require('angular/angular.js');
 	require('angular-mocks/angular-mocks.js');
+	require('angular-aria/angular-aria.js');
 
 	var $scope
 	var $controller
@@ -36,6 +37,8 @@ describe('Player Controller', function() {
 		$scope = {
 			$apply: jest.fn()
 		}
+
+		document.body.innerHTML = "<div><div id='checkAns'></div></div>"
 
 		// initialize the angualr controller
 		inject(function(_$controller_, _$timeout_){

@@ -13,6 +13,7 @@
 		<!-- YOUR PREREQUISITES -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular-animate.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-aria.min.js"></script>
 
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="player.js"></script>
@@ -21,7 +22,7 @@
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
 			<span class="clip" aria-label="Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget."></span>
 			<h1>{{ title }}</h1>
-			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1"></div>
+			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1">{{ariaLive}}</div>
 			<div id='scorebox' class='score'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
 				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="{{ allAnswered == false ? (totalQuestions - answeredQuestions.length) + ' questions remaining.' : 'All questions have been answered.'}}">
@@ -29,18 +30,19 @@
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
 						stroke='#ac3434' stroke-width='20'
-						style="
-							stroke-dasharray: {{ circumference }};
-							stroke-dashoffset: {{ circumference - ((percentIncorrect/100) * circumference) }};
-							transform: rotate( {{ percentCorrect/100 }}turn )
-						"/>
+						ng-style="{
+							'stroke-dasharray': circumference ,
+							'stroke-dashoffset' : circumference - ((percentIncorrect/100) * circumference),
+							'transform': 'rotate(' + percentCorrect/100 + 'turn)'
+						}"/>
 					<circle cx='60' cy='60' r='50' fill='none'
 					class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
 						stroke='#2af0b1' stroke-width='20'
-						style="
-							stroke-dasharray: {{ circumference }};
-							stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
-						"/>
+						ng-style="{
+							'stroke-dasharray': circumference ,
+							'stroke-dashoffset' : circumference - ((percentCorrect/100) * circumference),
+						}"
+						/>
 					<circle cx='60' cy='60' r='50' fill='#333333'/>
 				</svg>
 
@@ -98,7 +100,7 @@
 										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
 									</svg>
 								</span>
-								<span class='partial mark' ng-show="currentQuestion.score > 0 && currentQuestion.score < 100">
+								<span class='partial mark' ng-show="currentQuestion.score &gt; 0 && currentQuestion.score &lt; 100">
 									{{ currentQuestion.score }}&#x25;
 								</span>
 								<span class="wrong mark" ng-show="currentQuestion.score == 0">
@@ -145,15 +147,15 @@
 						<circle cx='60' cy='60' r='60' fill='#ac3434'/>
 						<circle cx='60' cy='60' r='50' fill='none' class='correct-ring'
 							stroke='#2af0b1' stroke-width='20'
-							style="
-								stroke-dasharray: {{ circumference }};
-								stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
-							"/>
+							ng-style="{
+								'stroke-dasharray': circumference,
+								'stroke-dashoffset': circumference - ((percentCorrect/100) * circumference)
+							}"/>
 						<circle cx='60' cy='60' r='50' fill='#333333'/>
 					</svg>
 					<span aria-hidden="true" class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
 					<span aria-hidden="true" class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
-					<span aria-hidden="true" class='percent-wrong' ng-show="percentCorrect < 100 && percentCorrect > 0">{{ 100 - percentCorrect }}% Wrong</span>
+					<span aria-hidden="true" class='percent-wrong' ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">{{ 100 - percentCorrect }}% Wrong</span>
 				</div>
 			</div>
 			<h1>All Questions Answered</h1>

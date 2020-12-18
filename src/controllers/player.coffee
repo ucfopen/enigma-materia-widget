@@ -1,4 +1,4 @@
-Enigma = angular.module 'enigmaPlayer'
+Enigma = angular.module 'enigmaPlayer', ['ngAria']
 
 Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	$scope.title      = ''
@@ -80,7 +80,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		$scope.findQuestion()
 		$scope.setTabIndex()
 		# resets status div that gives answer feedback so it can't be tabbed to
-		document.getElementById('checkAns').innerHTML = ""
+		$scope.ariaLive = ""
 
 	# function to find the first unanswered question in list and shift focus to it
 	$scope.findQuestion = ->
@@ -103,20 +103,17 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			$scope.currentQuestion.score = check.score
 			$scope.answeredQuestions.push $scope.currentQuestion
 
-			console.log($scope.answeredQuestions.length + ' ' + $scope.totalQuestions)
-
 			if $scope.answeredQuestions.length == $scope.totalQuestions
 				returnMessage = " Tab back to the Return button to continue to the submit screen."
 			else
 				returnMessage = " Tab back to the Return button to return to the game board."
 
 			if check.score == 100 
-				document.getElementById('checkAns').innerHTML = check.text + " is correct!" + returnMessage
+				$scope.ariaLive = check.text + " is correct!" + returnMessage
 			else if check.score > 0 && check.score < 100
-				document.getElementById('checkAns').innerHTML = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
+				$scope.ariaLive = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
 			else
-				document.getElementById('checkAns').innerHTML = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
-			# setTimeout (-> document.getElementById('return').focus()), 100
+				$scope.ariaLive = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
 		else
 			throw Error 'Submitted answer not in this question!'
 
@@ -141,19 +138,17 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		, 300
 
 	_checkAnswer = ->
-		correctAnswer = null
-
+		selected = {}
 		for answer in $scope.currentQuestion.answers
+
 			if answer.value == 100
-				correctAnswer = answer.text
+				selected.correct = answer.text
+
 			if answer is $scope.currentAnswer
-				selected = {
-					score: parseInt answer.value, 10
-					text: answer.text
-					feedback: answer.options.feedback
-				}
-		selected.correct = correctAnswer
-		false
+					selected.score = parseInt answer.value, 10
+					selected.text = answer.text
+					selected.feedback = answer.options.feedback
+		
 		return selected
 
 	_gameOver = ->
