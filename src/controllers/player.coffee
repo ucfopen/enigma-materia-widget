@@ -92,7 +92,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 	$scope.submitAnswer = ->
 		throw Error 'Question already answered!' if $scope.currentQuestion.answered
 		check = _checkAnswer()
-		if check
+		if check.score != undefined
 			$scope.currentQuestion.answered = true
 
 			# the following provides feedback upon submitting an answer
@@ -138,7 +138,9 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		, 300
 
 	_checkAnswer = ->
-		selected = {}
+		selected = {
+			score: undefined
+		}
 		for answer in $scope.currentQuestion.answers
 
 			if answer.value == 100
