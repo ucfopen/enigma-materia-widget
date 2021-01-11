@@ -1,4 +1,4 @@
-Enigma = angular.module 'enigmaPlayer'
+Enigma = angular.module 'enigmaPlayer', ['ngAria']
 
 Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
 	$scope.title      = ''
@@ -21,6 +21,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 	$scope.percentIncorrect = 0
 
 	$scope.delayedHeaderInit = false
+
+	# variable to check which screen the user is on (true = gameboard)
+	$scope.checkTab = true
+	# variable checks if on final submit for grading screen
+	$scope.finalTab = false
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
@@ -53,6 +58,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
 
+			# this changes the focus automatically to the active area, otherwise
+			# focus remains on previous screen after question is selected
+			setTimeout (-> document.getElementById('question-text').focus()), 100
+			$scope.setTabIndex()
+
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
@@ -67,20 +77,50 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		_updateScore() if _wasUpdated
 
 		_gameOver() if $scope.scores.length == $scope.totalQuestions
+		$scope.findQuestion()
+		$scope.setTabIndex()
+		# resets status div that gives answer feedback so it can't be tabbed to
+		$scope.ariaLive = ""
+
+	# function to find the first unanswered question in list and shift focus to it
+	$scope.findQuestion = ->
+		for item in document.getElementsByClassName('question')
+			if item.title.includes('Unanswered')
+				setTimeout (-> item.focus()), 100
+				break
 
 	$scope.submitAnswer = ->
 		throw Error 'Question already answered!' if $scope.currentQuestion.answered
 		check = _checkAnswer()
-		if check
+		if check.score != undefined
 			$scope.currentQuestion.answered = true
+
+			# the following provides feedback upon submitting an answer
 
 			Materia.Score.submitQuestionForScoring $scope.currentQuestion.id, check.text
 			$scope.scores.push check.score
 
 			$scope.currentQuestion.score = check.score
 			$scope.answeredQuestions.push $scope.currentQuestion
+
+			if $scope.answeredQuestions.length == $scope.totalQuestions
+				returnMessage = " Tab back to the Return button to continue to the submit screen."
+			else
+				returnMessage = " Tab back to the Return button to return to the game board."
+
+			if check.score == 100 
+				$scope.ariaLive = check.text + " is correct!" + returnMessage
+			else if check.score > 0 && check.score < 100
+				$scope.ariaLive = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
+			else
+				$scope.ariaLive = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
 		else
 			throw Error 'Submitted answer not in this question!'
+
+	# changes checkTab to false when on question screen and true when on gameboard so
+	# that you can't tab through the hidden screen
+	$scope.setTabIndex = ->
+		$scope.checkTab = !$scope.checkTab
 
 	_updateScore = ->
 		total = 0
@@ -98,17 +138,25 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 		, 300
 
 	_checkAnswer = ->
+		selected = {
+			score: undefined
+		}
 		for answer in $scope.currentQuestion.answers
+
+			if answer.value == 100
+				selected.correct = answer.text
+
 			if answer is $scope.currentAnswer
-				return {
-					score: parseInt answer.value, 10
-					text: answer.text
-					feedback: answer.options.feedback
-				}
-		false
+					selected.score = parseInt answer.value, 10
+					selected.text = answer.text
+					selected.feedback = answer.options.feedback
+		
+		return selected
 
 	_gameOver = ->
 		$scope.allAnswered = true
+		setTimeout (-> document.getElementById('end-button').focus()), 100
+		$scope.finalTab = true
 
 		# End, but don't show the score screen yet
 		Materia.Engine.end no

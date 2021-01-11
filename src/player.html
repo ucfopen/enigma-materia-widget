@@ -13,63 +13,68 @@
 		<!-- YOUR PREREQUISITES -->
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.9/angular-animate.min.js"></script>
+		<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular-aria.min.js"></script>
 
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
-		<header ng-show="delayedHeaderInit">
+		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
+			<span class="clip" aria-label="Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget."></span>
 			<h1>{{ title }}</h1>
-			<div id='scorebox' class='score' role='status'>
+			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1">{{ariaLive}}</div>
+			<div id='scorebox' class='score'>
 				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
-				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
+				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="{{ allAnswered == false ? (totalQuestions - answeredQuestions.length) + ' questions remaining.' : 'All questions have been answered.'}}">
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
 						stroke='#ac3434' stroke-width='20'
-						style="
-							stroke-dasharray: {{ circumference }};
-							stroke-dashoffset: {{ circumference - ((percentIncorrect/100) * circumference) }};
-							transform: rotate( {{ percentCorrect/100 }}turn )
-						"/>
+						ng-style="{
+							'stroke-dasharray': circumference ,
+							'stroke-dashoffset' : circumference - ((percentIncorrect/100) * circumference),
+							'transform': 'rotate(' + percentCorrect/100 + 'turn)'
+						}"/>
 					<circle cx='60' cy='60' r='50' fill='none'
 					class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
 						stroke='#2af0b1' stroke-width='20'
-						style="
-							stroke-dasharray: {{ circumference }};
-							stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
-						"/>
+						ng-style="{
+							'stroke-dasharray': circumference ,
+							'stroke-dashoffset' : circumference - ((percentCorrect/100) * circumference),
+						}"
+						/>
 					<circle cx='60' cy='60' r='50' fill='#333333'/>
 				</svg>
 
 				<div class='remaining-box'>
+					<span></span>
 					<span class='hidden'>Score:</span>
-					<span class='value'
+					<span aria-hidden="true" class='value'
 						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
 						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
 					</span>
-					<div class='remaining'>remaining</div>
+					<div aria-hidden="true" class='remaining'>remaining</div>
 				</div>
 			</div>
 			<div class='menu off'></div>
 		</header>
-		<section class='gameboard'>
+		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Game Board' id='gameboard' class='gameboard' tabindex="0">
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
-				<div class='title'>
-					{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
+				<div aria-label="Category: {{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}" class='title'>
+					<span aria-hidden="true">{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}</span>
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
-					title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
+					aria-label="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}" title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
 					role='button'
 					class='question'
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
-					ng-click="selectQuestion(category, question)">
+					ng-click="selectQuestion(category, question)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectQuestion(category, question) : null" ng-attr-tabindex="{{ checkTab && !finalTab ? 0 : -1 }}">
 					<span ng-hide="question.answered">{{ $index + 1 }}</span>
 					<span ng-show="question.score === 100">&#x2713;</span>
-					<span ng-show="question.score > 0 && question.score < 100">{{ question.score }}&#x25;</span>
+					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
 					<span ng-show="question.score === 0">X</span>
 				</div>
 			</section>
@@ -81,21 +86,21 @@
 			<div id='t-question-page'
 				class='question-popup'>
 				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
-				<div class='question-text'>
+				<div id="question-text" class='question-text' ng-attr-tabindex="{{ checkTab ? 0 : -1 }}">
 					{{ currentQuestion.questions[0].text }}
 				</div>
 				<div class='answers'>
 					<ul ng-class="{answered: currentQuestion.answered}">
-						<li ng-repeat='answer in currentQuestion.answers'
+						<li class="question-li" ng-repeat='answer in currentQuestion.answers'
 							ng-class="{selected: answer == currentAnswer}"
-							ng-click="selectAnswer(answer)">
+							ng-click="selectAnswer(answer)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectAnswer(answer) : null" ng-attr-tabindex="{{ !checkTab && !finalTab ? 0 : -1 }}">
 							<span class='mark-holder' ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
 								<span class="correct mark" ng-show="currentQuestion.score == 100">
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
 										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
 									</svg>
 								</span>
-								<span class='partial mark' ng-show="currentQuestion.score > 0 && currentQuestion.score < 100">
+								<span class='partial mark' ng-show="currentQuestion.score &gt; 0 && currentQuestion.score &lt; 100">
 									{{ currentQuestion.score }}&#x25;
 								</span>
 								<span class="wrong mark" ng-show="currentQuestion.score == 0">
@@ -122,14 +127,14 @@
 					</ul>
 				</div>
 				<div class="menu">
-					<button class="button return"
+					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
 						ng-click="cancelQuestion()">
 						Return
 					</button>
-					<button class="button submit"
+					<button id="submit" class="button submit"
 						ng-disabled="!currentAnswer || currentQuestion.answered"
-						ng-click="submitAnswer()">
+						ng-click="submitAnswer()" ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
 						Submit Final Answer
 					</button>
 				</div>
@@ -142,19 +147,19 @@
 						<circle cx='60' cy='60' r='60' fill='#ac3434'/>
 						<circle cx='60' cy='60' r='50' fill='none' class='correct-ring'
 							stroke='#2af0b1' stroke-width='20'
-							style="
-								stroke-dasharray: {{ circumference }};
-								stroke-dashoffset: {{ circumference - ((percentCorrect/100) * circumference) }};
-							"/>
+							ng-style="{
+								'stroke-dasharray': circumference,
+								'stroke-dashoffset': circumference - ((percentCorrect/100) * circumference)
+							}"/>
 						<circle cx='60' cy='60' r='50' fill='#333333'/>
 					</svg>
-					<span class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
-					<span class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
-					<span class='percent-wrong' ng-show="percentCorrect < 100 && percentCorrect > 0">{{ 100 - percentCorrect }}% Wrong</span>
+					<span aria-hidden="true" class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
+					<span aria-hidden="true" class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
+					<span aria-hidden="true" class='percent-wrong' ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">{{ 100 - percentCorrect }}% Wrong</span>
 				</div>
 			</div>
 			<h1>All Questions Answered</h1>
-			<button ng-click="end()">Submit for Review</button>
+			<button aria-label="You answered {{ percentCorrect }}% of the questions correctly. Submit for review." id="end-button" ng-click="end()">Submit for Review</button>
 		</section>
 	</body>
 </html>

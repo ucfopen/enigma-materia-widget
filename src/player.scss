@@ -174,6 +174,7 @@ header {
 				-o-transform: scale(1.0001);
 			}
 		}
+
 		.question {
 			float: left;
 			font-family: sans-serif;
@@ -197,7 +198,7 @@ header {
 				margin: -93px 0 0 -13px;
 			}
 			@include boxSizing();
-			&:hover {
+			&:hover, &:focus {
 				background: #fff;
 				-webkit-transform: scale(1.05);
 				   -moz-transform: scale(1.05);
@@ -245,6 +246,11 @@ header {
 	}
 }
 
+#t-question-page:focus {
+			border: 2px solid #1793ff;
+    		box-shadow: 0 0 10px #1793ff;
+		}
+
 .question-popup-bg {
 	position: fixed;
 	top: 0;
@@ -276,6 +282,7 @@ header {
 		font-weight: normal;
 		margin-bottom: 5px;
 	}
+
 	input, .button-checked {
 		opacity: 0;
 
@@ -312,7 +319,7 @@ header {
 				&.selected {
 					background: #d1d7e1;
 				}
-				&:hover {
+				&:hover, &:focus {
 					background: #4187c9;
 					color: #fff;
 				}
@@ -386,6 +393,7 @@ header {
 	.menu {
 		text-align: right;
 		margin-top: 13px;
+
 		button {
 			display: inline;
 			padding: 4px;
@@ -411,7 +419,7 @@ header {
 				   -moz-transition: 100ms;
 				        transition: 100ms;
 			}
-			&:hover  {
+			&:hover, &:focus  {
 				background: #FFF;
 				border-color: #FFF;
 				color: #333;
@@ -458,10 +466,11 @@ header {
 		color: white;
 		cursor: hand; cursor: pointer;
 		font-weight: bold;
-		&:hover {
+		&:hover, &:focus {
 			background: rgb(178, 217, 255);
 			color: #4187c9;
 			border-color: #4187c9;
+		
 		}
 	}
 	#scorebox_final {
@@ -572,3 +581,15 @@ header {
 	100% {-webkit-transform: rotateX(0deg);}
 }
 
+/* this is a class created on webaim to hide content from sighted users while allowed
+ content to be seen by screen readers */
+.clip {
+clip: rect(1px, 1px, 1px, 1px);
+clip-path: inset(50%);
+height: 1px;
+width: 1px;
+margin: -1px;
+overflow: hidden;
+padding: 0;
+position: absolute;
+}
