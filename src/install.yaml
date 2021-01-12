@@ -1,7 +1,6 @@
 ---
 general:
   name: Enigma
-  group: Materia
   height: 548
   width: 750
   in_catalog: Yes
