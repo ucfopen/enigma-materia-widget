@@ -36,7 +36,7 @@
     }
   },
   "devDependencies": {
-    "angular": "1.6.9",
+    "angular": "1.8.0",
     "angular-mocks": "1.6.9",
     "angular-aria":"^1.8.2",
     "jest": "^23.6.0",
