@@ -51,11 +51,7 @@
                 }
               ],
               "options": {
-                "index": 1,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/homer-simpson.jpg'%>"
-                }
+                "index": 1
               }
             },
             {
@@ -102,11 +98,7 @@
                 }
               ],
               "options": {
-                "index": 2,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/not-sure-if.jpg'%>"
-                }
+                "index": 2
               }
             },
             {
@@ -153,11 +145,7 @@
                 }
               ],
               "options": {
-                "index": 3,
-                "asset": {
-                  "type": "video",
-                  "value": "https://www.youtube.com/embed/sP3dRzri_28"
-                }
+                "index": 3
               }
             }
           ],
@@ -259,11 +247,7 @@
                 }
               ],
               "options": {
-                "index": 2,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/jerry-and-george.jpg'%>"
-                }
+                "index": 2
               }
             },
             {
@@ -310,11 +294,7 @@
                 }
               ],
               "options": {
-                "index": 3,
-                "asset": {
-                  "type": "",
-                  "value": ""
-                }
+                "index": 3
               }
             }
           ],
@@ -369,11 +349,7 @@
                 }
               ],
               "options": {
-                "index": 1,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/bob-barker.jpg'%>"
-                }
+                "index": 1
               }
             },
             {
@@ -420,11 +396,7 @@
                 }
               ],
               "options": {
-                "index": 2,
-                "asset": {
-                  "type": "",
-                  "value": ""
-                }
+                "index": 2
               }
             },
             {
@@ -471,11 +443,7 @@
                 }
               ],
               "options": {
-                "index": 3,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/wheel-of-fortune.jpg'%>"
-                }
+                "index": 3
               }
             }
           ],

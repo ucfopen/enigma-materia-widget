@@ -1,6 +1,6 @@
 Enigma = angular.module 'enigmaCreator'
 
-Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
+Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $timeout, $sce) ->
 	# private constants to refer to any problems a question might have
 	_QUESTION_PROBLEM     = 'Question undefined.'
 	_CREDIT_PROBLEM       = 'Inadequate credit.'
@@ -354,6 +354,11 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		complete: false
 		problems: []
 		index: 0
+		options:
+			asset:
+				type: ''
+				value: ''
+				id: ''
 
 	$scope.addAnswer = ->
 		$scope.curQuestion.answers.push _newAnswer()
@@ -381,6 +386,82 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', ($scope, $timeout)
 		answer.value = 100 if ~~answer.value > 100
 		answer.value = 0 if ~~answer.value < 0
 		answer.options.correct = answer.value is 100
+
+	# Assets
+
+	$scope.showPopUp = () ->
+		$scope.mediaPopUp = true
+		$scope.hideVideoForm()
+
+	$scope.hidePopUp = () ->
+		$scope.hideVideoForm()
+		$scope.mediaPopUp = false
+
+	$scope.uploadAudio = () ->
+		$scope.mediaType = "audio"
+		$scope.hideVideoForm()
+		Materia.CreatorCore.showMediaImporter(["audio"])
+
+	$scope.uploadImage = () ->
+		$scope.mediaType = "image"
+		$scope.hideVideoForm()
+		Materia.CreatorCore.showMediaImporter(["image"])
+
+	$scope.showVideoForm = () ->
+		$scope.videoForm = true
+
+	$scope.hideVideoForm = () ->
+		$scope.videoForm = false
+		$scope.urlError = null
+
+	$scope.onMediaImportComplete = (media) ->
+		$scope.removeMedia()
+		$scope.curQuestion.options.asset =
+			type: $scope.mediaType
+			value: Materia.CreatorCore.getMediaUrl media[0].id
+			id: media[0].id
+		$scope.curQuestion.hasMedia = true
+		console.log("media import complete")
+		$scope.hidePopUp()
+		$scope.$apply()
+
+	$scope.removeMedia = () ->
+		$scope.curQuestion.hasMedia = false
+		$scope.url = null
+		$scope.curQuestion.options.asset =
+			type: null
+			value: null
+			id: null
+
+	$scope.changeMedia = () ->
+		$scope.removeMedia()
+		$scope.showPopUp()
+
+	$scope.formatUrl = () ->
+		try
+			embedUrl = ''
+			if $scope.inputUrl.includes('youtu')
+				stringMatch = $scope.inputUrl.match(/^((?:https?:)?\/\/)?((?:www|m)\.)?((?:youtube\.com|youtu.be))(\/(?:[\w\-]+\?v=|embed\/|v\/)?)([\w\-]+)(\S+)?$/);
+				embedUrl = 'https://www.youtube.com/embed/' + stringMatch[5] || ($scope.inputUrl if $scope.inputUrl.includes('/embed/'))
+			else if $scope.inputUrl.includes('vimeo')
+				embedUrl = 'https://player.vimeo.com/video/' + $scope.inputUrl.match(/(?:vimeo)\.com.*(?:videos|video|channels|)\/([\d]+)/i)[1] || $scope.inputUrl;
+			else
+				$scope.urlError = 'Please enter a YouTube or Vimeo URL.'
+				return
+			console.log(embedUrl)
+			console.log($scope.inputUrl)
+		catch e
+			$scope.urlError = 'Please enter a YouTube or Vimeo URL.'
+			return
+
+		$scope.curQuestion.hasMedia = true
+		$scope.hidePopUp()
+		$scope.url = $sce.trustAsResourceUrl(embedUrl)
+
+		$scope.curQuestion.options.asset =
+			type: "video"
+			value: embedUrl
+			id: null
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->

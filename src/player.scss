@@ -266,12 +266,15 @@ header {
 	top: 10px;
 	left: 10px;
 	right: 10px;
+	bottom: 10px;
 	background: #3a4655;
 	min-height: 434px;
 	padding: 20px;
+	padding-bottom: 0;
 	border: 3px solid #fff;
 	padding-top: 67px;
 	z-index: 101;
+	overflow-y:auto;
 
 	h1 {
 		margin: 0;
@@ -304,6 +307,44 @@ header {
 		padding: 20px 10px;
 		border: 3px solid #697393;
 	}
+
+	.media {
+		display: flex;
+		position: relative;
+		padding: 20px 10px;
+
+		> div {
+			margin: auto;
+			> * {
+				max-height:200px;
+			}
+		}
+	}
+
+	.expand-into-lightbox {
+		width: auto;
+		position: absolute;
+		top: 25px;
+		right: 15px;
+
+		background-color: #2f3944;
+		color: #fff;
+		padding: 4px;
+
+		border: 2px solid #fff;
+
+		font-size: 13px;
+		font-weight: bold;
+		text-transform: uppercase;
+
+		cursor: pointer;
+
+		&:hover {
+			background-color: #fff;
+			color: #2f3944;
+		}
+	}
+
 	.answers {
 		background: #fff;
 		padding: 10px;
@@ -437,6 +478,96 @@ header {
 	}
 }
 
+.lightbox {
+	position: absolute;
+	z-index: -500;
+	width: 100%;
+	height: 100%;
+	top: 0%;
+	left: 0%;
+
+	background: rgba(55,55,55,0.75);
+
+	cursor: pointer;
+
+	&.show {
+		z-index: 500;
+	}
+
+	.lightbox-content {
+		position: relative;
+		width: 90%;
+		height: 90%;
+		margin: 2.5% 5%;
+		margin-bottom: 0;
+		background: rgba(45,45,45,1);
+
+		cursor: default;
+
+		.lightbox-close {
+			position: absolute;
+			top: 5px;
+			right: 5px;
+			z-index: 1;
+
+			width: 30px;
+			height: 30px;
+
+			border: none;
+			border-radius: 5px;
+
+			color: #fff;
+			background: #e42b20;
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+
+			font-size: 18px;
+			font-weight: bold;
+			text-align: center;
+
+			cursor: pointer;
+
+			&:hover {
+				background: #6c6c6c;
+			}
+		}
+
+		.lightbox-video {
+			width: calc(100% - 20px);
+			height: calc(100% - 20px);
+			margin-top: 10px;
+			margin-left: 10px;
+		}
+
+		.lightbox-image-container {
+			height: calc(100% - 20px);
+			margin-top: 10px;
+			margin-left: 10px;
+			overflow: auto;
+		}
+
+		.lightbox-image {
+			height: calc(100% - 20px);
+			position: relative;
+			display: block;
+			margin: 20px auto 0 auto;
+		}
+
+		.lightbox-image:hover {
+			cursor: zoom-in;
+		}
+
+		.lightbox-image-zoom {
+			width: calc(100% - 20px);
+			height: auto;
+		}
+
+		.lightbox-image-zoom:hover {
+			cursor: zoom-out;
+		}
+	}
+}
+
+
 .notice {
 	color: white;
 	display: block;
@@ -470,7 +601,7 @@ header {
 			background: rgb(178, 217, 255);
 			color: #4187c9;
 			border-color: #4187c9;
-		
+
 		}
 	}
 	#scorebox_final {

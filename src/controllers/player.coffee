@@ -1,6 +1,6 @@
 Enigma = angular.module 'enigmaPlayer', ['ngAria']
 
-Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) ->
+Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $timeout, $sce) ->
 	$scope.title      = ''
 	$scope.categories = []
 	$scope.scores     = []
@@ -37,6 +37,13 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			for qi, question of category.items
 				question.answers = _shuffle(question.answers) if qset.options.randomize
 				$scope.totalQuestions++
+				if question.options.asset
+					switch question.options.asset.type
+						when 'image' then question.options.asset.value = Materia.Engine.getMediaUrl(question.options.asset.id)
+						when 'audio' then question.options.asset.value = Materia.Engine.getMediaUrl(question.options.asset.id)
+						when 'video' then question.options.asset.value = $sce.trustAsResourceUrl(question.options.asset.value)
+				else
+					# write compatibility for old qsets without assets
 
 		$scope.$apply()
 		Materia.Engine.setHeight()
@@ -62,6 +69,17 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			# focus remains on previous screen after question is selected
 			setTimeout (-> document.getElementById('question-text').focus()), 100
 			$scope.setTabIndex()
+
+	# Lightbox in question pop up
+	$scope.lightboxTarget = -1
+
+	$scope.setLightboxTarget = (val) ->
+		$scope.lightboxTarget = val
+
+	$scope.lightboxZoom = 0
+
+	$scope.setLightboxZoom = (val) ->
+		$scope.lightboxZoom = val
 
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
@@ -108,7 +126,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 			else
 				returnMessage = " Tab back to the Return button to return to the game board."
 
-			if check.score == 100 
+			if check.score == 100
 				$scope.ariaLive = check.text + " is correct!" + returnMessage
 			else if check.score > 0 && check.score < 100
 				$scope.ariaLive = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
@@ -150,7 +168,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', ($scope, $timeout) 
 					selected.score = parseInt answer.value, 10
 					selected.text = answer.text
 					selected.feedback = answer.options.feedback
-		
+
 		return selected
 
 	_gameOver = ->

@@ -130,14 +130,49 @@
 				<div id="question_editor"
 					ng-style="{ top: ((curCategory.index+1) * 120) + 'px' }"
 					class="q{{curQuestion.index+1}}"
-					ng-class="{ show: curQuestion }">
+					ng-class="{ show: curQuestion, increaseZ: !mediaPopUp}">
 					<div class="title">Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
-					<textarea ng-model="curQuestion.questions[0].text"
-						focus-me="curQuestion"
-						placeholder="Enter your question here" id="question_text"
-						autofocus>
-					</textarea>
+					<div class="editor-top">
+						<textarea ng-model="curQuestion.questions[0].text"
+							focus-me="curQuestion"
+							placeholder="Enter your question here" id="question_text"
+							autofocus>
+						</textarea>
+
+					<!-- Add media upload here -->
+						<div class="media-box">
+							<button ng-show="!curQuestion.hasMedia" ng-click="showPopUp()" class="add-media">Add Media</button>
+							<img class="image" ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'image'" ng-src="{{curQuestion.options.asset.value}}" />
+							<figure ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'audio'">
+								<audio controls="" ng-src="{{curQuestion.options.asset.value}}"></audio>
+							</figure>
+							<iframe class="video" ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'video'" ng-src="{{url}}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<div class="media-options">
+								<button ng-show="curQuestion.hasMedia" ng-click="showPopUp()">Change Media</button>
+								<button ng-show="curQuestion.hasMedia" ng-click="removeMedia()">Remove Media</button>
+							</div>
+						</div>
+
+						<div class="add-media-popup" ng-show="mediaPopUp">
+							<button ng-click="hideVideoForm()" ng-show="videoForm" class="back"></button>
+							<button ng-click="uploadImage()" ng-show="!videoForm">Upload Image</button>
+							<button ng-click="uploadAudio()" ng-show="!videoForm">Upload Audio</button>
+							<button ng-click="showVideoForm()" ng-show="!videoForm">Upload Video</button>
+							<form class="video-form" ng-show="videoForm">
+								<input type="text"
+									class="video-input"
+									ng-model="inputUrl"
+									placeholder="Enter a YouTube or Vimeo URL">
+								</input>
+								<button ng-click="formatUrl()">Embed Video</button>
+							</form>
+							<span ng-show="urlError" class="error-message">{{urlError}}</span>
+							<button ng-click="hidePopUp()" class="close icon-close"></button>
+						</div>
+						<div class="background-cover">
+						</div>
+					</div>
 
 					<table class="questions">
 						<thead>
@@ -224,8 +259,8 @@
 			</div>
 		</div>
 		<div id="backgroundcover"
-			ng-click="hideCover()"
-			ng-class="{ show: showIntroDialog || showTitleDialog }">
+			ng-click="hideCover(); hidePopUp()"
+			ng-class="{ show: showIntroDialog || showTitleDialog || mediaPopUp}">
 		</div>
 
 		<div class="dialog intro" ng-class="{ show: showIntroDialog }">
