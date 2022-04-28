@@ -17,6 +17,7 @@ describe('Player Controller', function() {
 			Engine: {
 				start: jest.fn(),
 				end: jest.fn(),
+				getMediaUrl: jest.fn(),
 				setHeight: jest.fn()
 			},
 			Score: {
