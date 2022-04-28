@@ -39,7 +39,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 				$scope.totalQuestions++
 				if question.options.asset
 					switch question.options.asset.type
-						when 'image' then question.options.asset.value = Materia.Engine.getMediaUrl(question.options.asset.id)
+						when 'image' then
 						when 'audio' then question.options.asset.value = Materia.Engine.getMediaUrl(question.options.asset.id)
 						when 'video' then question.options.asset.value = $sce.trustAsResourceUrl(question.options.asset.value)
 				else

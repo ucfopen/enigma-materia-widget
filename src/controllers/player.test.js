@@ -17,7 +17,10 @@ describe('Player Controller', function() {
 			Engine: {
 				start: jest.fn(),
 				end: jest.fn(),
-				getMediaUrl: jest.fn(),
+				getMediaUrl: jest.fn(asset => {
+					const cleaned = asset.replace(/<%MEDIA='(.+?)'%>/g, '$1')
+					return 'MEDIA_URL/' + cleaned
+				}),
 				setHeight: jest.fn()
 			},
 			Score: {
