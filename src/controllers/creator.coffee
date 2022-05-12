@@ -76,6 +76,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 				j++
 			i++
 
+
 		$scope.step = 4 if i > 0 # if this widget had some questions, assume the instructions are unnecessary
 
 		$scope.$apply ->
@@ -359,6 +360,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 				type: ''
 				value: ''
 				id: ''
+				description: ''
 
 	$scope.addAnswer = ->
 		$scope.curQuestion.answers.push _newAnswer()
@@ -398,12 +400,12 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 		$scope.mediaPopUp = false
 
 	$scope.uploadAudio = () ->
-		$scope.mediaType = "audio"
+		$scope.curQuestion.mediaType = "audio"
 		$scope.hideVideoForm()
 		Materia.CreatorCore.showMediaImporter(["audio"])
 
 	$scope.uploadImage = () ->
-		$scope.mediaType = "image"
+		$scope.curQuestion.mediaType = "image"
 		$scope.hideVideoForm()
 		Materia.CreatorCore.showMediaImporter(["image"])
 
@@ -417,16 +419,14 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 	$scope.onMediaImportComplete = (media) ->
 		$scope.removeMedia()
 		$scope.curQuestion.options.asset =
-			type: $scope.mediaType
+			type: $scope.curQuestion.mediaType
 			value: Materia.CreatorCore.getMediaUrl media[0].id
 			id: media[0].id
-		$scope.curQuestion.hasMedia = true
-		console.log("media import complete")
+			description: $scope.curQuestion.description
 		$scope.hidePopUp()
 		$scope.$apply()
 
 	$scope.removeMedia = () ->
-		$scope.curQuestion.hasMedia = false
 		$scope.url = null
 		$scope.curQuestion.options.asset =
 			type: null
@@ -448,20 +448,16 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 			else
 				$scope.urlError = 'Please enter a YouTube or Vimeo URL.'
 				return
-			console.log(embedUrl)
-			console.log($scope.inputUrl)
 		catch e
 			$scope.urlError = 'Please enter a YouTube or Vimeo URL.'
 			return
 
-		$scope.curQuestion.hasMedia = true
 		$scope.hidePopUp()
-		$scope.url = $sce.trustAsResourceUrl(embedUrl)
 
 		$scope.curQuestion.options.asset =
 			type: "video"
-			value: embedUrl
-			id: null
+			value: $sce.trustAsResourceUrl(embedUrl)
+			id: embedUrl
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->

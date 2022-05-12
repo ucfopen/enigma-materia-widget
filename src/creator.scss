@@ -1,4 +1,4 @@
-/* Standardize padding in all browsers */
+description/* Standardize padding in all browsers */
 * {
 	margin: 0;
 	padding: 0;
@@ -795,6 +795,16 @@ input[type=checkbox]:checked + label.checktoggle {
 			flex-direction: column;
 			margin: 7px 0px 7px 7px;
 			padding: 5px;
+
+			.description-form {
+				width: 100%;
+			}
+			.description-input {
+				width: 100%;
+				padding: 2px;
+				box-sizing: border-box;
+				border: 0;
+			}
 
 			.media-options {
 				display: flex;

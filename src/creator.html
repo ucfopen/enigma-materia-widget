@@ -142,15 +142,24 @@
 
 					<!-- Add media upload here -->
 						<div class="media-box">
-							<button ng-show="!curQuestion.hasMedia" ng-click="showPopUp()" class="add-media">Add Media</button>
-							<img class="image" ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'image'" ng-src="{{curQuestion.options.asset.value}}" />
-							<figure ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'audio'">
-								<audio controls="" ng-src="{{curQuestion.options.asset.value}}"></audio>
+							<button ng-show="!curQuestion.options.asset || !curQuestion.options.asset.value" ng-click="showPopUp()" class="add-media">Add Media</button>
+							<img class="image" description="{{curQuestion.options.asset.description}}" ng-if="curQuestion.options.asset && curQuestion.options.asset.type == 'image'" ng-src="{{curQuestion.options.asset.value}}" />
+							<figure ng-show="curQuestion.options.asset && curQuestion.options.asset.type == 'audio'">
+								<audio controls>
+									<source ng-src="{{curQuestion.options.asset.value}}">
+								</audio>
 							</figure>
-							<iframe class="video" ng-show="curQuestion.hasMedia && curQuestion.options.asset.type == 'video'" ng-src="{{url}}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<iframe class="video"  description="{{curQuestion.options.asset.description}}" ng-if="curQuestion.options.asset && curQuestion.options.asset.type == 'video'" ng-src="{{curQuestion.options.asset.value}}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<form class="description-form" ng-show="curQuestion.options.asset && curQuestion.options.asset.value" >
+								<input type="text"
+									class="description-input"
+									ng-model="curQuestion.options.asset.description"
+									placeholder="Enter an optional description for the media">
+								</input>
+							</form>
 							<div class="media-options">
-								<button ng-show="curQuestion.hasMedia" ng-click="showPopUp()">Change Media</button>
-								<button ng-show="curQuestion.hasMedia" ng-click="removeMedia()">Remove Media</button>
+								<button ng-show="curQuestion.options.asset && curQuestion.options.asset.value" ng-click="showPopUp()">Change Media</button>
+								<button ng-show="curQuestion.options.asset && curQuestion.options.asset.value" ng-click="removeMedia()">Remove Media</button>
 							</div>
 						</div>
 
