@@ -54,7 +54,7 @@
                 "index": 1,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/homer-simpson.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/homer_simpson.jpg'%>"
                 }
               }
             },
@@ -105,7 +105,7 @@
                 "index": 2,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/not-sure-if.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/not_sure_if.jpg'%>"
                 }
               }
             },
@@ -262,7 +262,7 @@
                 "index": 2,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/jerry-and-george.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/jerry_and_george.jpg'%>"
                 }
               }
             },
@@ -372,7 +372,7 @@
                 "index": 1,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/bob-barker.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/bob_barker.jpg'%>"
                 }
               }
             },
@@ -422,8 +422,8 @@
               "options": {
                 "index": 2,
                 "asset": {
-                  "type": "",
-                  "value": ""
+                  "type": "audio",
+                  "id": "<%MEDIA='assets/img/demo/lets_make_a_deal_theme.mp3'%>"
                 }
               }
             },
@@ -474,7 +474,7 @@
                 "index": 3,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/wheel-of-fortune.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/wheel_of_fortune.jpg'%>"
                 }
               }
             }

@@ -71,6 +71,26 @@ describe('Player Controller', function() {
 		expect($scope.percentIncorrect).toBe(0);
 	});
 
+	test('controller contains the expected images after starting', () => {
+		$scope.start(widgetInfo, qset.data)
+		const expectedImages = [
+			'homer_simpson.jpg',
+			'not_sure_if.jpg',
+			'jerry_and_george.jpg',
+			'bob_barker.jpg',
+			'wheel_of_fortune.jpg',
+		]
+		const questionArray = [];
+		$scope.categories.forEach(category => category.items.forEach(question => {
+			if (question.options.asset)
+				questionArray.push(question.options.asset.value)
+		}));
+		for (const index in expectedImages) {
+			const fullName = 'MEDIA_URL/assets/img/demo/' + expectedImages[index]
+			expect(questionArray).toContain(fullName)
+		}
+	})
+
 	it('should choose a question to answer', function(){
 		$scope.start(widgetInfo, qset.data);
 		//'currentCategory' and 'currentQuestion' should be null by default
