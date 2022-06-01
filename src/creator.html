@@ -130,7 +130,7 @@
 				<div id="question_editor"
 					ng-style="{ top: ((curCategory.index+1) * 120) + 'px' }"
 					class="q{{curQuestion.index+1}}"
-					ng-class="{ show: curQuestion, increaseZ: !mediaPopUp}">
+					ng-class="{ show: curQuestion }">
 					<div class="title">Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
 					<div class="editor-top">
@@ -178,8 +178,6 @@
 							</form>
 							<span ng-show="urlError" class="error-message">{{urlError}}</span>
 							<button ng-click="hidePopUp()" class="close icon-close"></button>
-						</div>
-						<div class="background-cover">
 						</div>
 					</div>
 
@@ -253,6 +251,7 @@
 						<button class="remove" ng-click="deleteQuestion()">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>
+					<div class="question-editor-background-cover" ng-class="{ show : mediaPopUp }"></div>
 				</div>
 				<div class="arrow_box_tip" id="first_cat_tip" ng-show="step == 1">Click here to create your first category</div>
 				<div class="arrow_box_tip" id="name_cat_tip" ng-show="step == 2">Now name this category</div>
@@ -268,9 +267,10 @@
 			</div>
 		</div>
 		<div id="backgroundcover"
-			ng-click="hideCover(); hidePopUp()"
-			ng-class="{ show: showIntroDialog || showTitleDialog || mediaPopUp}">
+			ng-click="hideCover()"
+			ng-class="{ show: showIntroDialog || showTitleDialog}">
 		</div>
+		
 
 		<div class="dialog intro" ng-class="{ show: showIntroDialog }">
 			<img src="assets/creator_example.png">
@@ -300,7 +300,7 @@
 
 		<div id="incomplete_alert"
 			ng-show="incompleteMessage"
-			ng-class="{ fade: incompleteMessage, warn: warningMessage }"
+			ng-class="{ warn: warningMessage }"
 			ng-click="killAlert()">
 			<span ng-repeat="messagePart in incompleteMessage">{{ messagePart }}</span>
 			<p>(Click this message to dismiss it)</p>
