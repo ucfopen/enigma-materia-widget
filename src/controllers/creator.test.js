@@ -21,6 +21,11 @@ describe('Creator Controller', function() {
 					//the creator core calls this on the creator when saving is successful
 					$scope.onSaveComplete();
 					return {title: title, qset: qset};
+				}),
+				showMediaImporter: jest.fn(),
+				getMediaUrl: jest.fn(asset => {
+					const cleaned = ('' + asset).replace(/<%MEDIA='(.+?)'%>/g, '$1')
+					return 'MEDIA_URL/' + cleaned
 				})
 			}
 		}
@@ -37,7 +42,9 @@ describe('Creator Controller', function() {
 
 		// mock scope
 		$scope = {
-			$apply: jest.fn().mockImplementation(fn => {fn()})
+			$apply: jest.fn().mockImplementation(fn => {
+				fn ? fn() : null
+			})
 		}
 
 		// initialize the angualr controller
@@ -2225,4 +2232,92 @@ describe('Creator Controller', function() {
 		expect($scope.qset.items[1].index).toBe(1);
 		expect($scope.qset.items[2].index).toBe(2);
 	});
+
+	test('should remove media', () => {
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
+		$scope.removeMedia();
+		expect($scope.qset.items[0].items[0].options.asset.value).toBe(null);
+		expect($scope.qset.items[0].items[0].options.asset.id).toBe(null);
+		expect($scope.qset.items[0].items[0].options.asset.type).toBe(null);
+		expect($scope.url).toBe(null);
+	})
+
+	test('should show media pop up', () => {
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+		$scope.showPopUp();
+		expect($scope.mediaPopUp).toBe(true);
+		expect($scope.videoForm).toBe(false);
+	})
+
+	test('should embed video', () => {
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[1], 0);
+
+		// Test youtube links
+		$scope.inputUrl = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+		$scope.formatUrl();
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
+
+		// Test youtube links with 'embed' in them
+		$scope.inputUrl = 'https://www.youtube.com/embed/sP3dRzri_28';
+		$scope.formatUrl();
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe('https://www.youtube.com/embed/sP3dRzri_28');
+
+		// Test vimeo links
+		$scope.inputUrl = 'https://vimeo.com/703459983';
+		$scope.formatUrl();
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe('https://player.vimeo.com/video/703459983');
+
+		// Test links not from youtube or vimeo
+		const currentVideoUrl = $scope.qset.items[0].items[1].options.asset.id;
+		$scope.inputUrl = 'https://i.imgur.com/mhzn5tv.mp4'
+		$scope.formatUrl();
+		expect($scope.urlError).toBe('Please enter a YouTube or Vimeo URL.');
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe(currentVideoUrl);
+	})
+
+	test('should set an image url', () => {
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[1], 0);
+		$scope.uploadImage()
+
+		expect(Materia.CreatorCore.showMediaImporter).toHaveBeenCalled()
+		expect($scope.curQuestion.mediaType).toBe('image');
+
+		const media = [{ id: 5 }]
+		$scope.onMediaImportComplete(media)
+
+		expect($scope.qset.items[0].items[1].options.asset.value).toBe('MEDIA_URL/5')
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe(5)
+	})
+
+	test('should set an audio url', () => {
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+
+		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[1], 0);
+		$scope.uploadAudio()
+
+		expect(Materia.CreatorCore.showMediaImporter).toHaveBeenCalled()
+		expect($scope.curQuestion.mediaType).toBe('audio');
+
+		const media = [{ id: 5 }]
+		$scope.onMediaImportComplete(media)
+
+		expect($scope.qset.items[0].items[1].options.asset.value).toBe('MEDIA_URL/5')
+		expect($scope.qset.items[0].items[1].options.asset.id).toBe(5)
+	})
+
+	test('should import questions without media', () => {
+		expect($scope.numQuestions()).toBe(0);
+		widgetInfo.qset.data.items.forEach(category => {
+			category.items.forEach(question => {
+				delete question.options.asset
+			})
+		})
+		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
+		expect($scope.numQuestions()).toBe(9)
+	})
+
 });

@@ -396,8 +396,8 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 		$scope.hideVideoForm()
 
 	$scope.hidePopUp = () ->
-		$scope.hideVideoForm()
 		$scope.mediaPopUp = false
+		$scope.hideVideoForm()
 
 	$scope.uploadAudio = () ->
 		$scope.curQuestion.mediaType = "audio"
@@ -432,10 +432,6 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 			type: null
 			value: null
 			id: null
-
-	$scope.changeMedia = () ->
-		$scope.removeMedia()
-		$scope.showPopUp()
 
 	$scope.formatUrl = () ->
 		try
