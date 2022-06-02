@@ -74,8 +74,6 @@ describe('Player Controller', function() {
 	test('controller contains the expected images after starting', () => {
 		$scope.start(widgetInfo, qset.data)
 		const expectedImages = [
-			'homer_simpson.jpg',
-			'not_sure_if.jpg',
 			'jerry_and_george.jpg',
 			'bob_barker.jpg',
 			'wheel_of_fortune.jpg',
