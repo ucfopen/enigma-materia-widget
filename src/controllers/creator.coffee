@@ -428,10 +428,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 
 	$scope.removeMedia = () ->
 		$scope.url = null
-		$scope.curQuestion.options.asset =
-			type: null
-			value: null
-			id: null
+		delete $scope.curQuestion.options.asset
 
 	$scope.formatUrl = () ->
 		try
