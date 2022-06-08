@@ -51,11 +51,7 @@
                 }
               ],
               "options": {
-                "index": 1,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/homer_simpson.jpg'%>"
-                }
+                "index": 1
               }
             },
             {
@@ -102,11 +98,7 @@
                 }
               ],
               "options": {
-                "index": 2,
-                "asset": {
-                  "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/not_sure_if.jpg'%>"
-                }
+                "index": 2
               }
             },
             {
@@ -153,11 +145,7 @@
                 }
               ],
               "options": {
-                "index": 3,
-                "asset": {
-                  "type": "video",
-                  "id": "https://www.youtube.com/embed/sP3dRzri_28"
-                }
+                "index": 3
               }
             }
           ],
@@ -310,11 +298,7 @@
                 }
               ],
               "options": {
-                "index": 3,
-                "asset": {
-                  "type": "",
-                  "value": ""
-                }
+                "index": 3
               }
             }
           ],

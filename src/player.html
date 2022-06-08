@@ -73,9 +73,9 @@
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
 					ng-click="selectQuestion(category, question)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectQuestion(category, question) : null" ng-attr-tabindex="{{ checkTab && !finalTab ? 0 : -1 }}">
 					<span ng-hide="question.answered">{{ $index + 1 }}</span>
-					<span ng-show="question.score === 100">&#x2713;</span>
+					<span class='correct-marker' ng-show="question.score === 100">&#x2713;</span>
 					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
-					<span ng-show="question.score === 0">X</span>
+					<span class='incorrect-marker' ng-show="question.score === 0">X</span>
 				</div>
 			</section>
 		</section>
@@ -99,8 +99,8 @@
 							<figcaption ng-show="currentQuestion.options.asset.description">{{currentQuestion.options.asset.description}}</figcaption>
 						</figure>
 						<iframe class="video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{ currentQuestion.options.asset.value }}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-						<button class="expand-into-lightbox image" ng-if="currentQuestion.options.asset.type === 'image'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span>Expand</button>
-						<button class="expand-into-lightbox video" ng-if="currentQuestion.options.asset.type === 'video'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span>Expand</button>
+						<button class="expand-into-lightbox image" ng-if="currentQuestion.options.asset.type === 'image'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
+						<button class="expand-into-lightbox video" ng-if="currentQuestion.options.asset.type === 'video'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
 						<div class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</div>
 					</div>
 				</div>

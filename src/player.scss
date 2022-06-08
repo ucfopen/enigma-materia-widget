@@ -1,3 +1,5 @@
+@import 'assets/css/icomoon.css';
+
 * {
 	outline: 0;
 }
@@ -220,12 +222,23 @@ header {
 				color: #4187c9;
 				background: #9ebbd9;
 				border: 3px solid #4187c9;
+
+				span.correct-marker {
+					position: relative;
+					right: 5px;
+					top: 5px;
+				}
 			}
 			&.wrong {
 				font-size: 100px;
 				color: #AC3434;
 				background: #cf8c92;
 				border: 3px solid #AC3434;
+
+				span.incorrect-marker {
+					position: relative;
+					top: 5px;
+				}
 			}
 			&.partial {
 				font-size: 30px;
@@ -320,8 +333,9 @@ header {
 	}
 
 	.media {
+		position: relative;
 		display: flex;
-		justify-content: center;
+		justify-content: right;
 		flex-direction: column;
 		width: 300px;
 
@@ -346,16 +360,19 @@ header {
 	}
 
 	.expand-into-lightbox {
-		width: 100px;
+		// width: 100px;
+		position: absolute;
+		top: 0;
+		right: 0;
 		margin: auto;
 
 		background-color: #2f3944;
 		color: #fff;
-		padding: 4px;
+		padding: 6px;
 
 		border: 2px solid #eff0f2;
 
-		font-size: 13px;
+		font-size: 16px;
 		font-weight: bold;
 		text-transform: uppercase;
 
@@ -563,12 +580,13 @@ header {
 		.lightbox-image-container {
 			height: calc(100% - 40px);
 			margin-top: 10px;
-			margin-left: 10px;
+			// margin-left: 10px;
 			overflow: auto;
 		}
 
 		.lightbox-image {
-			height: calc(100% - 40px);
+			max-width: calc(100% - 20px);
+			max-height: calc(100% - 20px);
 			position: relative;
 			display: block;
 			margin: 20px auto 0 auto;
@@ -579,7 +597,8 @@ header {
 		}
 
 		.lightbox-image-zoom {
-			width: calc(100% - 20px);
+			// width: calc(100% - 20px);
+			object-fit: cover;
 			height: auto;
 		}
 

@@ -2237,9 +2237,7 @@ describe('Creator Controller', function() {
 		$scope.initExistingWidget(widgetInfo.name, widgetInfo, qset);
 		$scope.editQuestion($scope.qset.items[0], $scope.qset.items[0].items[0], 0);
 		$scope.removeMedia();
-		expect($scope.qset.items[0].items[0].options.asset.value).toBe(null);
-		expect($scope.qset.items[0].items[0].options.asset.id).toBe(null);
-		expect($scope.qset.items[0].items[0].options.asset.type).toBe(null);
+		expect($scope.qset.items[0].items[0].options.asset).toBe(undefined);
 		expect($scope.url).toBe(null);
 	})
 

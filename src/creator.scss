@@ -1,4 +1,4 @@
-description/* Standardize padding in all browsers */
+/* Standardize padding in all browsers */
 * {
 	margin: 0;
 	padding: 0;
@@ -672,6 +672,7 @@ input[type=checkbox]:checked + label.checktoggle {
 
 #question_editor {
 	position: absolute;
+	z-index: -100;
 	left: 0px;
 	right: 0px;
 	border: solid 4px #fff;
@@ -680,14 +681,11 @@ input[type=checkbox]:checked + label.checktoggle {
 	padding: 10px;
 	opacity: 0;
 
-	transition: all 0.25s ease;
+	transition: opacity 0.25s ease;
 
 	&.show {
 		opacity: 1;
 		animation: bloop 0.2s;
-	}
-
-	&.increaseZ {
 		z-index: 2;
 	}
 
@@ -822,7 +820,7 @@ input[type=checkbox]:checked + label.checktoggle {
 		}
 
 		.add-media-popup {
-			z-index: 10000;
+			z-index: 2001;
 			position: absolute;
 			display: flex;
 			flex-direction: column;
@@ -907,22 +905,6 @@ input[type=checkbox]:checked + label.checktoggle {
 				height:40px;
 				border: solid 4px #697296;
 			}
-
-			&.answerChoiceBox {
-				width: 320px;
-				height: 60px;
-				font-size: 14px;
-				font-weight: bold;
-				border: solid 1px #8b8989;
-			}
-
-			&.feedbackChoiceBox {
-				width: 180px;
-				height: 60px;
-				font-size: 12px;
-				border: solid 1px #999;
-				border-radius: 8px;
-			}
 		}
 	}
 
@@ -939,6 +921,26 @@ input[type=checkbox]:checked + label.checktoggle {
 		td{
 			padding: 0 10px;
 			vertical-align: top;
+
+			textarea {
+				padding: 5px;
+
+				&.answerChoiceBox {
+					width: 310px;
+					height: 50px;
+					font-size: 14px;
+					// font-weight: bold;
+					border: solid 1px #8b8989;
+				}
+	
+				&.feedbackChoiceBox {
+					width: 170px;
+					height: 50px;
+					font-size: 12px;
+					border: solid 1px #999;
+					// border-radius: 8px;
+				}
+			}
 		}
 		td:first-child,
 		td:last-child{
@@ -1031,8 +1033,9 @@ input[type=checkbox]:checked + label.checktoggle {
 			span {
 				font-size: 10px;
 				position:relative;
-				top: 2px;
+				top: -4px;
 				left: 20px;
+				padding-top: 1px;
 
 				&:before {
 					position: absolute;
@@ -1056,6 +1059,25 @@ input[type=checkbox]:checked + label.checktoggle {
 					left: -80px;
 				}
 			}
+		}
+	}
+
+	.question-editor-background-cover {
+		position: fixed;
+		z-index: -200;
+
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+
+		background: none;
+		opacity: 0;
+
+		&.show {
+			z-index: 2000;
+			background: #000;
+			opacity: 0.5;
 		}
 	}
 
@@ -1189,7 +1211,7 @@ input[type=checkbox]:checked + label.checktoggle {
 	position: absolute;
 	border-radius: 5px;
 	background: #d1d7e2;
-	width: 650px;
+	width: 630px;
 	padding: 10px 0;
 	z-index: -1;
 	opacity: 0;
