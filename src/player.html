@@ -158,7 +158,7 @@
 						<button class="lightbox-close" ng-click="setLightboxTarget(-1)">X</button>
 						<iframe class="lightbox-video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{currentQuestion.options.asset.value}}" frameborder="0" allowfullscreen></iframe>
 						<div ng-if="currentQuestion.options.asset.type == 'image'" class="lightbox-image-container">
-							<img class="lightbox-image" ng-src="{{currentQuestion.options.asset.value}}" description="{{currentQuestion.text}}" ng-class="{'lightbox-image-zoom': lightboxZoom == 1}" ng-click="setLightboxZoom(!lightboxZoom)">
+							<img class="lightbox-image" ng-src="{{currentQuestion.options.asset.value}}" description="{{currentQuestion.text}}" ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}" ng-click="setLightboxZoom(!lightboxZoom)">
 						</div>
 						<p class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</p>
 					</div>
