@@ -247,7 +247,11 @@
                 }
               ],
               "options": {
-                "index": 2
+                "index": 2,
+                "asset": {
+                  "type": "image",
+                  "id": "<%MEDIA='assets/img/demo/jerry_and_george.jpg'%>"
+                }
               }
             },
             {
@@ -349,7 +353,11 @@
                 }
               ],
               "options": {
-                "index": 1
+                "index": 1,
+                "asset": {
+                  "type": "image",
+                  "id": "<%MEDIA='assets/img/demo/bob_barker.jpg'%>"
+                }
               }
             },
             {
@@ -396,7 +404,11 @@
                 }
               ],
               "options": {
-                "index": 2
+                "index": 2,
+                "asset": {
+                  "type": "audio",
+                  "id": "<%MEDIA='assets/img/demo/lets_make_a_deal_theme.mp3'%>"
+                }
               }
             },
             {
@@ -443,7 +455,11 @@
                 }
               ],
               "options": {
-                "index": 3
+                "index": 3,
+                "asset": {
+                  "type": "image",
+                  "id": "<%MEDIA='assets/img/demo/wheel_of_fortune.jpg'%>"
+                }
               }
             }
           ],

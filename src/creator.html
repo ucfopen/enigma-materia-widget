@@ -133,11 +133,53 @@
 					ng-class="{ show: curQuestion }">
 					<div class="title">Question {{curQuestion.index+1}} in "{{curCategory.name}}"</div>
 
-					<textarea ng-model="curQuestion.questions[0].text"
-						focus-me="curQuestion"
-						placeholder="Enter your question here" id="question_text"
-						autofocus>
-					</textarea>
+					<div class="editor-top">
+						<textarea ng-model="curQuestion.questions[0].text"
+							focus-me="curQuestion"
+							placeholder="Enter your question here" id="question_text"
+							autofocus>
+						</textarea>
+
+					<!-- Add media upload here -->
+						<div class="media-box">
+							<button ng-show="!curQuestion.options.asset || !curQuestion.options.asset.value" ng-click="showPopUp()" class="add-media">Add Media</button>
+							<img class="image" description="{{curQuestion.options.asset.description}}" ng-if="curQuestion.options.asset && curQuestion.options.asset.type == 'image'" ng-src="{{curQuestion.options.asset.value}}" />
+							<figure ng-show="curQuestion.options.asset && curQuestion.options.asset.type == 'audio'">
+								<audio controls>
+									<source ng-src="{{curQuestion.options.asset.value}}">
+								</audio>
+							</figure>
+							<iframe class="video"  description="{{curQuestion.options.asset.description}}" ng-if="curQuestion.options.asset && curQuestion.options.asset.type == 'video'" ng-src="{{curQuestion.options.asset.value}}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+							<form class="description-form" ng-show="curQuestion.options.asset && curQuestion.options.asset.value" >
+								<input type="text"
+									class="description-input"
+									ng-model="curQuestion.options.asset.description"
+									placeholder="Enter an optional description for the media">
+								</input>
+							</form>
+							<div class="media-options">
+								<button ng-show="curQuestion.options.asset && curQuestion.options.asset.value" ng-click="showPopUp()">Change Media</button>
+								<button ng-show="curQuestion.options.asset && curQuestion.options.asset.value" ng-click="removeMedia()">Remove Media</button>
+							</div>
+						</div>
+
+						<div class="add-media-popup" ng-show="mediaPopUp">
+							<button ng-click="hideVideoForm()" ng-show="videoForm" class="back"></button>
+							<button ng-click="uploadImage()" ng-show="!videoForm">Upload Image</button>
+							<button ng-click="uploadAudio()" ng-show="!videoForm">Upload Audio</button>
+							<button ng-click="showVideoForm()" ng-show="!videoForm">Upload Video</button>
+							<form class="video-form" ng-show="videoForm">
+								<input type="text"
+									class="video-input"
+									ng-model="inputUrl"
+									placeholder="Enter a YouTube or Vimeo URL">
+								</input>
+								<button ng-click="formatUrl()">Embed Video</button>
+							</form>
+							<span ng-show="urlError" class="error-message">{{urlError}}</span>
+							<button ng-click="hidePopUp()" class="close icon-close"></button>
+						</div>
+					</div>
 
 					<table class="questions">
 						<thead>
@@ -209,6 +251,7 @@
 						<button class="remove" ng-click="deleteQuestion()">Delete</button>
 						<button class="submit action" ng-click="editComplete()">Done</button>
 					</div>
+					<div class="question-editor-background-cover" ng-class="{ show : mediaPopUp }"></div>
 				</div>
 				<div class="arrow_box_tip" id="first_cat_tip" ng-show="step == 1">Click here to create your first category</div>
 				<div class="arrow_box_tip" id="name_cat_tip" ng-show="step == 2">Now name this category</div>
@@ -225,8 +268,9 @@
 		</div>
 		<div id="backgroundcover"
 			ng-click="hideCover()"
-			ng-class="{ show: showIntroDialog || showTitleDialog }">
+			ng-class="{ show: showIntroDialog || showTitleDialog}">
 		</div>
+		
 
 		<div class="dialog intro" ng-class="{ show: showIntroDialog }">
 			<img src="assets/creator_example.png">
@@ -256,7 +300,7 @@
 
 		<div id="incomplete_alert"
 			ng-show="incompleteMessage"
-			ng-class="{ fade: incompleteMessage, warn: warningMessage }"
+			ng-class="{ warn: warningMessage }"
 			ng-click="killAlert()">
 			<span ng-repeat="messagePart in incompleteMessage">{{ messagePart }}</span>
 			<p>(Click this message to dismiss it)</p>

@@ -73,9 +73,9 @@
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
 					ng-click="selectQuestion(category, question)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectQuestion(category, question) : null" ng-attr-tabindex="{{ checkTab && !finalTab ? 0 : -1 }}">
 					<span ng-hide="question.answered">{{ $index + 1 }}</span>
-					<span ng-show="question.score === 100">&#x2713;</span>
+					<span class='correct-marker' ng-show="question.score === 100">&#x2713;</span>
 					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
-					<span ng-show="question.score === 0">X</span>
+					<span class='incorrect-marker' ng-show="question.score === 0">X</span>
 				</div>
 			</section>
 		</section>
@@ -84,10 +84,25 @@
 			scroll-up="currentQuestion"
 			ng-show="currentQuestion">
 			<div id='t-question-page'
-				class='question-popup'>
+				class='question-popup' ng-class="{'hasMedia': currentQuestion.options.asset.value}">
 				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
-				<div id="question-text" class='question-text' ng-attr-tabindex="{{ checkTab ? 0 : -1 }}">
-					{{ currentQuestion.questions[0].text }}
+				<div class="question-text-and-media">
+					<div id="question-text" class='question-text' ng-attr-tabindex="{{ checkTab ? 0 : -1 }}">
+						{{ currentQuestion.questions[0].text }}
+					</div>
+					<div class="media" ng-show="currentQuestion.options.asset" ng-click="">
+						<img class="image" ng-if="currentQuestion.options.asset.type == 'image'" ng-src="{{ currentQuestion.options.asset.value }}" />
+						<figure ng-if="currentQuestion.options.asset.type == 'audio'">
+							<audio controls allow="autoplay 'none'">
+								<source ng-src="{{currentQuestion.options.asset.value}}">
+							</audio>
+							<figcaption ng-show="currentQuestion.options.asset.description">{{currentQuestion.options.asset.description}}</figcaption>
+						</figure>
+						<iframe class="video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{ currentQuestion.options.asset.value }}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+						<button class="expand-into-lightbox image" ng-if="currentQuestion.options.asset.type === 'image'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
+						<button class="expand-into-lightbox video" ng-if="currentQuestion.options.asset.type === 'video'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
+						<div class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</div>
+					</div>
 				</div>
 				<div class='answers'>
 					<ul ng-class="{answered: currentQuestion.answered}">
@@ -138,6 +153,16 @@
 						Submit Final Answer
 					</button>
 				</div>
+				<section class="lightbox" ng-class="{ 'show': lightboxTarget != -1}" ng-hide="lightboxTarget == -1">
+					<div class="lightbox-content">
+						<button class="lightbox-close" ng-click="setLightboxTarget(-1)">X</button>
+						<iframe class="lightbox-video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{currentQuestion.options.asset.value}}" frameborder="0" allowfullscreen></iframe>
+						<div ng-if="currentQuestion.options.asset.type == 'image'" class="lightbox-image-container">
+							<img class="lightbox-image" ng-src="{{currentQuestion.options.asset.value}}" description="{{currentQuestion.text}}" ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}" ng-click="setLightboxZoom(!lightboxZoom)">
+						</div>
+						<p class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</p>
+					</div>
+				</section>
 			</div>
 		</section>
 		<section class='notice' ng-show="allAnswered">

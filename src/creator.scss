@@ -672,21 +672,21 @@ input[type=checkbox]:checked + label.checktoggle {
 
 #question_editor {
 	position: absolute;
+	z-index: -100;
 	left: 0px;
 	right: 0px;
 	border: solid 4px #fff;
 	background: #3b4657;
 	top: 0px;
 	padding: 10px;
-	z-index: -1;
 	opacity: 0;
 
-	transition: all 0.25s ease;
+	transition: opacity 0.25s ease;
 
 	&.show {
 		opacity: 1;
-		z-index: 2;
 		animation: bloop 0.2s;
+		z-index: 2;
 	}
 
 	&:after,
@@ -768,35 +768,143 @@ input[type=checkbox]:checked + label.checktoggle {
 		font-weight: 700;
 	}
 
-	textarea {
-		display: inline-block;
-		width: 699px;
-		height: 40px;
-		margin: 7px 0px;
-		padding: 5px;
-		font-size: 13px;
+	/** Media Uploader **/
 
-		&.question_text
-		{
-			width:699px;
-			height:40px;
-			border: solid 4px #697296;
+	.editor-top {
+		display: flex;
+		flex-direction: row;
+		position: relative;
+
+		button {
+			background-color: #70bd34;
+			color: #fff;
+			padding: 10px;
+			margin: auto;
+			font-family: 'Lato', "Arial", sans-serif;
+
+			&:hover {
+				color: #000;
+			}
+
 		}
 
-		&.answerChoiceBox {
-			width: 320px;
-			height: 60px;
-			font-size: 14px;
-			font-weight: bold;
-			border: solid 1px #8b8989;
+		.media-box {
+			display: flex;
+			flex-direction: column;
+			margin: 7px 0px 7px 7px;
+			padding: 5px;
+
+			.description-form {
+				width: 100%;
+			}
+			.description-input {
+				width: 100%;
+				padding: 2px;
+				box-sizing: border-box;
+				border: 0;
+			}
+
+			.media-options {
+				display: flex;
+				flex-direction: row;
+				justify-content: space-between;
+
+				button {
+					margin: 10px 5px 0 5px;
+				}
+			}
 		}
 
-		&.feedbackChoiceBox {
-			width: 180px;
-			height: 60px;
-			font-size: 12px;
-			border: solid 1px #999;
-			border-radius: 8px;
+		.image {
+			max-width: 200px;
+		}
+
+		.add-media-popup {
+			z-index: 2001;
+			position: absolute;
+			display: flex;
+			flex-direction: column;
+			justify-content: space-around;
+
+			background-color: #2f3845;
+			border: 5px #fff solid;
+			color: #fff;
+
+			height: 275px;
+			left: 25%;
+			right: 25%;
+			width: auto;
+
+			> * {
+				width: 50%;
+				margin: auto;
+
+				&.back {
+					background-color: #fff;
+					color: #000;
+					font-family: "icomoon";
+
+					position: absolute;
+					top: 10px;
+					left: 10px;
+					width: auto;
+					border-radius: 10px;
+
+					&:hover {
+						color: #70bd34;
+					}
+
+					&:after {
+						content: "\ea38";
+					}
+				}
+
+				&.close {
+					background-color: #be3434;
+					font-family: "icomoon";
+
+					position: absolute;
+					top: -20px;
+					right: -20px;
+					width: auto;
+					border-radius: 50%;
+				}
+			}
+
+			.video-form {
+				width: 100%;
+				display: flex;
+				flex-direction: column;
+				justify-content: space-around;
+
+				button {
+					width: 50%;
+					margin: auto;
+				}
+
+				.video-input {
+					width: 75%;
+					margin: 5px auto;
+					padding: 5px;
+					font-size: 13px;
+				}
+			}
+
+		}
+
+		textarea {
+			display: inline-block;
+			width: 699px;
+			margin: 7px 0px;
+			padding: 5px;
+			font-size: 13px;
+
+			&.question_text
+			{
+				width:699px;
+				height:40px;
+				border: solid 4px #697296;
+			}
 		}
 	}
 
@@ -813,6 +921,26 @@ input[type=checkbox]:checked + label.checktoggle {
 		td{
 			padding: 0 10px;
 			vertical-align: top;
+
+			textarea {
+				padding: 5px;
+
+				&.answerChoiceBox {
+					width: 310px;
+					height: 50px;
+					font-size: 14px;
+					// font-weight: bold;
+					border: solid 1px #8b8989;
+				}
+	
+				&.feedbackChoiceBox {
+					width: 170px;
+					height: 50px;
+					font-size: 12px;
+					border: solid 1px #999;
+					// border-radius: 8px;
+				}
+			}
 		}
 		td:first-child,
 		td:last-child{
@@ -905,8 +1033,9 @@ input[type=checkbox]:checked + label.checktoggle {
 			span {
 				font-size: 10px;
 				position:relative;
-				top: 2px;
+				top: -4px;
 				left: 20px;
+				padding-top: 1px;
 
 				&:before {
 					position: absolute;
@@ -930,6 +1059,25 @@ input[type=checkbox]:checked + label.checktoggle {
 					left: -80px;
 				}
 			}
+		}
+	}
+
+	.question-editor-background-cover {
+		position: fixed;
+		z-index: -200;
+
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+		left: 0px;
+
+		background: none;
+		opacity: 0;
+
+		&.show {
+			z-index: 2000;
+			background: #000;
+			opacity: 0.5;
 		}
 	}
 
@@ -1063,7 +1211,7 @@ input[type=checkbox]:checked + label.checktoggle {
 	position: absolute;
 	border-radius: 5px;
 	background: #d1d7e2;
-	width: 650px;
+	width: 630px;
 	padding: 10px 0;
 	z-index: -1;
 	opacity: 0;
