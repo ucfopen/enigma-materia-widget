@@ -355,12 +355,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 		complete: false
 		problems: []
 		index: 0
-		options:
-			asset:
-				type: ''
-				value: ''
-				id: ''
-				description: ''
+		options: {}
 
 	$scope.addAnswer = ->
 		$scope.curQuestion.answers.push _newAnswer()
@@ -451,6 +446,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 			type: "video"
 			value: $sce.trustAsResourceUrl(embedUrl)
 			id: embedUrl
+			description: ''
 
 	# prepare some checks to make sure the given question is 'complete':
 	_checkQuestion = (question) ->
@@ -465,6 +461,9 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 		blankAnswer = false
 		# and has answers at all
 		noAnswers = question.answers.length == 0
+
+		# old qsets set question.options as an array; it needs to be an object. Convert it if necessary.
+		if Array.isArray(question.options) and question.options.length is 0 then question.options = {}
 
 		# store whatever problems remain in the question for later
 		problems = []
