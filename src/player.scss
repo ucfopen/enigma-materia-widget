@@ -178,6 +178,7 @@ header {
 		}
 
 		.question {
+			position: relative;
 			float: left;
 			font-family: sans-serif;
 			margin: 0 0 0 5px;
@@ -235,9 +236,12 @@ header {
 				background: #cf8c92;
 				border: 3px solid #AC3434;
 
-				span.incorrect-marker {
-					position: relative;
-					top: 5px;
+				span.incorrect-marker .icon-close {
+					position: absolute;
+					top: calc(50% - 33px);
+					left: calc(50% - 33px);
+
+					font-size: 66px;
 				}
 			}
 			&.partial {
@@ -330,6 +334,7 @@ header {
 
 	.question-text {
 		flex-grow: 2;
+		padding-right: 5px;
 	}
 
 	.media {

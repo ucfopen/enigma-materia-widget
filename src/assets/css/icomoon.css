@@ -31,3 +31,9 @@
 .icon-enlarge:before {
   content: "\e989";
 }
+.icon-plus:before {
+	content: "\ea0a";
+}
+.icon-close:before {
+	content: "\ea0f";
+}

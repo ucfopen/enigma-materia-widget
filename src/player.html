@@ -75,7 +75,7 @@
 					<span ng-hide="question.answered">{{ $index + 1 }}</span>
 					<span class='correct-marker' ng-show="question.score === 100">&#x2713;</span>
 					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
-					<span class='incorrect-marker' ng-show="question.score === 0">X</span>
+					<span class='incorrect-marker' ng-show="question.score === 0"><span class="icon icon-close" aria-hidden="true"></span>
 				</div>
 			</section>
 		</section>
