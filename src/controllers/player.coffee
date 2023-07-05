@@ -1,5 +1,17 @@
 Enigma = angular.module 'enigmaPlayer', ['ngAria']
 
+# yes, this is a copy of an existing directive
+# unfortunately that directive defines its module as the creator, so it won't work if we try to use it with the player
+Enigma.directive 'focusMe', ['$timeout', '$parse', ($timeout, $parse) ->
+	link: (scope, element, attrs) ->
+		model = $parse(attrs.focusMe)
+		scope.$watch model, (value) ->
+			if value
+				$timeout ->
+					element[0].focus()
+			value
+]
+
 Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $timeout, $sce) ->
 	$scope.title      = ''
 	$scope.categories = []
@@ -21,6 +33,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	$scope.percentIncorrect = 0
 
 	$scope.delayedHeaderInit = false
+
+	$scope.instructionsOpen = false
 
 	# variable to check which screen the user is on (true = gameboard)
 	$scope.checkTab = true
@@ -58,33 +72,57 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			[a[i], a[j]] = [a[j], a[i]]
 		a
 
+	focusOnQuestionText = () ->
+		# this changes the focus automatically to the active area, otherwise
+		# focus remains on previous screen after question is selected
+		setTimeout (-> document.getElementById('question-text').focus()), 100
+		$scope.setTabIndex()
+
 	$scope.selectQuestion = (category, question) ->
 		throw Error 'A question is already selected!' if $scope.currentQuestion
 		unless question.answered
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
 
-			# this changes the focus automatically to the active area, otherwise
-			# focus remains on previous screen after question is selected
-			setTimeout (-> document.getElementById('question-text').focus()), 100
-			$scope.setTabIndex()
+			focusOnQuestionText()
 
 	# Lightbox in question pop up
 	$scope.lightboxTarget = -1
 
 	$scope.setLightboxTarget = (val) ->
 		$scope.lightboxTarget = val
+		if val < 0 then focusOnQuestionText()
 
 	$scope.lightboxZoom = 0
 
 	$scope.setLightboxZoom = (val) ->
 		$scope.lightboxZoom = val
 
+	moveAnswer = (index) ->
+		if index < 0
+			index = $scope.currentQuestion.answers.length-1
+		else if index >= $scope.currentQuestion.answers.length
+			index = 0
+		targetLi = document.getElementById('t-question-page')
+			.getElementsByClassName('question-li')[index]
+		targetLi.focus()
+
+	$scope.handleAnswerKeyUp = (event, index, answer) ->
+		switch event.code
+			when 'Enter', 'Space' then $scope.selectAnswer(answer)
+			when 'ArrowUp' then moveAnswer(index - 1)
+			when 'ArrowDown' then moveAnswer(index + 1)
+
+	# return focus to the top left corner of the gameboard, as if tabbing into it from the score indicator
+	$scope.wraparound = () ->
+		document.getElementsByClassName('category')[0].children[0].focus()
+
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
+		$scope.ariaLive = 'Answer ' + $scope.currentAnswer.text + ' selected'
 
-	$scope.cancelQuestion = ->
+	$scope.cancelQuestion = (event = null)->
 		_wasUpdated = $scope.currentQuestion.answered
 
 		$scope.currentCategory = null
@@ -121,9 +159,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			$scope.answeredQuestions.push $scope.currentQuestion
 
 			if $scope.answeredQuestions.length == $scope.totalQuestions
-				returnMessage = " Tab back to the Return button to continue to the submit screen."
+				returnMessage = " Press the Space or Enter key to continue to the submit screen."
 			else
-				returnMessage = " Tab back to the Return button to return to the game board."
+				returnMessage = " Press the Space or Enter key to return to the game board."
+
+			document.getElementById('return').focus()
 
 			if check.score == 100
 				$scope.ariaLive = check.text + " is correct!" + returnMessage
@@ -138,6 +178,18 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	# that you can't tab through the hidden screen
 	$scope.setTabIndex = ->
 		$scope.checkTab = !$scope.checkTab
+
+	# displays a keyboard instructions dialog and sets inert on everything else to
+	# control tab targets
+	$scope.toggleInstructions = ->
+		$scope.instructionsOpen = !$scope.instructionsOpen
+		# wait for inert status to be removed/added properly before moving focus
+		setTimeout (->
+			if $scope.instructionsOpen
+				document.getElementById('hide-keyboard-instructions-button').focus()
+			else
+				document.getElementById('show-keyboard-instructions-button').focus()
+		), 100
 
 	_updateScore = ->
 		total = 0

@@ -925,7 +925,7 @@ input[type=checkbox]:checked + label.checktoggle {
 					// font-weight: bold;
 					border: solid 1px #8b8989;
 				}
-	
+
 				&.feedbackChoiceBox {
 					width: 170px;
 					height: 50px;
@@ -1033,6 +1033,8 @@ input[type=checkbox]:checked + label.checktoggle {
 				&:before {
 					position: absolute;
 					content: 'WRONG';
+					top: 50%;
+					transform: translateY(-50%);
 				}
 			}
 		}

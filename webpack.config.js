@@ -16,7 +16,7 @@ const customCopy = copy.concat([
 const entries = {
 	'creator.js': [
 		path.join(__dirname, 'src', 'modules/creator.coffee'),
-		path.join(__dirname, 'src', 'controllers/creator.coffee'),		
+		path.join(__dirname, 'src', 'controllers/creator.coffee'),
 		path.join(__dirname, 'src', 'directives/enter.coffee'),
 		path.join(__dirname, 'src', 'directives/focus.coffee')
 	],
