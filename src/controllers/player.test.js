@@ -9,8 +9,25 @@ describe('Player Controller', function() {
 	var widgetInfo
 	var qset
 
+	const originalDocument = document
+
+	beforeAll(() => {
+		jest.useFakeTimers();
+	})
+
 	beforeEach(() => {
 		jest.resetModules()
+
+		// placeholders to keep things running properly
+		document.getElementById = jest.fn().mockReturnValue({
+			focus: jest.fn()
+		})
+		document.getElementsByClassName = jest.fn().mockReturnValue([
+			{
+				focus: jest.fn(),
+				title: ''
+			}
+		])
 
 		// mock materia
 		global.Materia = {
@@ -51,6 +68,10 @@ describe('Player Controller', function() {
 			$controller = _$controller_('enigmaPlayerCtrl', { $scope: $scope });
 		})
 
+	})
+
+	afterAll(() => {
+		document = originalDocument
 	})
 
 
@@ -367,4 +388,47 @@ describe('Player Controller', function() {
 		var list2 = listOfIds($scope.categories[0].items[0]);
 		expect(list1).not.toEqual(list2);
 	});
+
+	it('should toggle keyboard instructions properly', function(){
+		const hideFocus = jest.fn();
+		const showFocus = jest.fn();
+		// kind of magical, but
+		// we're going from hidden to visible so the first focus target should be the 'hide' button
+		// and then from visible to hidden the next focus target should be the 'show' button again
+		document.getElementById = jest.fn().mockReturnValueOnce({
+			focus: hideFocus
+		}).mockReturnValueOnce({
+			focus: showFocus
+		})
+		$scope.start(widgetInfo, qset.data);
+
+		expect($scope.instructionsOpen).toBe(false)
+
+		$scope.toggleInstructions()
+		jest.advanceTimersByTime(100);
+		expect($scope.instructionsOpen).toBe(true)
+		expect(document.getElementById).toHaveBeenCalledTimes(1)
+		expect(document.getElementById).toHaveBeenLastCalledWith('hide-keyboard-instructions-button')
+
+		$scope.toggleInstructions()
+		jest.advanceTimersByTime(100);
+		expect($scope.instructionsOpen).toBe(false)
+		expect(document.getElementById).toHaveBeenCalledTimes(2)
+		expect(document.getElementById).toHaveBeenLastCalledWith('show-keyboard-instructions-button')
+	})
+
+	it('should focus on the correct element when wrapping around', function(){
+		const firstFocus = jest.fn()
+		const secondFocus = jest.fn()
+		document.getElementsByClassName = jest.fn().mockReturnValue([
+			{ children: [ {focus: firstFocus }] } ,
+			{ children: [ {focus: secondFocus }] }
+		])
+
+		$scope.start(widgetInfo, qset.data);
+		$scope.wraparound()
+
+		expect(firstFocus).toHaveBeenCalledTimes(1)
+		expect(secondFocus).not.toHaveBeenCalled()
+	})
 });
