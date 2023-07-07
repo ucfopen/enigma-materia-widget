@@ -431,4 +431,77 @@ describe('Player Controller', function() {
 		expect(firstFocus).toHaveBeenCalledTimes(1)
 		expect(secondFocus).not.toHaveBeenCalled()
 	})
+
+	it('should update the aria live value when handleWholePlayerKeyup handles a press of the S key', function() {
+		$scope.start(widgetInfo, qset.data);
+		expect($scope.ariaLive).toBe('')
+
+		const spoofKeyUpEvent = { code: 'KeyS' }
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+
+		// we happen to know what this will look like given the demo qset, but it's a bit magical
+		expect($scope.ariaLive).toBe('9 questions remaining, current score is 0 out of 100 points.')
+
+		// this isn't what actually happens but it doesn't really matter here
+		$scope.answeredQuestions.push(1)
+		$scope.answeredQuestions.push(2)
+		$scope.answeredQuestions.push(3)
+
+		$scope.percentCorrect = 28
+
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.ariaLive).toBe('6 questions remaining, current score is 28 out of 100 points.')
+
+		$scope.allAnswered = true
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.ariaLive).toBe('All questions have been answered')
+	})
+
+	it('should select the earliest unanswered question when handleWholePlayerKeyup handles a press of the Q key', function() {
+		jest.spyOn($scope, 'selectQuestion')
+
+		$scope.start(widgetInfo, qset.data);
+
+		const spoofKeyUpEvent = { code: 'KeyQ' }
+
+		// test the do-nothing cases first
+		// some of these are already at their default values, we'll set them explicitly here for consistency
+		$scope.instructionsOpen = true
+		$scope.allAnswered = false
+		$scope.currentQuestion = null
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.selectQuestion).not.toHaveBeenCalled()
+
+		$scope.instructionsOpen = false
+		$scope.allAnswered = true
+		$scope.currentQuestion = null
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.selectQuestion).not.toHaveBeenCalled()
+
+		$scope.instructionsOpen = false
+		$scope.allAnswered = false
+		$scope.currentQuestion = $scope.categories[0].items[0]
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.selectQuestion).not.toHaveBeenCalled()
+
+		// now make sure the first question is selected automatically
+		$scope.instructionsOpen = false
+		$scope.allAnswered = false
+		$scope.currentQuestion = null
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.selectQuestion).toHaveBeenCalledTimes(1)
+		expect($scope.selectQuestion).toHaveBeenCalledWith($scope.categories[0], $scope.categories[0].items[0])
+
+		$scope.selectQuestion.mockReset()
+
+		// now set the first two questions' scores to make sure it selects the third question automatically
+		$scope.instructionsOpen = false
+		$scope.allAnswered = false
+		$scope.currentQuestion = null
+		$scope.categories[0].items[0].score = '100'
+		$scope.categories[0].items[1].score = '100'
+		$scope.handleWholePlayerKeyup(spoofKeyUpEvent)
+		expect($scope.selectQuestion).toHaveBeenCalledTimes(1)
+		expect($scope.selectQuestion).toHaveBeenCalledWith($scope.categories[0], $scope.categories[0].items[2])
+	})
 });

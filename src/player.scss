@@ -236,13 +236,14 @@ header {
 				   -moz-transition: 200ms;
 				    -ms-transition: 200ms;
 				     -o-transition: 200ms;
-				&.wrong, &.correct {
-					-webkit-transform: none;
-					   -moz-transform: none;
-					    -ms-transform: none;
-					     -o-transform: none;
-				}
 			}
+			&:hover.wrong, &:hover.correct {
+				-webkit-transform: none;
+				   -moz-transform: none;
+					-ms-transform: none;
+					 -o-transform: none;
+			}
+
 			&.correct {
 				font-size: 80px;
 				color: #4187c9;

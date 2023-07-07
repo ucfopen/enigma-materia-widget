@@ -41,6 +41,9 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	# variable checks if on final submit for grading screen
 	$scope.finalTab = false
 
+	# when changed, will cause screen readers to immediately read the string value
+	$scope.ariaLive = ''
+
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
 		$scope.title = instance.name
@@ -72,11 +75,30 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			[a[i], a[j]] = [a[j], a[i]]
 		a
 
-	focusOnQuestionText = () ->
+	focusOnQuestionText = (setTabIndex = true) ->
 		# this changes the focus automatically to the active area, otherwise
 		# focus remains on previous screen after question is selected
 		setTimeout (-> document.getElementById('question-text').focus()), 100
-		$scope.setTabIndex()
+		if setTabIndex then $scope.setTabIndex()
+
+	$scope.handleWholePlayerKeyup = (e) ->
+		switch e.code
+			when 'KeyQ' then $scope.selectEarliestUnanswered()
+			when 'KeyS'
+				if $scope.allAnswered
+					$scope.ariaLive = 'All questions have been answered'
+				else
+					$scope.ariaLive = $scope.totalQuestions - $scope.answeredQuestions.length +
+						' questions remaining, current score is ' +
+						$scope.percentCorrect + ' out of 100 points.'
+
+	$scope.selectEarliestUnanswered = () ->
+		return if $scope.instructionsOpen or $scope.allAnswered or $scope.currentQuestion
+		for c, ci in $scope.categories
+			for q, qi in c.items
+				if typeof q.score is 'undefined'
+					$scope.selectQuestion c, q
+					return
 
 	$scope.selectQuestion = (category, question) ->
 		throw Error 'A question is already selected!' if $scope.currentQuestion
@@ -91,7 +113,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 
 	$scope.setLightboxTarget = (val) ->
 		$scope.lightboxTarget = val
-		if val < 0 then focusOnQuestionText()
+		if val < 0 then focusOnQuestionText(false)
 
 	$scope.lightboxZoom = 0
 

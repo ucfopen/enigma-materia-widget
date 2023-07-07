@@ -19,6 +19,7 @@
 		<script src="player.js"></script>
 	</head>
 	<body ng-app='enigmaPlayer'
+		ng-keyup="handleWholePlayerKeyup($event)"
 		ng-controller='enigmaPlayerCtrl'>
 		<div id="checkAns"
 			class="clip"
@@ -28,7 +29,7 @@
 		</div>
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			id="header"
-			ng-attr-inert="{{ currentQuestion || instructionsOpen == true ? 'true' : undefined}}"
+			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			ng-show="delayedHeaderInit">
 			<h1 tabindex="0"
 				aria-label="Welcome to Enigma! Now playing: {{ title }}">
@@ -40,7 +41,7 @@
 					tabindex="0"
 					role="text"
 					ng-click="toggleInstructions()"
-					aria-label="Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget.">
+					aria-label="Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining.">
 					Show Keyboard Instructions
 				</span>
 			</div>
@@ -92,6 +93,7 @@
 			<br/>
 			Answer all questions to complete the widget.
 			<br/>
+			Press the 'Q' key to automatically select the earliest unanswered question.
 			<button id="hide-keyboard-instructions-button"
 				ng-click="toggleInstructions()">
 				Hide Keyboard Instructions
@@ -102,7 +104,7 @@
 			aria-label='Game Board'
 			id='gameboard'
 			class='gameboard'
-			ng-attr-inert="{{ currentQuestion || instructionsOpen == true ? 'true' : undefined}}"
+			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			tabindex="-1">
 			<!-- categories -->
 			<section class='category'
@@ -160,7 +162,7 @@
 					Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"
 				</h1>
 				<div class="question-text-and-media"
-					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}">
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<div id="question-text"
 						class='question-text'
 						role="none"
@@ -211,7 +213,7 @@
 					</div>
 				</div>
 				<div class='answers'
-					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}">
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<ul ng-class="{answered: currentQuestion.answered}"
 						role="radiogroup">
 						<li class="question-li"
@@ -258,7 +260,7 @@
 					</ul>
 				</div>
 				<div class="menu"
-					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}">
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
 						ng-click="cancelQuestion()">
