@@ -160,6 +160,11 @@ header {
 		color: #8f979a;
 		font-size: 15px;
 		line-height: 25px;
+
+		.instructions:focus,
+		.instructions:hover {
+			text-decoration: underline;
+		}
 	}
 }
 
@@ -172,6 +177,7 @@ header {
 		padding: 5px;
 		overflow: auto;
 		-webkit-transition: 200ms;
+
 		.title {
 			float: left;
 			background: #fff;
@@ -182,10 +188,6 @@ header {
 			margin: 15px 5px 0 0;
 			position: relative;
 			min-height: 20px;
-
-			&:focus {
-				box-shadow: 0 0 4px 4px #ccc;
-			}
 
 			&:after {
 				content: '';
@@ -329,6 +331,18 @@ header {
 		padding-top: 30px;
 	}
 
+	.instructions {
+		color: #fff;
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		font-size: 13px;
+
+		&:focus {
+			text-decoration: underline;
+		}
+	}
+
 	h1 {
 		margin: 0;
 		padding: 0;
@@ -372,10 +386,6 @@ header {
 	.question-text {
 		flex-grow: 2;
 		padding-right: 5px;
-
-		&:focus {
-			text-decoration: underline;
-		}
 	}
 
 	.media {
@@ -699,29 +709,43 @@ header {
 	border: 10px solid $blue;
 	padding: 20px;
 	text-align: center;
-	padding-top: 170px;
-	z-index: 100;
+	z-index: 1000;
 
 	@include boxSizing();
+	p {
+		display: block;
+		margin: 5px auto;
+		width: 75%;
+		text-align: left;
+	}
+
 	h1 {
 		font-weight: normal;
+		&.top-padded {
+			padding-top: 170px;
+		}
 	}
 	button {
+		display: block;
 		background: #4187c9;
 		border: 2px solid black;
 		font-size: 16px;
 		padding: 10px;
 		border: 2px solid #fff;
-		margin: 5px 2px;
+		margin: 5px auto;
 		text-transform: uppercase;
 		color: white;
 		cursor: hand; cursor: pointer;
 		font-weight: bold;
+
 		&:hover, &:focus {
 			background: rgb(178, 217, 255);
 			color: #4187c9;
 			border-color: #4187c9;
+		}
 
+		&.instructions-button {
+			margin-top: 15px;
 		}
 	}
 	#scorebox_final {

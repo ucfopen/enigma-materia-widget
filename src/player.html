@@ -31,26 +31,18 @@
 			id="header"
 			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			ng-show="delayedHeaderInit">
-			<h1 tabindex="0"
-				aria-label="Welcome to Enigma! Now playing: {{ title }}">
-				{{ title }}
-			</h1>
+			<h1>{{ title }}</h1>
 			<div class='divider'>
 				<span id="show-keyboard-instructions-button"
-					class="instructions invisible-until-focused"
+					class="instructions"
 					tabindex="0"
 					role="text"
 					ng-click="toggleInstructions()"
-					aria-label="Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining.">
+					aria-label="Welcome to Enigma! Now playing: {{ title }}. Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining. Press the 'W' key to hear which question and category you currently have highlighted. Press the 'H' key to hear these instructions again.">
 					Show Keyboard Instructions
 				</span>
 			</div>
-			<div id='scorebox'
-				class='score'
-				role="meter"
-				tabindex="0"
-				aria-live="polite"
-				aria-label="{{ allAnswered == false ? (totalQuestions - answeredQuestions.length) + ' questions remaining, current score is '+percentCorrect+' out of 100 points.' : 'All questions have been answered.'}}">
+			<div id='scorebox' class='score'>
 				<svg xmlns="http://www.w3.org/2000/svg"
 					class='percent-ring parent-ring'>
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
@@ -87,15 +79,28 @@
 		<section id="keyboard-instructions-dialog"
 			class="notice"
 			ng-if="instructionsOpen">
-			Questions are sorted into categories.
-			<br/>
-			Use the Tab key to navigate through the game board to view and select questions.
-			<br/>
-			Answer all questions to complete the widget.
-			<br/>
-			Press the 'Q' key to automatically select the earliest unanswered question.
+			<p>Questions are sorted into categories.</p>
+			<p>Use the 'Tab' key to navigate through the game board to view and select questions.</p>
+			<p>Answer all questions to complete the widget.</p>
+			<p>Press the 'Q' key to automatically select the earliest unanswered question.</p>
 			<button id="hide-keyboard-instructions-button"
+				class="instructions-button"
 				ng-click="toggleInstructions()">
+				Hide Keyboard Instructions
+			</button>
+		</section>
+		<section id="question-keyboard-instructions-dialog"
+			class="notice"
+			ng-if="questionInstructionsOpen">
+			<p>Use the 'Tab' key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, then to reach the 'Return' and 'Submit Final Answer' buttons.</p>
+			<p>The 'Up' and 'Down' arrow keys may also be used to navigate through answer options.</p>
+			<p>Press the 'Enter' or 'Space' key on an answer option to select it.</p>
+			<p>Pressing the 'Escape' key will leave this question and allow you to select another question.</p>
+			<p>Press the 'Q' key to hear the question again.</p>
+			<p>Press the 'S' key after selecting an answer to be taken to the Submit Final Answer button automatically.</p>
+			<button id="hide-question-keyboard-instructions-button"
+				class="instructions-button"
+				ng-click="toggleQuestionInstructions()">
 				Hide Keyboard Instructions
 			</button>
 		</section>
@@ -109,23 +114,21 @@
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
-				<div aria-label="Category {{$index+1}} of {{categories.length}}: {{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}"
-					role="heading"
-					tabindex="0"
-					class='title'>
+				<div class='title'>
 					<span aria-hidden="true">
 						{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
 					</span>
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
-					aria-label="{{category.name}} Question number {{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-					title="{{category.name}} Question number {{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+					aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+					title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
 					role='button'
 					class='question'
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
 					ng-click="selectQuestion(category, question)"
-					ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null">
+					ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
+					ng-focus="highlightQuestion(category, question)">
 					<span ng-hide="question.answered">
 						{{ $index + 1 }}
 					</span>
@@ -155,18 +158,27 @@
 		<section class='question-popup-bg'
 			scroll-up="currentQuestion"
 			ng-show="currentQuestion"
-			ng-keyup="$event.code == 'Escape' ? cancelQuestion($event) : null">
+			ng-attr-inert="{{ questionInstructionsOpen == true ? 'true' : undefined }}"
+			ng-keyup="handleQuestionKeyUp($event)">
 			<div id='t-question-page'
-				class='question-popup' ng-class="{'hasMedia': currentQuestion.options.asset.value}">
-				<h1 ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}">
+				class='question-popup'
+				ng-class="{'hasMedia': currentQuestion.options.asset.value}">
+				<span id="show-question-keyboard-instructions-button"
+					class="instructions"
+					tabindex="0"
+					role="text"
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}"
+					ng-click="toggleQuestionInstructions()"
+					aria-label="Question: {{ currentQuestion.questions[0].text }}. Use the Tab key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, and then to reach the Return and Submit Final Answer buttons. The Up and Down arrow keys may also be used to navigate through answer options. Press the Enter or Space key on an answer option to select it. Pressing the Escape key will leave this question and allow you to select another question. Press the Q key to hear the question again. Press the S key after selecting an answer to be taken to the Submit Final Answer button automatically. Press the H key to hear these instructions again.">
+					Show Keyboard Instructions
+				</span>
+				<h1>
 					Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"
 				</h1>
 				<div class="question-text-and-media"
 					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<div id="question-text"
-						class='question-text'
-						role="none"
-						tabindex="0">
+						class='question-text'>
 						{{ currentQuestion.questions[0].text }}
 					</div>
 					<div class="media"
@@ -194,12 +206,14 @@
 							allowfullscreen>
 						</iframe>
 						<button class="expand-into-lightbox image"
+							aria-label="Expand image"
 							ng-if="currentQuestion.options.asset.type === 'image'"
 							ng-click="setLightboxTarget(0)">
 							<span class="icon icon-enlarge" aria-hidden="true">
 							</span>
 						</button>
 						<button class="expand-into-lightbox video"
+							aria-label="Expand video"
 							ng-if="currentQuestion.options.asset.type === 'video'"
 							ng-click="setLightboxTarget(0)">
 							<span class="icon icon-enlarge"
@@ -221,6 +235,7 @@
 							ng-class="{selected: answer == currentAnswer}"
 							ng-click="selectAnswer(answer)"
 							ng-keyup="handleAnswerKeyUp($event, $index, answer)"
+							aria-label="{{answer.text}}. {{ answer == currentAnswer ? 'This is the currently selected answer.' : ''}}"
 							role="radio">
 							<span class='mark-holder'
 								ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
@@ -251,6 +266,7 @@
 										ng-class="{selected: answer == currentAnswer}"/>
 								</svg>
 								<input type="radio"
+									aria-hidden="true"
 									value="{{ answer.id }}"
 									tabindex="-1"
 									name="group1"/>
@@ -269,6 +285,7 @@
 					<button id="submit" class="button submit"
 						ng-disabled="!currentAnswer || currentQuestion.answered"
 						ng-click="submitAnswer()"
+						aria-label="Submit final answer. Currently selected answer is {{currentAnswer.text}}."
 						ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
 						Submit Final Answer
 					</button>
@@ -277,9 +294,9 @@
 					ng-class="{ 'show': lightboxTarget != -1}"
 					ng-hide="lightboxTarget == -1"
 					tabindex="-1">
-					<div class="lightbox-content">
+					<div id="lightbox-content"
+						class="lightbox-content">
 						<iframe class="lightbox-video"
-							focus-me="currentQuestion.options.asset.type == 'video' && lightboxTarget != -1"
 							ng-if="currentQuestion.options.asset.type == 'video'"
 							ng-src="{{currentQuestion.options.asset.value}}"
 							frameborder="0"
@@ -289,7 +306,6 @@
 						<div ng-if="currentQuestion.options.asset.type == 'image'"
 							class="lightbox-image-container">
 							<img class="lightbox-image"
-								focus-me="currentQuestion.options.asset.type == 'image' && lightboxTarget != -1"
 								ng-src="{{currentQuestion.options.asset.value}}"
 								alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}"
 								description="{{currentQuestion.text}}"
@@ -303,6 +319,7 @@
 							{{currentQuestion.options.asset.description}}
 						</p>
 						<button class="lightbox-close"
+							aria-label="Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
 							tabindex="0"
 							ng-click="setLightboxTarget(-1)">
 							X
@@ -341,7 +358,7 @@
 					</span>
 				</div>
 			</div>
-			<h1>All Questions Answered</h1>
+			<h1 class="top-padded">All Questions Answered</h1>
 			<button aria-label="You answered {{ percentCorrect }}% of the questions correctly. Submit for review."
 				id="end-button"
 				ng-click="end()">
