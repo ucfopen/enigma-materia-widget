@@ -447,8 +447,8 @@ describe('Player Controller', function() {
 		const firstFocus = jest.fn()
 		const secondFocus = jest.fn()
 		document.getElementsByClassName = jest.fn().mockReturnValue([
-			{ children: [ {focus: firstFocus }] } ,
-			{ children: [ {focus: secondFocus }] }
+			{focus: firstFocus },
+			{focus: secondFocus }
 		]);
 
 		$scope.start(widgetInfo, qset.data);
@@ -622,7 +622,7 @@ describe('Player Controller', function() {
 		};
 		$scope.handleQuestionKeyUp(spoofKeyUpEvent);
 
-		expect(document.getElementById).not.toHaveBeenCalled();
+		expect(document.getElementById).not.toHaveBeenCalledWith('submit');
 		expect($scope.ariaLive).toBe('You must select an answer first.');
 	});
 

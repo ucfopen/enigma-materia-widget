@@ -418,12 +418,16 @@ header {
 			height: 25px;
 		}
 
-		audio:focus-within {
+		audio {
 			border-radius: 30px;
 
-			&:focus,
 			&:focus-within {
-				box-shadow: 0 0 4px 4px #ccc;
+				border-radius: 30px;
+
+				&:focus,
+				&:focus-within {
+					box-shadow: 0 0 4px 4px #ccc;
+				}
 			}
 		}
 	}

@@ -21,12 +21,10 @@
 	<body ng-app='enigmaPlayer'
 		ng-keyup="handleWholePlayerKeyup($event)"
 		ng-controller='enigmaPlayerCtrl'>
-		<div id="checkAns"
+		<div id="aria-live"
 			class="clip"
 			aria-live="assertive"
-			tabindex="-1">
-			{{ariaLive}}
-		</div>
+			tabindex="-1"></div>
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			id="header"
 			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
@@ -150,7 +148,7 @@
 			<div class="wraparound invisible-until-focused"
 				tabindex="0"
 				role="button"
-				ng-click="wraparound()">
+				ng-click="wraparound($event)">
 				Press Space/Enter to return to the top of the board.
 			</div>
 		</section>
@@ -191,7 +189,9 @@
 							tabindex="0"
 							alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}" />
 						<figure class="audio-parent" ng-if="currentQuestion.options.asset.type == 'audio'">
-							<audio controls allow="autoplay 'none'">
+							<audio tabindex="0"
+								controls allow="autoplay 'none'"
+								ng-keyup="handleAudioKeyUp($event)">
 								<source ng-src="{{currentQuestion.options.asset.value}}">
 							</audio>
 							<figcaption ng-show="currentQuestion.options.asset.description">

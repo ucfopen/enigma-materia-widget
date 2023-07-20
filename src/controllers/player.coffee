@@ -33,8 +33,13 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	# variable checks if on final submit for grading screen
 	$scope.finalTab = false
 
-	# when changed, will cause screen readers to immediately read the string value
+	# force screen readers to immediately read the string value
+	# keeping the scope variable for now so tests don't have to be completely rewritten
 	$scope.ariaLive = ''
+	forceRead = (readString) ->
+		$scope.ariaLive = readString
+		return unless readString
+		document.getElementById('aria-live').innerHTML = readString
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
@@ -88,7 +93,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	$scope.handleWholePlayerKeyup = (e) ->
 		switch e.code
 			when 'KeyH'
-				$scope.ariaLive = "Keyboard instructions: Questions are sorted into categories. " +
+				forceRead "Keyboard instructions: Questions are sorted into categories. " +
 					"Use the Tab key to navigate through the game board to view and select questions. " +
 					"Answer all questions to complete the widget. " +
 					"Press the 'Q' key to automatically select the earliest unanswered question. " +
@@ -98,18 +103,19 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			when 'KeyQ' then $scope.selectEarliestUnanswered()
 			when 'KeyS'
 				if $scope.allAnswered
-					$scope.ariaLive = 'All questions have been answered'
+					forceRead 'All questions have been answered'
 				else
-					$scope.ariaLive = $scope.totalQuestions - $scope.answeredQuestions.length +
+					forceRead $scope.totalQuestions - $scope.answeredQuestions.length +
 						' questions remaining, current score is ' +
 						$scope.percentCorrect + ' out of 100 points.'
 			when 'KeyW'
 				unless highlightedCategory
-					$scope.ariaLive = 'You have not highlighted a question yet, please use the Tab key to progress to the game board.'
+					forceRead 'You have not highlighted a question yet, please use the Tab key to progress to the game board.'
 					return
-				$scope.ariaLive = 'Current location is question ' + (parseInt(highlightedQuestion.index, 10) + 1) + ' of ' +
+				forceRead 'Current location is question ' + (parseInt(highlightedQuestion.index, 10) + 1) + ' of ' +
 					highlightedCategory.items.length + ' in category ' + (parseInt(highlightedCategory.index, 10) + 1) + ' of ' +
 					$scope.categories.length + ': ' + highlightedCategory.name + '. Press Space or Enter to select this question.'
+
 
 
 	$scope.highlightQuestion = (c, q) ->
@@ -154,22 +160,30 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			.getElementsByClassName('question-li')[index]
 		targetLi.focus()
 
-	$scope.handleQuestionKeyUp = (event) ->
+	$scope.handleAudioKeyUp = (event) ->
 		event.stopPropagation()
+		if event.code == 'Space' or event.code == 'Enter'
+			event.preventDefault()
+			if event.currentTarget.paused
+				event.currentTarget.play()
+			else
+				event.currentTarget.pause()
+
+	$scope.handleQuestionKeyUp = (event) ->
 		switch event.code
 			when 'Escape' then $scope.cancelQuestion()
 			when 'KeyQ'
-				$scope.ariaLive = 'Question: ' + $scope.currentQuestion.questions[0].text
+				forceRead 'Question: ' + $scope.currentQuestion.questions[0].text
 			when 'KeyS'
 				if $scope.currentAnswer
 					document.getElementById('submit').focus()
-				else $scope.ariaLive = 'You must select an answer first.'
+				else forceRead 'You must select an answer first.'
 			when 'KeyH'
 				# have to do it verbose like this otherwise jest chokes on this file for some reason
 				assetIndicator = ''
 				if $scope.currentQuestion.options.asset
 					assetIndicator = 'to the associated media, then '
-				$scope.ariaLive = 'Use the Tab key to navigate ' + assetIndicator +
+				forceRead 'Use the Tab key to navigate ' + assetIndicator +
 					'through answer options, then to reach the Return and Submit Final Answer buttons. ' +
 					'The Up and Down arrow keys may also be used to navigate through answer options. ' +
 					'Press the Enter or Space key on an answer option to select it. ' +
@@ -179,6 +193,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 					'Press the H key to hear these instructions again.'
 			when 'ArrowUp' then moveAnswer($scope.currentQuestion.answers.length-1)
 			when 'ArrowDown' then moveAnswer(0)
+		event.stopPropagation()
 
 	$scope.handleAnswerKeyUp = (event, index, answer) ->
 		switch event.code
@@ -190,13 +205,13 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		event.stopPropagation()
 
 	# return focus to the top left corner of the gameboard, as if tabbing into it from the score indicator
-	$scope.wraparound = () ->
-		document.getElementsByClassName('category')[0].children[0].focus()
+	$scope.wraparound = (e) ->
+		document.getElementsByClassName('question')[0].focus()
 
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
-		$scope.ariaLive = 'Answer ' + $scope.currentAnswer.text + ' selected'
+		forceRead 'Answer ' + $scope.currentAnswer.text + ' selected'
 
 	$scope.cancelQuestion = ->
 		_wasUpdated = $scope.currentQuestion.answered
@@ -211,7 +226,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.findQuestion()
 		$scope.setTabIndex()
 		# resets status div that gives answer feedback so it can't be tabbed to
-		$scope.ariaLive = ""
+		forceRead ""
 
 	# function to find the first unanswered question in list and shift focus to it
 	$scope.findQuestion = ->
@@ -242,11 +257,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			document.getElementById('return').focus()
 
 			if check.score == 100
-				$scope.ariaLive = check.text + " is correct!" + returnMessage
+				forceRead check.text + " is correct!" + returnMessage
 			else if check.score > 0 && check.score < 100
-				$scope.ariaLive = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
+				forceRead check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
 			else
-				$scope.ariaLive = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
+				forceRead check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
 		else
 			throw Error 'Submitted answer not in this question!'
 
