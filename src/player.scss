@@ -58,6 +58,19 @@ html, body {
 	        user-select: none;
 }
 
+.invisible-until-focused {
+	opacity: 0;
+	height: 0;
+	width: 0;
+	pointer-events: none;
+
+	&:focus {
+		opacity: 1;
+		height: auto;
+		width: auto;
+	}
+}
+
 header {
 	position: fixed;
 	top: 0;
@@ -75,9 +88,9 @@ header {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='${blue}', endColorstr='${dblue}',GradientType=0 );
 
 	h1 {
-		line-height: 90px;
-		height: 90px;
-		margin: 0;
+		line-height: 50px;
+		height: 50px;
+		margin: 25px 0 0;
 		padding: 0;
 		margin-left: 14px;
 		position: absolute;
@@ -89,6 +102,10 @@ header {
 			display: inline-block;
 			line-height: normal;
 			vertical-align: middle
+		}
+		&:focus {
+			text-shadow: 0 0 4px #ccc;
+			text-decoration: underline;
 		}
 	}
 	.score {
@@ -126,19 +143,28 @@ header {
 			// so full circle will show up in IE9
 			overflow: visible !important;
 		}
+		&:focus {
+			border-radius: 50%;
+			box-shadow: 0 0 4px 4px #ccc;
+		}
 	}
-	.menu {
+	.divider {
 		background-color: #4d5355;
 		height: 25px;
 		position: absolute;
 		top: 90px;
 		width: 100%;
-		padding-right: 10px;
-		text-align: right;
+		padding-left: 10px;
+		text-align: left;
 		@include boxSizing();
 		color: #8f979a;
 		font-size: 15px;
 		line-height: 25px;
+
+		.instructions:focus,
+		.instructions:hover {
+			text-decoration: underline;
+		}
 	}
 }
 
@@ -151,6 +177,7 @@ header {
 		padding: 5px;
 		overflow: auto;
 		-webkit-transition: 200ms;
+
 		.title {
 			float: left;
 			background: #fff;
@@ -211,13 +238,14 @@ header {
 				   -moz-transition: 200ms;
 				    -ms-transition: 200ms;
 				     -o-transition: 200ms;
-				&.wrong, &.correct {
-					-webkit-transform: none;
-					   -moz-transform: none;
-					    -ms-transform: none;
-					     -o-transform: none;
-				}
 			}
+			&:hover.wrong, &:hover.correct {
+				-webkit-transform: none;
+				   -moz-transform: none;
+					-ms-transform: none;
+					 -o-transform: none;
+			}
+
 			&.correct {
 				font-size: 80px;
 				color: #4187c9;
@@ -261,12 +289,18 @@ header {
 			}
 		}
 	}
+
+	.invisible-until-focused:focus {
+		background: #eff0f2;
+		border: 3px solid #697393;
+		padding: 20px 10px;
+	}
 }
 
 #t-question-page:focus {
-			border: 2px solid #1793ff;
-    		box-shadow: 0 0 10px #1793ff;
-		}
+	border: 2px solid #1793ff;
+	box-shadow: 0 0 10px #1793ff;
+}
 
 .question-popup-bg {
 	position: fixed;
@@ -295,6 +329,18 @@ header {
 
 	&.hasMedia {
 		padding-top: 30px;
+	}
+
+	.instructions {
+		color: #fff;
+		position: absolute;
+		top: 10px;
+		left: 10px;
+		font-size: 13px;
+
+		&:focus {
+			text-decoration: underline;
+		}
 	}
 
 	h1 {
@@ -330,6 +376,11 @@ header {
 		background: #eff0f2;
 		padding: 20px 10px;
 		border: 3px solid #697393;
+
+		&:focus-within {
+			background: #fff;
+			box-shadow: 0 0 4px 4px #ccc;
+		}
 	}
 
 	.question-text {
@@ -350,6 +401,10 @@ header {
 
 		img {
 			object-fit: contain;
+
+			&:focus {
+				box-shadow: 0 0 4px 4px #ccc;
+			}
 		}
 
 		figure {
@@ -361,6 +416,19 @@ header {
 			overflow: hidden;
 			text-align: center;
 			height: 25px;
+		}
+
+		audio {
+			border-radius: 30px;
+
+			&:focus-within {
+				border-radius: 30px;
+
+				&:focus,
+				&:focus-within {
+					box-shadow: 0 0 4px 4px #ccc;
+				}
+			}
 		}
 	}
 
@@ -383,7 +451,8 @@ header {
 
 		cursor: pointer;
 
-		&:hover {
+		&:hover,
+		&:focus {
 			background-color: #eff0f2;
 			color: #2f3944;
 		}
@@ -570,7 +639,8 @@ header {
 
 			cursor: pointer;
 
-			&:hover {
+			&:hover,
+			&:focus {
 				background: #6c6c6c;
 			}
 		}
@@ -593,6 +663,10 @@ header {
 			position: relative;
 			display: block;
 			margin: 20px auto 0 auto;
+
+			&:focus {
+				box-shadow: 0 0 4px 4px #ccc;
+			}
 		}
 
 		.lightbox-image:hover {
@@ -639,29 +713,43 @@ header {
 	border: 10px solid $blue;
 	padding: 20px;
 	text-align: center;
-	padding-top: 170px;
-	z-index: 100;
+	z-index: 1000;
 
 	@include boxSizing();
+	p {
+		display: block;
+		margin: 5px auto;
+		width: 75%;
+		text-align: left;
+	}
+
 	h1 {
 		font-weight: normal;
+		&.top-padded {
+			padding-top: 170px;
+		}
 	}
 	button {
+		display: block;
 		background: #4187c9;
 		border: 2px solid black;
 		font-size: 16px;
 		padding: 10px;
 		border: 2px solid #fff;
-		margin: 5px 2px;
+		margin: 5px auto;
 		text-transform: uppercase;
 		color: white;
 		cursor: hand; cursor: pointer;
 		font-weight: bold;
+
 		&:hover, &:focus {
 			background: rgb(178, 217, 255);
 			color: #4187c9;
 			border-color: #4187c9;
+		}
 
+		&.instructions-button {
+			margin-top: 15px;
 		}
 	}
 	#scorebox_final {
@@ -775,12 +863,12 @@ header {
 /* this is a class created on webaim to hide content from sighted users while allowed
  content to be seen by screen readers */
 .clip {
-clip: rect(1px, 1px, 1px, 1px);
-clip-path: inset(50%);
-height: 1px;
-width: 1px;
-margin: -1px;
-overflow: hidden;
-padding: 0;
-position: absolute;
+	clip: rect(1px, 1px, 1px, 1px);
+	clip-path: inset(50%);
+	height: 1px;
+	width: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
 }

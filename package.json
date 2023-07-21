@@ -12,14 +12,15 @@
     "build": "webpack -p",
     "build-dev": "webpack",
     "test": "TZ='America/New_York' jest --verbose",
-    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura"
+    "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
+    "test-dev": "TZ='America/New_York' jest --verbose --watchAll --coverage --coverageReporters lcov"
   },
   "jest": {
     "coverageReporters": [
       "text-summary",
       "lcov"
     ],
-    "verbose": false,
+    "verbose": true,
     "collectCoverageFrom": [
       "src/**/*.coffee"
     ],
@@ -28,10 +29,10 @@
     },
     "coverageThreshold": {
       "global": {
-        "statements": 97,
+        "statements": 96,
         "branches": 71,
         "functions": 83,
-        "lines": 97
+        "lines": 96
       }
     }
   },

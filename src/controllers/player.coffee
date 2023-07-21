@@ -22,10 +22,24 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 
 	$scope.delayedHeaderInit = false
 
+	$scope.instructionsOpen = false
+	$scope.questionInstructionsOpen = false
+
+	highlightedCategory = null
+	highlightedQuestion = null
+
 	# variable to check which screen the user is on (true = gameboard)
 	$scope.checkTab = true
 	# variable checks if on final submit for grading screen
 	$scope.finalTab = false
+
+	# force screen readers to immediately read the string value
+	# keeping the scope variable for now so tests don't have to be completely rewritten
+	$scope.ariaLive = ''
+	forceRead = (readString) ->
+		$scope.ariaLive = readString
+		return unless readString
+		document.getElementById('aria-live').innerHTML = readString
 
 	# Called by Materia.Engine when your widget Engine should start the user experience.
 	$scope.start = (instance, qset, version = '1') ->
@@ -33,9 +47,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		# Make an array of each category, questions, and count the questions.
 		for ci, category of qset.items
 			category.name = category.name.toUpperCase() if typeof(category.name) == 'string'
+			category.index = ci
 			$scope.categories[ci] = category
 			for qi, question of category.items
 				question.answers = _shuffle(question.answers) if qset.options.randomize
+				question.index = qi
 				$scope.totalQuestions++
 				if question.options.asset
 					switch question.options.asset.type
@@ -58,31 +74,144 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			[a[i], a[j]] = [a[j], a[i]]
 		a
 
+	# this used to focus on the text element containing the question
+	# to help with accessibility this now focuses on the keyboard instructions element to help keyboard users
+	focusOnQuestionText = (setTabIndex = true) ->
+		# this changes the focus automatically to the active area, otherwise
+		# focus remains on previous screen after question is selected
+		setTimeout (-> document.getElementById('show-question-keyboard-instructions-button').focus()), 100
+		if setTabIndex then $scope.setTabIndex()
+
+	focusOnLightboxContent = ->
+		setTimeout (->
+			if $scope.currentQuestion.options.asset.type == 'video'
+				document.getElementsByClassName('lightbox-video')[0].focus()
+			if $scope.currentQuestion.options.asset.type == 'image'
+				document.getElementsByClassName('lightbox-image')[0].focus()
+		), 100
+
+	$scope.handleWholePlayerKeyup = (e) ->
+		switch e.code
+			when 'KeyH'
+				forceRead "Keyboard instructions: Questions are sorted into categories. " +
+					"Use the Tab key to navigate through the game board to view and select questions. " +
+					"Answer all questions to complete the widget. " +
+					"Press the 'Q' key to automatically select the earliest unanswered question. " +
+					"Press the 'S' key to hear your current score and how many unanswered questions are remaining. " +
+					"Press the 'W' key to hear which question and category you currently have highlighted. " +
+					"Press the 'H' key to hear these instructions again."
+			when 'KeyQ' then $scope.selectEarliestUnanswered()
+			when 'KeyS'
+				if $scope.allAnswered
+					forceRead 'All questions have been answered'
+				else
+					forceRead $scope.totalQuestions - $scope.answeredQuestions.length +
+						' questions remaining, current score is ' +
+						$scope.percentCorrect + ' out of 100 points.'
+			when 'KeyW'
+				unless highlightedCategory
+					forceRead 'You have not highlighted a question yet, please use the Tab key to progress to the game board.'
+					return
+				forceRead 'Current location is question ' + (parseInt(highlightedQuestion.index, 10) + 1) + ' of ' +
+					highlightedCategory.items.length + ' in category ' + (parseInt(highlightedCategory.index, 10) + 1) + ' of ' +
+					$scope.categories.length + ': ' + highlightedCategory.name + '. Press Space or Enter to select this question.'
+
+
+
+	$scope.highlightQuestion = (c, q) ->
+		highlightedCategory = c
+		highlightedQuestion = q
+
+	$scope.selectEarliestUnanswered = () ->
+		return if $scope.instructionsOpen or $scope.allAnswered or $scope.currentQuestion
+		for c, ci in $scope.categories
+			for q, qi in c.items
+				if typeof q.score is 'undefined'
+					$scope.selectQuestion c, q
+					return
+
 	$scope.selectQuestion = (category, question) ->
 		throw Error 'A question is already selected!' if $scope.currentQuestion
 		unless question.answered
 			$scope.currentCategory = category
 			$scope.currentQuestion = question
 
-			# this changes the focus automatically to the active area, otherwise
-			# focus remains on previous screen after question is selected
-			setTimeout (-> document.getElementById('question-text').focus()), 100
-			$scope.setTabIndex()
+			focusOnQuestionText()
 
 	# Lightbox in question pop up
 	$scope.lightboxTarget = -1
 
 	$scope.setLightboxTarget = (val) ->
 		$scope.lightboxTarget = val
+		if val < 0 then focusOnQuestionText(false)
+		else focusOnLightboxContent()
 
 	$scope.lightboxZoom = 0
 
 	$scope.setLightboxZoom = (val) ->
 		$scope.lightboxZoom = val
 
+	moveAnswer = (index) ->
+		if index < 0
+			index = $scope.currentQuestion.answers.length-1
+		else if index >= $scope.currentQuestion.answers.length
+			index = 0
+		targetLi = document.getElementById('t-question-page')
+			.getElementsByClassName('question-li')[index]
+		targetLi.focus()
+
+	$scope.handleAudioKeyUp = (event) ->
+		event.stopPropagation()
+		if event.code == 'Space' or event.code == 'Enter'
+			event.preventDefault()
+			if event.currentTarget.paused
+				event.currentTarget.play()
+			else
+				event.currentTarget.pause()
+
+	$scope.handleQuestionKeyUp = (event) ->
+		switch event.code
+			when 'Escape' then $scope.cancelQuestion()
+			when 'KeyQ'
+				forceRead 'Question: ' + $scope.currentQuestion.questions[0].text
+			when 'KeyS'
+				if $scope.currentAnswer
+					document.getElementById('submit').focus()
+				else forceRead 'You must select an answer first.'
+			when 'KeyH'
+				# have to do it verbose like this otherwise jest chokes on this file for some reason
+				assetIndicator = ''
+				if $scope.currentQuestion.options.asset
+					assetIndicator = 'to the associated media, then '
+				forceRead 'Use the Tab key to navigate ' + assetIndicator +
+					'through answer options, then to reach the Return and Submit Final Answer buttons. ' +
+					'The Up and Down arrow keys may also be used to navigate through answer options. ' +
+					'Press the Enter or Space key on an answer option to select it. ' +
+					'Pressing the Escape key will leave this question and allow you to select another question. ' +
+					'Press the Q key to hear the question again. ' +
+					'Press the S key after selecting an answer to be taken to the Submit Final Answer button automatically. ' +
+					'Press the H key to hear these instructions again.'
+			when 'ArrowUp' then moveAnswer($scope.currentQuestion.answers.length-1)
+			when 'ArrowDown' then moveAnswer(0)
+		event.stopPropagation()
+
+	$scope.handleAnswerKeyUp = (event, index, answer) ->
+		switch event.code
+			when 'Enter', 'Space' then $scope.selectAnswer(answer)
+			when 'ArrowUp' then moveAnswer(index - 1)
+			when 'ArrowDown' then moveAnswer(index + 1)
+			# allow these key events to bubble up to the question container, stop propagation for the rest
+			when 'KeyQ','KeyS','KeyH','Escape' then return
+		event.stopPropagation()
+
+	# return focus to the top left corner of the gameboard, as if tabbing into it from the score indicator
+	$scope.wraparound = (e) ->
+		document.getElementsByClassName('question')[0].focus()
+
 	$scope.selectAnswer = (answer) ->
 		throw Error 'Select a question first!' unless $scope.currentQuestion
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
+		forceRead 'Answer ' + $scope.currentAnswer.text + ' selected'
 
 	$scope.cancelQuestion = ->
 		_wasUpdated = $scope.currentQuestion.answered
@@ -97,7 +226,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.findQuestion()
 		$scope.setTabIndex()
 		# resets status div that gives answer feedback so it can't be tabbed to
-		$scope.ariaLive = ""
+		forceRead ""
 
 	# function to find the first unanswered question in list and shift focus to it
 	$scope.findQuestion = ->
@@ -121,16 +250,18 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			$scope.answeredQuestions.push $scope.currentQuestion
 
 			if $scope.answeredQuestions.length == $scope.totalQuestions
-				returnMessage = " Tab back to the Return button to continue to the submit screen."
+				returnMessage = " Press the Space or Enter key to continue to the submit screen."
 			else
-				returnMessage = " Tab back to the Return button to return to the game board."
+				returnMessage = " Press the Space or Enter key to return to the game board."
+
+			document.getElementById('return').focus()
 
 			if check.score == 100
-				$scope.ariaLive = check.text + " is correct!" + returnMessage
+				forceRead check.text + " is correct!" + returnMessage
 			else if check.score > 0 && check.score < 100
-				$scope.ariaLive = check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
+				forceRead check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage
 			else
-				$scope.ariaLive = check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
+				forceRead check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage
 		else
 			throw Error 'Submitted answer not in this question!'
 
@@ -138,6 +269,28 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	# that you can't tab through the hidden screen
 	$scope.setTabIndex = ->
 		$scope.checkTab = !$scope.checkTab
+
+	# displays a keyboard instructions dialog and sets inert on everything else to
+	# control tab targets
+	$scope.toggleInstructions = ->
+		$scope.instructionsOpen = !$scope.instructionsOpen
+		# wait for inert status to be removed/added properly before moving focus
+		setTimeout (->
+			if $scope.instructionsOpen
+				document.getElementById('hide-keyboard-instructions-button').focus()
+			else
+				document.getElementById('show-keyboard-instructions-button').focus()
+		), 100
+
+	$scope.toggleQuestionInstructions = ->
+		$scope.questionInstructionsOpen = !$scope.questionInstructionsOpen
+		# wait for inert status to be removed/added properly before moving focus
+		setTimeout (->
+			if $scope.questionInstructionsOpen
+				document.getElementById('hide-question-keyboard-instructions-button').focus()
+			else
+				document.getElementById('show-question-keyboard-instructions-button').focus()
+		), 100
 
 	_updateScore = ->
 		total = 0

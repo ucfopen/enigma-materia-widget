@@ -18,14 +18,31 @@
 		<!-- MAIN PLAYER SCRIPT -->
 		<script src="player.js"></script>
 	</head>
-	<body ng-app='enigmaPlayer' ng-controller='enigmaPlayerCtrl'>
-		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Welcome to Enigma!' tabindex="0" ng-show="delayedHeaderInit">
-			<span class="clip" aria-label="Questions are sorted into categories. Tab through the game board to view and select questions. Respond to each question in each category to complete the widget."></span>
+	<body ng-app='enigmaPlayer'
+		ng-keyup="handleWholePlayerKeyup($event)"
+		ng-controller='enigmaPlayerCtrl'>
+		<div id="aria-live"
+			class="clip"
+			aria-live="assertive"
+			tabindex="-1"></div>
+		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
+			id="header"
+			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			ng-show="delayedHeaderInit">
 			<h1>{{ title }}</h1>
-			<div id="checkAns" class="clip" aria-live="assertive" tabindex="-1">{{ariaLive}}</div>
+			<div class='divider'>
+				<span id="show-keyboard-instructions-button"
+					class="instructions"
+					tabindex="0"
+					role="text"
+					ng-click="toggleInstructions()"
+					aria-label="Welcome to Enigma! Now playing: {{ title }}. Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining. Press the 'W' key to hear which question and category you currently have highlighted. Press the 'H' key to hear these instructions again.">
+					Show Keyboard Instructions
+				</span>
+			</div>
 			<div id='scorebox' class='score'>
-				<!-- Sigh. We're using Raphael to generate this. Try and find a way of doing it that doesn't require some other library. -->
-				<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring' aria-live="polite" aria-label="{{ allAnswered == false ? (totalQuestions - answeredQuestions.length) + ' questions remaining.' : 'All questions have been answered.'}}">
+				<svg xmlns="http://www.w3.org/2000/svg"
+					class='percent-ring parent-ring'>
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
@@ -36,7 +53,7 @@
 							'transform': 'rotate(' + percentCorrect/100 + 'turn)'
 						}"/>
 					<circle cx='60' cy='60' r='50' fill='none'
-					class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
+						class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
 						stroke='#2af0b1' stroke-width='20'
 						ng-style="{
 							'stroke-dasharray': circumference ,
@@ -56,61 +73,174 @@
 					<div aria-hidden="true" class='remaining'>remaining</div>
 				</div>
 			</div>
-			<div class='menu off'></div>
 		</header>
-		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}" aria-label='Game Board' id='gameboard' class='gameboard' tabindex="0">
+		<section id="keyboard-instructions-dialog"
+			class="notice"
+			ng-if="instructionsOpen">
+			<p>Questions are sorted into categories.</p>
+			<p>Use the 'Tab' key to navigate through the game board to view and select questions.</p>
+			<p>Answer all questions to complete the widget.</p>
+			<p>Press the 'Q' key to automatically select the earliest unanswered question.</p>
+			<button id="hide-keyboard-instructions-button"
+				class="instructions-button"
+				ng-click="toggleInstructions()">
+				Hide Keyboard Instructions
+			</button>
+		</section>
+		<section id="question-keyboard-instructions-dialog"
+			class="notice"
+			ng-if="questionInstructionsOpen">
+			<p>Use the 'Tab' key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, then to reach the 'Return' and 'Submit Final Answer' buttons.</p>
+			<p>The 'Up' and 'Down' arrow keys may also be used to navigate through answer options.</p>
+			<p>Press the 'Enter' or 'Space' key on an answer option to select it.</p>
+			<p>Pressing the 'Escape' key will leave this question and allow you to select another question.</p>
+			<p>Press the 'Q' key to hear the question again.</p>
+			<p>Press the 'S' key after selecting an answer to be taken to the Submit Final Answer button automatically.</p>
+			<button id="hide-question-keyboard-instructions-button"
+				class="instructions-button"
+				ng-click="toggleQuestionInstructions()">
+				Hide Keyboard Instructions
+			</button>
+		</section>
+		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}"
+			role="application"
+			aria-label='Game Board'
+			id='gameboard'
+			class='gameboard'
+			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			tabindex="-1">
 			<!-- categories -->
 			<section class='category'
 				ng-repeat="category in categories">
-				<div aria-label="Category: {{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}" class='title'>
-					<span aria-hidden="true">{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}</span>
+				<div class='title'>
+					<span aria-hidden="true">
+						{{ category.name && typeof(category.name) == 'string' ? category.name.toUpperCase() : category.name }}
+					</span>
 				</div>
 				<!-- questions -->
 				<div ng-repeat="question in category.items"
-					aria-label="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}" title="{{category.name}} Question #{{ $index + 1 }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Wrong' : 'Correct' }}"
+					aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+					title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
 					role='button'
 					class='question'
 					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
-					ng-click="selectQuestion(category, question)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectQuestion(category, question) : null" ng-attr-tabindex="{{ checkTab && !finalTab ? 0 : -1 }}">
-					<span ng-hide="question.answered">{{ $index + 1 }}</span>
-					<span class='correct-marker' ng-show="question.score === 100">&#x2713;</span>
-					<span ng-show="question.score > 0 && question.score < 100" aria-label="Correct">{{ question.score }}&#x25;</span>
-					<span class='incorrect-marker' ng-show="question.score === 0"><span class="icon icon-close" aria-hidden="true"></span>
+					ng-click="selectQuestion(category, question)"
+					ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
+					ng-focus="highlightQuestion(category, question)">
+					<span ng-hide="question.answered">
+						{{ $index + 1 }}
+					</span>
+					<span class='correct-marker'
+						ng-show="question.score === 100">
+						&#x2713;
+					</span>
+					<span ng-show="question.score > 0 && question.score < 100"
+						aria-label="Correct">
+						{{ question.score }}&#x25;
+					</span>
+					<span class='incorrect-marker'
+						ng-show="question.score === 0">
+						<span class="icon icon-close" aria-hidden="true"></span>
+					</span>
 				</div>
 			</section>
+			<!-- wraparound button -->
+			<div class="wraparound invisible-until-focused"
+				tabindex="0"
+				role="button"
+				ng-click="wraparound($event)">
+				Press Space/Enter to return to the top of the board.
+			</div>
 		</section>
 
 		<section class='question-popup-bg'
 			scroll-up="currentQuestion"
-			ng-show="currentQuestion">
+			ng-show="currentQuestion"
+			ng-attr-inert="{{ questionInstructionsOpen == true ? 'true' : undefined }}"
+			ng-keyup="handleQuestionKeyUp($event)">
 			<div id='t-question-page'
-				class='question-popup' ng-class="{'hasMedia': currentQuestion.options.asset.value}">
-				<h1>Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"</h1>
-				<div class="question-text-and-media">
-					<div id="question-text" class='question-text' ng-attr-tabindex="{{ checkTab ? 0 : -1 }}">
+				class='question-popup'
+				ng-class="{'hasMedia': currentQuestion.options.asset.value}">
+				<span id="show-question-keyboard-instructions-button"
+					class="instructions"
+					tabindex="0"
+					role="text"
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true ? 'true' : undefined}}"
+					ng-click="toggleQuestionInstructions()"
+					aria-label="Question: {{ currentQuestion.questions[0].text }}. Use the Tab key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, and then to reach the Return and Submit Final Answer buttons. The Up and Down arrow keys may also be used to navigate through answer options. Press the Enter or Space key on an answer option to select it. Pressing the Escape key will leave this question and allow you to select another question. Press the Q key to hear the question again. Press the S key after selecting an answer to be taken to the Submit Final Answer button automatically. Press the H key to hear these instructions again.">
+					Show Keyboard Instructions
+				</span>
+				<h1>
+					Question {{ currentQuestion.options.index }} in "{{ currentCategory.name }}"
+				</h1>
+				<div class="question-text-and-media"
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
+					<div id="question-text"
+						class='question-text'>
 						{{ currentQuestion.questions[0].text }}
 					</div>
-					<div class="media" ng-show="currentQuestion.options.asset" ng-click="">
-						<img class="image" ng-if="currentQuestion.options.asset.type == 'image'" ng-src="{{ currentQuestion.options.asset.value }}" />
-						<figure ng-if="currentQuestion.options.asset.type == 'audio'">
-							<audio controls allow="autoplay 'none'">
+					<div class="media"
+						ng-show="currentQuestion.options.asset"
+						ng-click=""
+						tabindex="-1">
+						<img class="image"
+							ng-if="currentQuestion.options.asset.type == 'image'"
+							ng-src="{{ currentQuestion.options.asset.value }}"
+							tabindex="0"
+							alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}" />
+						<figure class="audio-parent" ng-if="currentQuestion.options.asset.type == 'audio'">
+							<audio tabindex="0"
+								controls allow="autoplay 'none'"
+								ng-keyup="handleAudioKeyUp($event)">
 								<source ng-src="{{currentQuestion.options.asset.value}}">
 							</audio>
-							<figcaption ng-show="currentQuestion.options.asset.description">{{currentQuestion.options.asset.description}}</figcaption>
+							<figcaption ng-show="currentQuestion.options.asset.description">
+								{{currentQuestion.options.asset.description}}
+							</figcaption>
 						</figure>
-						<iframe class="video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{ currentQuestion.options.asset.value }}" width="100%" height="100%" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-						<button class="expand-into-lightbox image" ng-if="currentQuestion.options.asset.type === 'image'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
-						<button class="expand-into-lightbox video" ng-if="currentQuestion.options.asset.type === 'video'" ng-click="setLightboxTarget(0)"><span class="icon icon-enlarge" aria-hidden="true"></span></button>
-						<div class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</div>
+						<iframe class="video"
+							ng-if="currentQuestion.options.asset.type == 'video'"
+							ng-src="{{ currentQuestion.options.asset.value }}"
+							width="100%" height="100%" frameborder="0"
+							allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+							allowfullscreen>
+						</iframe>
+						<button class="expand-into-lightbox image"
+							aria-label="Expand image"
+							ng-if="currentQuestion.options.asset.type === 'image'"
+							ng-click="setLightboxTarget(0)">
+							<span class="icon icon-enlarge" aria-hidden="true">
+							</span>
+						</button>
+						<button class="expand-into-lightbox video"
+							aria-label="Expand video"
+							ng-if="currentQuestion.options.asset.type === 'video'"
+							ng-click="setLightboxTarget(0)">
+							<span class="icon icon-enlarge"
+								aria-hidden="true">
+							</span>
+						</button>
+						<div class="media-description"
+							ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
+							{{currentQuestion.options.asset.description}}
+						</div>
 					</div>
 				</div>
-				<div class='answers'>
-					<ul ng-class="{answered: currentQuestion.answered}">
-						<li class="question-li" ng-repeat='answer in currentQuestion.answers'
+				<div class='answers'
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
+					<ul ng-class="{answered: currentQuestion.answered}"
+						role="radiogroup">
+						<li class="question-li"
+							ng-repeat='answer in currentQuestion.answers'
 							ng-class="{selected: answer == currentAnswer}"
-							ng-click="selectAnswer(answer)" ng-keyup="$event.keyCode == 13 || $event.keyCode == 32 ? selectAnswer(answer) : null" ng-attr-tabindex="{{ !checkTab && !finalTab ? 0 : -1 }}">
-							<span class='mark-holder' ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
-								<span class="correct mark" ng-show="currentQuestion.score == 100">
+							ng-click="selectAnswer(answer)"
+							ng-keyup="handleAnswerKeyUp($event, $index, answer)"
+							aria-label="{{answer.text}}. {{ answer == currentAnswer ? 'This is the currently selected answer.' : ''}}"
+							role="radio">
+							<span class='mark-holder'
+								ng-class="{visible: answer == currentAnswer && currentQuestion.answered}">
+								<span class="correct mark"
+									ng-show="currentQuestion.score == 100">
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
 										<path stroke="#4187c9" stroke-width="4" d="M 2 12 L 8 18 M 5 18 L 18 5 Z" />
 									</svg>
@@ -135,13 +265,18 @@
 										fill="rgb(36, 55, 75)"
 										ng-class="{selected: answer == currentAnswer}"/>
 								</svg>
-								<input type="radio" value="{{ answer.id }}" name="group1"/>
+								<input type="radio"
+									aria-hidden="true"
+									value="{{ answer.id }}"
+									tabindex="-1"
+									name="group1"/>
 								<p>{{ answer.text }}</p>
 							</label>
 						</li>
 					</ul>
 				</div>
-				<div class="menu">
+				<div class="menu"
+					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
 						ng-click="cancelQuestion()">
@@ -149,18 +284,46 @@
 					</button>
 					<button id="submit" class="button submit"
 						ng-disabled="!currentAnswer || currentQuestion.answered"
-						ng-click="submitAnswer()" ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
+						ng-click="submitAnswer()"
+						aria-label="Submit final answer. Currently selected answer is {{currentAnswer.text}}."
+						ng-attr-tabindex="{{ checkTab ? -1 : 0 }}">
 						Submit Final Answer
 					</button>
 				</div>
-				<section class="lightbox" ng-class="{ 'show': lightboxTarget != -1}" ng-hide="lightboxTarget == -1">
-					<div class="lightbox-content">
-						<button class="lightbox-close" ng-click="setLightboxTarget(-1)">X</button>
-						<iframe class="lightbox-video" ng-if="currentQuestion.options.asset.type == 'video'" ng-src="{{currentQuestion.options.asset.value}}" frameborder="0" allowfullscreen></iframe>
-						<div ng-if="currentQuestion.options.asset.type == 'image'" class="lightbox-image-container">
-							<img class="lightbox-image" ng-src="{{currentQuestion.options.asset.value}}" description="{{currentQuestion.text}}" ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}" ng-click="setLightboxZoom(!lightboxZoom)">
+				<section class="lightbox"
+					ng-class="{ 'show': lightboxTarget != -1}"
+					ng-hide="lightboxTarget == -1"
+					tabindex="-1">
+					<div id="lightbox-content"
+						class="lightbox-content">
+						<iframe class="lightbox-video"
+							ng-if="currentQuestion.options.asset.type == 'video'"
+							ng-src="{{currentQuestion.options.asset.value}}"
+							frameborder="0"
+							tabindex="0"
+							allowfullscreen>
+						</iframe>
+						<div ng-if="currentQuestion.options.asset.type == 'image'"
+							class="lightbox-image-container">
+							<img class="lightbox-image"
+								ng-src="{{currentQuestion.options.asset.value}}"
+								alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}"
+								description="{{currentQuestion.text}}"
+								ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}"
+								ng-click="setLightboxZoom(!lightboxZoom)"
+								ng-keyup="$event.code == 'Space' || $event.code == 'Enter' ? setLightboxZoom(!lightboxZoom) : null"
+								tabindex="0">
 						</div>
-						<p class="media-description" ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">{{currentQuestion.options.asset.description}}</p>
+						<p class="media-description"
+							ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
+							{{currentQuestion.options.asset.description}}
+						</p>
+						<button class="lightbox-close"
+							aria-label="Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
+							tabindex="0"
+							ng-click="setLightboxTarget(-1)">
+							X
+						</button>
 					</div>
 				</section>
 			</div>
@@ -178,13 +341,29 @@
 							}"/>
 						<circle cx='60' cy='60' r='50' fill='#333333'/>
 					</svg>
-					<span aria-hidden="true" class='value' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">{{ percentCorrect }}</span>
-					<span aria-hidden="true" class='percent' ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">%</span>
-					<span aria-hidden="true" class='percent-wrong' ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">{{ 100 - percentCorrect }}% Wrong</span>
+					<span aria-hidden="true"
+						class='value'
+						ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">
+						{{ percentCorrect }}
+					</span>
+					<span aria-hidden="true"
+						class='percent'
+						ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">
+						%
+					</span>
+					<span aria-hidden="true"
+						class='percent-wrong'
+						ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">
+						{{ 100 - percentCorrect }}% Wrong
+					</span>
 				</div>
 			</div>
-			<h1>All Questions Answered</h1>
-			<button aria-label="You answered {{ percentCorrect }}% of the questions correctly. Submit for review." id="end-button" ng-click="end()">Submit for Review</button>
+			<h1 class="top-padded">All Questions Answered</h1>
+			<button aria-label="You answered {{ percentCorrect }}% of the questions correctly. Submit for review."
+				id="end-button"
+				ng-click="end()">
+				Submit for Review
+			</button>
 		</section>
 	</body>
 </html>
