@@ -208,8 +208,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
 		forceRead 'Answer ' + $scope.currentAnswer.text + ' selected'
 
-	$scope.cancelQuestion = (event) ->
-		event.stopPropagation()
+	$scope.cancelQuestion = ->
 		_wasUpdated = $scope.currentQuestion.answered
 
 		$scope.currentCategory = null

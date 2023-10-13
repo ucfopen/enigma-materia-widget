@@ -278,7 +278,7 @@
 					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
-						ng-click="cancelQuestion($event)">
+						ng-click="cancelQuestion()">
 						Return
 					</button>
 					<button id="submit" class="button submit"

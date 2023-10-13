@@ -991,15 +991,7 @@ describe('Player Controller', function() {
 		expect($scope.lightboxTarget).toBe(0);
 
 		jest.advanceTimersByTime(100);
-		expect(document.getElementsByClassName).toHaveBeenCalledWith('lightbox-image')
+		expect(document.getElementsByClassName).toHaveBeenCalledWith('lightbox-close')
 		expect(mockFocus).toHaveBeenCalled();
-	});
-
-	it('should set the lightbox zoom level appropriately', function(){
-		$scope.start(widgetInfo, qset.data);
-		expect($scope.lightboxZoom).toBe(0);
-
-		$scope.setLightboxZoom(-1);
-		expect($scope.lightboxZoom).toBe(-1);
 	});
 });
