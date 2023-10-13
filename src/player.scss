@@ -379,7 +379,7 @@ header {
 
 		&:focus-within {
 			background: #fff;
-			box-shadow: 0 0 4px 4px #ccc;
+			border: 3px solid #4187c9;
 		}
 	}
 
@@ -401,10 +401,6 @@ header {
 
 		img {
 			object-fit: contain;
-
-			&:focus {
-				box-shadow: 0 0 4px 4px #ccc;
-			}
 		}
 
 		figure {
@@ -413,9 +409,7 @@ header {
 
 		.media-description {
 			max-width: 100%;
-			overflow: hidden;
 			text-align: center;
-			height: 25px;
 		}
 
 		audio {
@@ -612,7 +606,6 @@ header {
 		width: 90%;
 		height: 90%;
 		margin: 2.5% 5%;
-		margin-bottom: 0;
 		background: rgba(45,45,45,1);
 
 		cursor: default;
@@ -646,57 +639,41 @@ header {
 		}
 
 		.lightbox-video {
-			width: calc(100% - 20px);
-			height: calc(100% - 20px);
-			margin-top: 10px;
-			margin-left: 10px;
+			padding: 5%;
+			width: 90%;
+			height: 90%;
 		}
 
 		.lightbox-image-container {
-			height: calc(100% - 40px);
-			margin-top: 10px;
-			// margin-left: 10px;
-			overflow: auto;
-		}
-
-		.lightbox-image {
 			position: relative;
-			display: block;
-			margin: 20px auto 0 auto;
+			display: flex;
+			flex-direction: column;
+			height: calc(100% - 20px);
+			margin: 10px auto 10px auto;
 
-			&:focus {
-				box-shadow: 0 0 4px 4px #ccc;
+			.lightbox-image {
+				display: block;
+				max-width: 90%;
+				max-height: calc(100% - 60px);
+				margin: 20px auto 0 auto;
+				border: solid 2px #fff;
+	
+				&:focus {
+					border: solid 2px #4187c9;
+				}
 			}
-		}
 
-		.lightbox-image:hover {
-			cursor: zoom-in;
-		}
-
-		.lightbox-image-zoom-in {
-			object-fit: cover;
-			height: auto;
-		}
-
-		.lightbox-image-zoom-in:hover {
-			cursor: zoom-out;
-		}
-
-		.lightbox-image-zoom-out {
-			max-width: calc(100% - 20px);
-			max-height: calc(100% - 20px);
-		}
-
-		.media-description {
-			color: white;
-			padding: 0 10px;
-			margin: 0;
-			height: 40px;
-			position: absolute;
-			bottom: 15px;
-			overflow-x: hidden;
-			overflow-y: auto;
-			box-sizing: border-box;
+			.media-description {
+				flex-basis: 0;
+				width: 90%;
+				margin: 10px 5% 0 5%;
+				padding: 0 10px;
+	
+				color: #fff;
+	
+				text-align: center;
+				box-sizing: border-box;
+			}
 		}
 	}
 }

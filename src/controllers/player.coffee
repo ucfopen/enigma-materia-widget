@@ -87,7 +87,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			if $scope.currentQuestion.options.asset.type == 'video'
 				document.getElementsByClassName('lightbox-video')[0].focus()
 			if $scope.currentQuestion.options.asset.type == 'image'
-				document.getElementsByClassName('lightbox-image')[0].focus()
+				document.getElementsByClassName('lightbox-close')[0].focus()
 		), 100
 
 	$scope.handleWholePlayerKeyup = (e) ->
@@ -145,11 +145,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.lightboxTarget = val
 		if val < 0 then focusOnQuestionText(false)
 		else focusOnLightboxContent()
-
-	$scope.lightboxZoom = 0
-
-	$scope.setLightboxZoom = (val) ->
-		$scope.lightboxZoom = val
 
 	moveAnswer = (index) ->
 		if index < 0
@@ -213,7 +208,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.currentAnswer = answer unless $scope.currentQuestion.answered
 		forceRead 'Answer ' + $scope.currentAnswer.text + ' selected'
 
-	$scope.cancelQuestion = ->
+	$scope.cancelQuestion = (event) ->
+		event.stopPropagation()
 		_wasUpdated = $scope.currentQuestion.answered
 
 		$scope.currentCategory = null

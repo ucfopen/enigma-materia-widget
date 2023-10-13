@@ -186,7 +186,6 @@
 						<img class="image"
 							ng-if="currentQuestion.options.asset.type == 'image'"
 							ng-src="{{ currentQuestion.options.asset.value }}"
-							tabindex="0"
 							alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}" />
 						<figure class="audio-parent" ng-if="currentQuestion.options.asset.type == 'audio'">
 							<audio tabindex="0"
@@ -206,7 +205,7 @@
 							allowfullscreen>
 						</iframe>
 						<button class="expand-into-lightbox image"
-							aria-label="Expand image"
+							aria-label="View the image in a lightbox. Image description: {{ currentQuestion.options.asset.description || 'undescribed image' }}"
 							ng-if="currentQuestion.options.asset.type === 'image'"
 							ng-click="setLightboxTarget(0)">
 							<span class="icon icon-enlarge" aria-hidden="true">
@@ -279,7 +278,7 @@
 					ng-attr-inert="{{ lightboxTarget != -1 || instructionsOpen == true || finalTab ? 'true' : undefined}}">
 					<button id="return" class="button return"
 						ng-class="{highlight: currentQuestion.answered}"
-						ng-click="cancelQuestion()">
+						ng-click="cancelQuestion($event)">
 						Return
 					</button>
 					<button id="submit" class="button submit"
@@ -303,23 +302,17 @@
 							tabindex="0"
 							allowfullscreen>
 						</iframe>
-						<div ng-if="currentQuestion.options.asset.type == 'image'"
+						<figure ng-if="currentQuestion.options.asset.type == 'image'"
 							class="lightbox-image-container">
 							<img class="lightbox-image"
-								ng-src="{{currentQuestion.options.asset.value}}"
-								alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}"
-								description="{{currentQuestion.text}}"
-								ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}"
-								ng-click="setLightboxZoom(!lightboxZoom)"
-								ng-keyup="$event.code == 'Space' || $event.code == 'Enter' ? setLightboxZoom(!lightboxZoom) : null"
-								tabindex="0">
-						</div>
-						<p class="media-description"
-							ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
-							{{currentQuestion.options.asset.description}}
-						</p>
+								ng-src="{{currentQuestion.options.asset.value}}" />
+								<figcaption class="media-description"
+									ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
+									{{ currentQuestion.options.asset.description || 'undescribed image' }}
+								</figcaption>
+						</figure>
 						<button class="lightbox-close"
-							aria-label="Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
+							aria-label="Now viewing: {{currentQuestion.options.asset.description || 'undescribed media'}}. Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
 							tabindex="0"
 							ng-click="setLightboxTarget(-1)">
 							X

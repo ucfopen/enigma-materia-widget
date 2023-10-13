@@ -250,7 +250,8 @@
                 "index": 2,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/jerry_and_george.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/jerry_and_george.jpg'%>",
+				  "description": "Jerry and George from Seinfeld"
                 }
               }
             },
@@ -356,7 +357,8 @@
                 "index": 1,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/bob_barker.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/bob_barker.jpg'%>",
+				  "description": "Bob Barker"
                 }
               }
             },
@@ -407,7 +409,8 @@
                 "index": 2,
                 "asset": {
                   "type": "audio",
-                  "id": "<%MEDIA='assets/img/demo/lets_make_a_deal_theme.mp3'%>"
+                  "id": "<%MEDIA='assets/img/demo/lets_make_a_deal_theme.mp3'%>",
+				  "description": "The theme from Let's Make a Deal"
                 }
               }
             },
@@ -458,7 +461,8 @@
                 "index": 3,
                 "asset": {
                   "type": "image",
-                  "id": "<%MEDIA='assets/img/demo/wheel_of_fortune.jpg'%>"
+                  "id": "<%MEDIA='assets/img/demo/wheel_of_fortune.jpg'%>",
+				  "description": "A promotional image from Wheel of Fortune"
                 }
               }
             }
