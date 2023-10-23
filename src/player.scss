@@ -37,10 +37,13 @@ $dblue: #1a2b3f;
 }
 
 html {
+	height: 100vh;
 	overflow: auto;
 }
 
 body {
+	position: relative;
+	height: 100vh;
 	overflow: hidden;
 }
 
@@ -69,6 +72,62 @@ html, body {
 		height: auto;
 		width: auto;
 	}
+}
+
+dialog.modal-dialog {
+	z-index: 999;
+	display: block;
+	position: absolute;
+	left: 50%;
+	margin-top: 100px;
+	margin-left: -269px;
+	width: 500px;
+	height: 225px;
+	
+	color: #fff;
+	background: #1a2b3f;
+
+	header {
+		position: relative;
+		width: 100%;
+		height: auto;
+		background: none;
+
+		font-size: 21px;
+	}
+
+	button {
+		display: block;
+		margin: 25px auto 0px auto;
+		padding: 4px;
+
+		background: rgb(60, 60, 60);
+		border: 2px solid #fff;
+		
+		text-transform: uppercase;
+		color: #fff;
+		font-size: 13px;
+		font-weight: bold;
+		
+		cursor: hand; cursor: pointer;
+
+		&:hover, &:focus {
+			background: #fff;
+			color: rgb(60,60,60);
+		}
+	}
+}
+
+#modal-cover {
+	z-index: 998;
+	display: block;
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	left: 0px;
+	right: 0px;
+
+	background: rgba(0,0,0,0.75);
 }
 
 header {
@@ -124,10 +183,10 @@ header {
 			display:none;
 		}
 		.value {
-			-webkit-backface-visibility: hidden;
 			position: absolute;
 			top: 2px;
 			right: 44px;
+			backface-visibility: hidden;
 		}
 		.doubleDigit {
 			right: 28px;
@@ -176,7 +235,7 @@ header {
 		clear:both;
 		padding: 5px;
 		overflow: auto;
-		-webkit-transition: 200ms;
+		transition: 200ms;
 
 		.title {
 			float: left;
@@ -199,8 +258,7 @@ header {
 				right: -11px;
 				top: 12px;
 				position: absolute;
-				-moz-transform: scale(1.0001);
-				-o-transform: scale(1.0001);
+				transform: scale(1.0001);
 			}
 		}
 
@@ -219,10 +277,8 @@ header {
 			font-size: 40px;
 			cursor: hand; cursor: pointer;
 			overflow: hidden;
-			-webkit-transition: 200ms;
-			   -moz-transition: 200ms;
-			    -ms-transition: 200ms;
-			     -o-transition: 200ms;
+			transition: 200ms;
+
 			.container {
 				position: absolute;
 				margin: -93px 0 0 -13px;
@@ -230,20 +286,11 @@ header {
 			@include boxSizing();
 			&:hover, &:focus {
 				background: #fff;
-				-webkit-transform: scale(1.05);
-				   -moz-transform: scale(1.05);
-				    -ms-transform: scale(1.05);
-				     -o-transform: scale(1.05);
-				-webkit-transition: 200ms;
-				   -moz-transition: 200ms;
-				    -ms-transition: 200ms;
-				     -o-transition: 200ms;
+				transform: scale(1.05);
+				transition: 200ms;
 			}
 			&:hover.wrong, &:hover.correct {
-				-webkit-transform: none;
-				   -moz-transform: none;
-					-ms-transform: none;
-					 -o-transform: none;
+				transform: none;
 			}
 
 			&.correct {
@@ -748,10 +795,10 @@ header {
 			display: none;
 		}
 		.value {
-			-webkit-backface-visibility: hidden;
 			position: absolute;
 			top: 5px;
 			right: 47px;
+			backface-visibility: hidden;
 			&.all-correct {
 				top: 14px;
 				right: 38px;

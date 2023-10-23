@@ -20,6 +20,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	$scope.percentCorrect = 0
 	$scope.percentIncorrect = 0
 
+	$scope.showTutorial = true
+
 	$scope.delayedHeaderInit = false
 
 	$scope.instructionsOpen = false
@@ -66,6 +68,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		# delay header draw until after gameboard is rendered, forcing recalculation of visible area. This appears to be a chrome 76 bug related to changing iframe height
 		$timeout ->
 			$scope.delayedHeaderInit = true
+			document.getElementById('tutorial-modal-dismiss').focus()
 
 	# randomize the order of a question's answers
 	_shuffle = (a) ->
