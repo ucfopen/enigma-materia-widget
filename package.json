@@ -5,7 +5,7 @@
   },
   "version": "2.2.2",
   "dependencies": {
-    "materia-widget-development-kit": "https://github.com/cayb0rg/Materia-Widget-Dev-Kit.git#issue/webpack-5-upgrade"
+    "materia-widget-development-kit": "3.0.0"
   },
   "scripts": {
 	"start": "mwdk-start",
