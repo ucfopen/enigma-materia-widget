@@ -35,7 +35,7 @@
 		<div id="modal-cover" ng-show="showTutorial"></div>
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			id="header"
-			ng-attr-inert="{{ showTutorial || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			ng-attr-inert="{{ showTutorial || currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			ng-show="delayedHeaderInit">
 			<h1>{{ title }}</h1>
 			<div class='divider'>
@@ -115,7 +115,7 @@
 			aria-label='Game Board'
 			id='gameboard'
 			class='gameboard'
-			ng-attr-inert="{{ showTutorial || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			ng-attr-inert="{{ showTutorial || currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			tabindex="-1">
 			<!-- categories -->
 			<section class='category'
