@@ -93,6 +93,11 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 				document.getElementsByClassName('lightbox-close')[0].focus()
 		), 100
 
+	$scope.dismissTutorial = ->
+		$scope.showTutorial = false
+		$timeout ->
+			document.getElementById('show-keyboard-instructions-button').focus()
+
 	$scope.handleWholePlayerKeyup = (e) ->
 		switch e.code
 			when 'KeyH'

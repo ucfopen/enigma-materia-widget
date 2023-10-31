@@ -26,11 +26,13 @@
 			aria-live="assertive"
 			tabindex="-1"></div>
 		<dialog id="tutorial" class="modal-dialog" ng-show="showTutorial" aria-modal="true">
-			<header>How to Play</header>
-			<p>Enigma is a multiple-choice game with questions organized by category.</p>
-			<p>Select a number option within a category to bring up the corresponding question and answer options. You can select questions in any order.</p>
-			<p>All questions must be completed to submit your score!</p>
-			<button id="tutorial-modal-dismiss" class="button modal-dismiss" ng-click="showTutorial = false" aria-label="Close How to Play dialog. Once closed, use tab to focus the keyboard instructions toggle.">Start</button>
+			<div id="tutorial-content">
+				<header>How to Play</header>
+				<p>Enigma is a multiple-choice game with questions organized by category.</p>
+				<p>Select a number option within a category to bring up the corresponding question and answer options. You can select questions in any order.</p>
+				<p>All questions must be completed to submit your score!</p>
+			</div>
+			<button id="tutorial-modal-dismiss" class="button modal-dismiss" ng-click="dismissTutorial()" aria-describedby="tutorial-content">Start</button>
 		</dialog>
 		<div id="modal-cover" ng-show="showTutorial"></div>
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
