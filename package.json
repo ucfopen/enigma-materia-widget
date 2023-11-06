@@ -5,12 +5,12 @@
   },
   "version": "2.2.2",
   "dependencies": {
-    "materia-widget-development-kit": "^2.5.2"
+    "materia-widget-development-kit": "3.0.0"
   },
   "scripts": {
-    "start": "webpack-dev-server",
-    "build": "webpack -p",
-    "build-dev": "webpack",
+	"start": "mwdk-start",
+    "build": "mwdk-build-prod",
+    "build-dev": "mwdk-build-dev",
     "test": "TZ='America/New_York' jest --verbose",
     "test-ci": "TZ='America/New_York' CI=true jest --ci --useStderr --coverage --coverageReporters text-summary cobertura",
     "test-dev": "TZ='America/New_York' jest --verbose --watchAll --coverage --coverageReporters lcov"

@@ -25,9 +25,19 @@
 			class="clip"
 			aria-live="assertive"
 			tabindex="-1"></div>
+		<dialog id="tutorial" class="modal-dialog" ng-show="showTutorial" aria-modal="true">
+			<div id="tutorial-content">
+				<header>How to Play</header>
+				<p>Enigma is a multiple-choice game with questions organized by category.</p>
+				<p>Select a number option within a category to bring up the corresponding question and answer options. You can select questions in any order.</p>
+				<p>All questions must be completed to submit your score!</p>
+			</div>
+			<button id="tutorial-modal-dismiss" class="button modal-dismiss" ng-click="dismissTutorial()" aria-describedby="tutorial-content">Start</button>
+		</dialog>
+		<div id="modal-cover" ng-show="showTutorial"></div>
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			id="header"
-			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			ng-attr-inert="{{ showTutorial || currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			ng-show="delayedHeaderInit">
 			<h1>{{ title }}</h1>
 			<div class='divider'>
@@ -107,7 +117,7 @@
 			aria-label='Game Board'
 			id='gameboard'
 			class='gameboard'
-			ng-attr-inert="{{ currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
+			ng-attr-inert="{{ showTutorial || currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}"
 			tabindex="-1">
 			<!-- categories -->
 			<section class='category'
@@ -186,7 +196,6 @@
 						<img class="image"
 							ng-if="currentQuestion.options.asset.type == 'image'"
 							ng-src="{{ currentQuestion.options.asset.value }}"
-							tabindex="0"
 							alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}" />
 						<figure class="audio-parent" ng-if="currentQuestion.options.asset.type == 'audio'">
 							<audio tabindex="0"
@@ -206,7 +215,7 @@
 							allowfullscreen>
 						</iframe>
 						<button class="expand-into-lightbox image"
-							aria-label="Expand image"
+							aria-label="View the image in a lightbox. Image description: {{ currentQuestion.options.asset.description || 'undescribed image' }}"
 							ng-if="currentQuestion.options.asset.type === 'image'"
 							ng-click="setLightboxTarget(0)">
 							<span class="icon icon-enlarge" aria-hidden="true">
@@ -303,23 +312,17 @@
 							tabindex="0"
 							allowfullscreen>
 						</iframe>
-						<div ng-if="currentQuestion.options.asset.type == 'image'"
+						<figure ng-if="currentQuestion.options.asset.type == 'image'"
 							class="lightbox-image-container">
 							<img class="lightbox-image"
-								ng-src="{{currentQuestion.options.asset.value}}"
-								alt="{{ currentQuestion.options.asset.description || 'undescribed image' }}"
-								description="{{currentQuestion.text}}"
-								ng-class="{'lightbox-image-zoom-in': lightboxZoom == 1, 'lightbox-image-zoom-out': lightboxZoom == 0}"
-								ng-click="setLightboxZoom(!lightboxZoom)"
-								ng-keyup="$event.code == 'Space' || $event.code == 'Enter' ? setLightboxZoom(!lightboxZoom) : null"
-								tabindex="0">
-						</div>
-						<p class="media-description"
-							ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
-							{{currentQuestion.options.asset.description}}
-						</p>
+								ng-src="{{currentQuestion.options.asset.value}}" />
+								<figcaption class="media-description"
+									ng-if="currentQuestion.options.asset.description && currentQuestion.options.asset.type !== 'audio'">
+									{{ currentQuestion.options.asset.description || 'undescribed image' }}
+								</figcaption>
+						</figure>
 						<button class="lightbox-close"
-							aria-label="Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
+							aria-label="Now viewing: {{currentQuestion.options.asset.description || 'undescribed media'}}. Close {{currentQuestion.options.asset.type == 'video' ? 'video' : 'image'}}"
 							tabindex="0"
 							ng-click="setLightboxTarget(-1)">
 							X

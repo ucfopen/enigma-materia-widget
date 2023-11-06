@@ -20,6 +20,8 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 	$scope.percentCorrect = 0
 	$scope.percentIncorrect = 0
 
+	$scope.showTutorial = true
+
 	$scope.delayedHeaderInit = false
 
 	$scope.instructionsOpen = false
@@ -66,6 +68,7 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		# delay header draw until after gameboard is rendered, forcing recalculation of visible area. This appears to be a chrome 76 bug related to changing iframe height
 		$timeout ->
 			$scope.delayedHeaderInit = true
+			document.getElementById('tutorial-modal-dismiss').focus()
 
 	# randomize the order of a question's answers
 	_shuffle = (a) ->
@@ -87,8 +90,13 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 			if $scope.currentQuestion.options.asset.type == 'video'
 				document.getElementsByClassName('lightbox-video')[0].focus()
 			if $scope.currentQuestion.options.asset.type == 'image'
-				document.getElementsByClassName('lightbox-image')[0].focus()
+				document.getElementsByClassName('lightbox-close')[0].focus()
 		), 100
+
+	$scope.dismissTutorial = ->
+		$scope.showTutorial = false
+		$timeout ->
+			document.getElementById('show-keyboard-instructions-button').focus()
 
 	$scope.handleWholePlayerKeyup = (e) ->
 		switch e.code
@@ -145,11 +153,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 		$scope.lightboxTarget = val
 		if val < 0 then focusOnQuestionText(false)
 		else focusOnLightboxContent()
-
-	$scope.lightboxZoom = 0
-
-	$scope.setLightboxZoom = (val) ->
-		$scope.lightboxZoom = val
 
 	moveAnswer = (index) ->
 		if index < 0
