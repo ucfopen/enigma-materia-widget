@@ -15,7 +15,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v5
+      uses: actions/checkout@v4
 
     - name: Test and build with node ${{ matrix.node-version }}
       uses: actions/setup-node@v3
