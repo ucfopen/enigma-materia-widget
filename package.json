@@ -3,9 +3,9 @@
   "materia": {
     "cleanName": "enigma"
   },
-  "version": "2.2.3",
+  "version": "2.2.4",
   "dependencies": {
-    "materia-widget-development-kit": "3.0.0"
+    "materia-widget-development-kit": "^3.0.1"
   },
   "scripts": {
     "start": "mwdk-start",

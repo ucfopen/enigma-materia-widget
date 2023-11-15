@@ -6519,10 +6519,10 @@ materia-widget-dependencies@0.2.0:
   resolved "https://registry.yarnpkg.com/materia-widget-dependencies/-/materia-widget-dependencies-0.2.0.tgz#ebec53a9c10991bacf8b8ea9d6dfba5cd40ed912"
   integrity sha512-eqab8DdPD0tzEicJWfgc/BJko/MSZarECmXENNwt4NUr757HCQJl7M+q70eXYO84Ssk3kHySTELgOTLES/FODg==
 
-materia-widget-development-kit@3.0.0:
-  version "3.0.0"
-  resolved "https://registry.yarnpkg.com/materia-widget-development-kit/-/materia-widget-development-kit-3.0.0.tgz#266e7f2e3d774845838e25d1d775c93cd3f418fb"
-  integrity sha512-sybUgRn7BGUIyiLHecTrwMumZrFUI2kW7f/2+D9v7GiNCbJDPLqNA04KL38hiy69ISNhGcEgL17TVXsYf6QD0Q==
+materia-widget-development-kit@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/materia-widget-development-kit/-/materia-widget-development-kit-3.0.1.tgz#16b48010d68c52a2382f117e628b714c5a2be47d"
+  integrity sha512-qVd9yzFPleu+FAYvboiA+EGvbP1e2GsVvhl4IG/YIxNXCvEtP7jZcCtpqXVY9p8piUPBAmxXY5E/NAS06iXRIw==
   dependencies:
     "@babel/core" "^7.22.17"
     "@babel/preset-env" "^7.20.2"
