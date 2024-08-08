@@ -9,6 +9,7 @@ general:
   is_qset_encrypted: Yes
   is_answer_encrypted: Yes
   is_storage_enabled: No
+  is_generable: Yes
   api_version: 2
 files:
   creator: creator.html
@@ -41,3 +42,8 @@ meta_data:
     A Jeopardy-like study and quiz tool.
     Questions are separated into categorical
     rows.
+  generation_prompt: >
+    Each index in the outermost items array represents a subject matter category related to the overall topic, with individual
+    questions contained within the inner items array for each category. Ideally, each category should contain roughly the same number
+    of questions. For example, if eight questions are requested, there might be two categories with four questions each. Categories should be
+    distinct sub-topics of the overall widget topic, and their corresponding questions should relate to the category sub-topic.
