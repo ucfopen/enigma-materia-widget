@@ -37,13 +37,14 @@ $dblue: #1a2b3f;
 }
 
 html {
-	height: 100vh;
+	height: auto;
 	overflow: visible;
 }
 
 body {
 	position: relative;
-	height: 100vh;
+	height: auto;
+	min-height: 548px;
 	overflow: visible;
 	display: flex;
 	flex-direction: column;
