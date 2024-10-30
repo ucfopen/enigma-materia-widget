@@ -565,7 +565,7 @@ Enigma.controller 'enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', ($scope, $
 
 	$scope.onSaveClicked = (mode = 'save') ->
 		qset = _buildSaveData()
-		msg = _validateQuestions qset
+		msg = if mode is 'history' then false else _validateQuestions qset
 		if msg
 			Materia.CreatorCore.cancelSave msg
 		else
