@@ -3,7 +3,7 @@
   "materia": {
     "cleanName": "enigma"
   },
-  "version": "2.2.4",
+  "version": "2.3.0",
   "dependencies": {
     "materia-widget-development-kit": "^3.0.1"
   },
