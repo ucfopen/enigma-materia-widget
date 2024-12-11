@@ -22,8 +22,6 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 
 	$scope.showTutorial = true
 
-	$scope.delayedHeaderInit = false
-
 	$scope.instructionsOpen = false
 	$scope.questionInstructionsOpen = false
 
@@ -63,12 +61,15 @@ Enigma.controller 'enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', ($scope, $t
 
 
 		$scope.$apply()
-		Materia.Engine.setHeight()
 
-		# delay header draw until after gameboard is rendered, forcing recalculation of visible area. This appears to be a chrome 76 bug related to changing iframe height
+		# wait for content to render, then compute player height and pass it to the enginecore to update the height of the iframe
 		$timeout ->
-			$scope.delayedHeaderInit = true
+			h = _getPlayerHeight()
+			Materia.Engine.setHeight(h)
 			document.getElementById('tutorial-modal-dismiss').focus()
+
+	_getPlayerHeight = () ->
+		height = Math.ceil(parseFloat(window.getComputedStyle(document.querySelector('html')).getPropertyValue('height')))
 
 	# randomize the order of a question's answers
 	_shuffle = (a) ->
