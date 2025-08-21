@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script src="materia.scorecore.js"></script>
+
+        <link rel="stylesheet" type="text/css" href="scoreScreen.css" />
+        <title>Enigma Score Screen</title>
+    </head>
+
+    <body>
+        <section id="mainContainer" class="container">
+            <p id="message"></p>
+            <h1 id="responses" class="headings">Your Guesses:</h1>
+            <table id="table" aria-hidden="true">
+                <thead>
+                    <tr id="theadRow">
+                        <td></td>
+                        <td>The Question</td>
+                        <td>Your Response</td>
+                        <td>Correct Answer</td>
+
+                    </tr>
+                </thead>
+                <tbody id="tbody">
+                    <!--dynamically allocate these rows from the -->
+                    <!-- <tr id="row1"> -->
+                    <!--   <td></td> -->
+                    <!-- </tr> -->
+                </tbody>
+            </table>
+
+            <table id="screenReader" class="screenReader" role="table" aria-live="polite">
+                <thead>
+                    <tr>
+                        <th>Question Score</th>
+                        <th>Category</th>
+                        <th>Your Response</th>
+                        <th>Correct Answer</th>
+                    </tr>
+                </thead>
+                <tbody id="screenReaderTbody">
+                    <!--dynamically allocate these rows and cells-->
+                </tbody>
+            </table>
+        </section>
+        <script src="scoreScreen.js"></script>
+    </body>
+
+</html>

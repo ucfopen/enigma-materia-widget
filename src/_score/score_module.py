@@ -1,92 +1,62 @@
 import json
 from scoring.module import ScoreModule
-from util.logging.session_logger import SessionLogger
 from core.models import WidgetQset
 
 
 
 class EnigmaGS(ScoreModule):
-    def __init__(self, play_id, instance, play=None):
-        super().__init__(play_id, instance, play)
+    def __init__(self,  play):
+        super().__init__(play)
         self.new_logs = {}
         self.q_ids = None
-        self.scores = {}
-        widget_qset = self.instance.get_latest_qset()
-        decoded_data = WidgetQset.decode_data(widget_qset.data)
-        self.hide_correct = decoded_data.get("options", {}).get("hide_correct", True)
-        self.load_questions()
+        opts = self.qset.get("options", {}) if isinstance(self.qset, dict) else {}
+        self.hide_correct = opts.get("hide_correct", True)
+        print("===========DEBUG WIDGET SCORE MODULE==============")
+        print(f"opts: {opts}")
         print(f"self.questions: {self.questions}")
+        print(f"self.hide_correct: {self.hide_correct}")
+
+
+    def _ensure_q_ids(self):
+        if self.q_ids is not None:
+            return
+        try:
+            # self.questions is a QuerySet[Question]
+            self.q_ids = [str(q.item_id) for q in self.questions]
+        except Exception:
+            self.q_ids = []
+
 
     def check_answer(self, log):
-        item_id = str(log.item_id if hasattr(log, "item_id") else log["item_id"])
-        user_text = log.text if hasattr(log, "text") else log["text"]
-        question = self.questions.get(item_id)
-
+        question = self.get_question_by_item_id(log.item_id)
         if not question:
             return 0
 
-        for answer in question.get("answers", []):
-            if user_text.strip() == str(answer["text"]).strip():
-                return int(answer.get("value", 0))
-
+        user_text = str(log.text).strip()
+        for ans in question.get("answers", []):
+            if user_text == str(ans.get("text", "")).strip():
+                try:
+                    return int(ans.get("value", 0))
+                except Exception:
+                    return 0
         return 0
 
+
     def handle_log_question_answered(self, log):
-        item_id = str(log.item_id if hasattr(log, "item_id") else log["item_id"])
+        item_id = str(log.item_id)
         print(f"item_id: {item_id}")
         print(f"self.questions: {self.questions}")
 
-        if self.q_ids is None:
-            self.q_ids = list(self.questions.keys())
+        self._ensure_q_ids()
+        score = int(self.check_answer(log))
+        self.scores[item_id] = score
+        try:
+            q_index = self.q_ids.index(item_id) if self.q_ids else None
+        except ValueError:
+            q_index = None
+        if q_index is not None:
+            self.new_logs[q_index] = log
 
         self.total_questions += 1
-        score = self.check_answer(log)
-        self.verified_score += score
-        self.scores[item_id] = score
 
-        q_index = self.q_ids.index(item_id)
-        self.new_logs[q_index] = log
-
-    def details_for_question_answered(self, log):
-        if not self.hide_correct:
-            return super().details_for_question_answered(log)
-
-        item_id = str(log.item_id if hasattr(log, "item_id") else log["item_id"])
-        question = self.questions.get(item_id)
-        score = self.check_answer(log)
-
-        return {
-            "data": [
-                self.get_ss_question(log, question),
-                self.get_ss_answer(log, question),
-            ],
-            "data_style": ["question", "response"],
-            "score": score,
-            "feedback": self.get_feedback(log, question["answers"]),
-            "type": log.log_type if hasattr(log, "log_type") else log["type"],
-            "style": self.get_detail_style(score),
-            "tag": "div",
-            "symbol": "%",
-            "graphic": "score",
-            "display_score": True,
-        }
-
-    def get_score_details(self):
-        if not self.hide_correct:
-            return super().get_score_details()
-
-        details = []
-        for log in self.logs:
-            log_type = log.log_type if hasattr(log, "log_type") else log["type"]
-            print(f"log_type: {log_type}")
-            if log_type == "SCORE_QUESTION_ANSWERED":
-                item_id = str(log.item_id if hasattr(log, "item_id") else log["item_id"])
-                if item_id in self.questions:
-                    details.append(self.details_for_question_answered(log))
-
-        return [{
-            "title": self._ss_table_title,
-            "headers": ["Score", "The Question", "Your Response"],
-            "table": details,
-        }]
 
