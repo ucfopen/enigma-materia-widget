@@ -20,6 +20,7 @@ files:
 score:
   is_scorable: Yes
   score_module: EnigmaGS
+  # score_screen: scoreScreen.html disabled until score screen is complete
 meta_data:
   accessibility_keyboard: Full
   accessibility_reader: Full

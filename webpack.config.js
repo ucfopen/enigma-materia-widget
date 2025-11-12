@@ -29,7 +29,12 @@ const entries = {
 		path.join(srcPath, 'directives/enter.coffee'),
 		path.join(srcPath, 'directives/focus.coffee'),
 		path.join(srcPath, 'creator.scss'),
-	]
+	],
+	'scoreScreen': [
+		path.join(srcPath, 'scoreScreen.html'),
+		path.join(srcPath, 'scoreScreen.js'),
+		path.join(srcPath, 'scoreScreen.scss'),
+	],
 }
 
 const options = {
