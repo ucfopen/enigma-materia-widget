@@ -20,6 +20,7 @@ files:
 score:
   is_scorable: Yes
   score_module: EnigmaGS
+  # score_screen: scoreScreen.html disabled until score screen is complete
 meta_data:
   accessibility_keyboard: Full
   accessibility_reader: Full
@@ -47,3 +48,5 @@ meta_data:
     questions contained within the inner items array for each category. Ideally, each category should contain roughly the same number
     of questions. For example, if eight questions are requested, there might be two categories with four questions each. Categories should be
     distinct sub-topics of the overall widget topic, and their corresponding questions should relate to the category sub-topic.
+  update_method: github
+  repo: ucfopen/enigma-materia-widget
