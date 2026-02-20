@@ -13,40 +13,40 @@
 
     <body>
         <section id="mainContainer" class="container">
-            <p id="message"></p>
-            <h1 id="responses" class="headings">Your Guesses:</h1>
-            <table id="table" aria-hidden="true">
-                <thead>
-                    <tr id="theadRow">
-                        <td></td>
-                        <td>The Question</td>
-                        <td>Your Response</td>
-                        <td>Correct Answer</td>
+            <div id="message"></div>
+            <h1 id="responses" class="headings">Assessment Complete</h1>
+            <p class="sub-heading">Review your answers below</p>
 
-                    </tr>
-                </thead>
-                <tbody id="tbody">
-                    <!--dynamically allocate these rows from the -->
-                    <!-- <tr id="row1"> -->
-                    <!--   <td></td> -->
-                    <!-- </tr> -->
-                </tbody>
-            </table>
-
-            <table id="screenReader" class="screenReader" role="table" aria-live="polite">
-                <thead>
-                    <tr>
-                        <th>Question Score</th>
-                        <th>Category</th>
-                        <th>Your Response</th>
-                        <th>Correct Answer</th>
-                    </tr>
-                </thead>
-                <tbody id="screenReaderTbody">
-                    <!--dynamically allocate these rows and cells-->
-                </tbody>
-            </table>
+            <!--new container specifically for the Question cards-->
+            <div id="score-card-list">
+            </div>
         </section>
+
+        <template id="card-template">
+        <div class="question-card">
+            <div class="card-header">
+                <span class="question-label">QUESTION #</span>
+                <span class="badge">STATUS</span>
+            </div>
+            
+            <div class="question-text">
+                </div>
+    
+            <div class="answers-area">
+                <div class="answer-box user-answer-box">
+                    <label>YOUR ANSWER</label>
+                    <p class="user-response-text"></p>
+                </div>
+    
+                <div class="answer-box box-neutral">
+                    <label>CORRECT ANSWER</label>
+                    <p class="correct-response-text"></p>
+                </div>
+            </div>
+        </div>
+    </template>
+
+        <!-- JS file. Capitalized second S?-->
         <script src="scoreScreen.js"></script>
     </body>
 

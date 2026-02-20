@@ -1,15 +1,29 @@
 body {
-  background: #3e363f;
+  background: #3B4655;
   color: #fff;
-  font-family: 'Lato', serif;
+  font-family: 'Inter', sans-serif;
+  padding: 30px;
 }
 
 h1 {
   text-align: center;
+  color: #fff;
+  margin-bottom: 0px;
 }
 
 .headings {
   font-size: 2rem;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+}
+
+.sub-heading {
+  color: #94A3B8;
+  font-size: 0.9 rem; 
+  margin-bottom: 40px !important; 
+  text-align: center;
+  letter-spacing: 1px;
+  font-weight: 100;
 }
 
 .container {
@@ -18,123 +32,126 @@ h1 {
   text-align: center;
 }
 
-.correct {
-  background-color: #5cb85c;
-  color: black;
-}
+/* CARDS DESIGN */
 
-.preview-item {
-  opacity: 1;
-  color: black;
-  font-size: 1rem;
-  padding: 1rem 0 1rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #efefe6;
-  border-radius: 6px;
-  height: 4rem;
-  text-align: center;
-  text-transform: uppercase;
-  margin: 0.5rem;
-  transition: 0.2s ease-in-out 0s;
-  min-width: 6rem;
-}
-
-.preview-item label {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  // cursor: pointer;
-  border-radius: 6px;
-  padding: 1rem;
-}
-// .preview-item:hover {
-// 	background-color: #9c9c9c;
-// 	transform: scale(1.07);
-// }
-
-.wrong {
-  background-color: #d9534f;
-  color: black;
-}
-table {
-	border: none;
-
-	&.missed-answers-table {
-		width: 100%;
-	}
-}
-th,
-td {
-  border: 1px solid #555;
-}
-
-.fancyCell {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-thead tr {
-  background-color: #444;
-  color: #fff;
-}
-
-tbody td {
-  background-color: #595959;
-}
-
-.screenReader {
-  // display: none; this does not get paresed by the screen reader if dispaly is none
-  position: absolute;
-  left: -999em;
-  top: -999em;
-}
-
-.correct-word {
-  background-color: #ace4ac;
-}
-
-.incorrect-word {
-  background-color: #ef8a87;
-}
-
-#message {
-  margin-bottom: 4px;
-}
-
-#responses {
-  margin-top: 4px;
-}
-
-.missed-table-container {
+#score-card-list {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  gap: 24px; 
+  width: 100%;
+}
+
+.question-card {
+  background-color: #ffffff; 
+  color: #0A0A0A; 
+  padding: 24px;
+  text-align: left; 
+  border: 3px solid #697394 
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; 
+  margin-bottom: -10px;
+}
+
+.question-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  color: #717182;
+  letter-spacing: 0.5px;
+}
+
+.badge { 
+  padding: 9px 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  display: inline-flex;
   align-items: center;
+  gap: 8px;
 }
 
-.yellowWord {
-  background-color: #ffed85;
+.badge-correct {
+  background-color: #E6F4F3;
+  color: #1B7F79
+}
+
+.badge-correct::before {
+  content: "✓";
+  font-weight: 900;
+}
+
+.badge-incorrect {
+  background-color: #FFEEEE; 
+  color: #DC2626;            
 }
 
 
-
-.correct-answer {
-	color: green;
-	font-weight: bold;
+.badge-incorrect::before {
+  content: "✕";
+  font-weight: 900;
 }
 
-.wrong-answer {
-	color: red;
-	font-weight: bold;
+.question-text {
+  font-size: 1.25rem;
+  font-weight: 500; 
+  color: #0A0A0A;
+  margin-bottom: 24px;
+  line-height: 1.4;
 }
 
-.no-answer {
-	color: #999;
-	font-style: italic;
+.answers-area {
+  display: flex;
+  gap: 20px;
+  width: 100%;
 }
 
+.answer-box {
+flex: 1;
+  padding: 20px;
+  border: 2px solid #E5E7EB; 
+  background-color: #F9F9FB;
+  display: flex;
+  flex-direction: column; 
+  gap: 8px; 
+}
+
+.answer-box label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #717182;
+  letter-spacing: 0.5px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+.answer-box p {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* CONTEXT STATES FOR CARDS */
+
+.box-incorrect {
+  background-color: #FEF2F2;
+  border-color: #FCA5A5; 
+  color: #DC2626;
+}
+
+.box-correct {
+  background-color: #F0FAF9;
+  border-color: #7cb6b2;
+  color: #1B7F79;
+}
+
+/* correct answer default */
+.box-neutral {
+  background-color: #F9F9FB; 
+  border-color: #E5E7EB;
+} 
+
+#scoreTableContainer {
+    display: none;
+}
