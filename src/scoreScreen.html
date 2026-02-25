@@ -13,21 +13,19 @@
 
     <body>
         <section id="mainContainer" class="container">
-            <div id="message"></div>
-            <h1 id="responses" class="headings">Assessment Complete</h1>
-            <p class="sub-heading">Review your answers below</p>
+            <h1 id="responses" class="headings">Review Your Answers Below</h1>
 
             <!--new container specifically for the Question cards-->
-            <div id="score-card-list">
-            </div>
+            <ul id="score-card-list">
+            </ul>
         </section>
 
         <template id="card-template">
-        <div class="question-card">
-            <div class="card-header">
+        <li class="question-card">
+            <header class="card-header">
                 <span class="question-label">QUESTION #</span>
                 <span class="badge">STATUS</span>
-            </div>
+            </header>
             
             <div class="question-text">
                 </div>
@@ -43,7 +41,7 @@
                     <p class="correct-response-text"></p>
                 </div>
             </div>
-        </div>
+        </li>
     </template>
 
         <!-- JS file. Capitalized second S?-->
