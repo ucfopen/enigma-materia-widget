@@ -88,11 +88,9 @@ dialog.modal-dialog {
 	z-index: 999;
 	display: block;
 	position: absolute;
-	left: 50%;
 	margin-top: 100px;
-	margin-left: -269px;
-	width: 500px;
-	height: 225px;
+	width: min(500px, calc(90vw));
+	min-height: 225px;
 	
 	color: #fff;
 	background: #1a2b3f;
