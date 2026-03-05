@@ -1,8 +1,8 @@
 ---
 general:
   name: Enigma
-  height: 548
-  width: 750
+  height: 0
+  width: 0
   in_catalog: Yes
   is_editable: Yes
   is_playable: Yes

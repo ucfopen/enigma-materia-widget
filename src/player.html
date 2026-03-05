@@ -127,30 +127,32 @@
 					</span>
 				</div>
 				<!-- questions -->
-				<div ng-repeat="question in category.items"
-					aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-					title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-					role='button'
-					class='question'
-					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
-					ng-click="selectQuestion(category, question)"
-					ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
-					ng-focus="highlightQuestion(category, question)">
-					<span ng-hide="question.answered">
-						{{ $index + 1 }}
-					</span>
-					<span class='correct-marker'
-						ng-show="question.score === 100">
-						&#x2713;
-					</span>
-					<span ng-show="question.score > 0 && question.score < 100"
-						aria-label="Correct">
-						{{ question.score }}&#x25;
-					</span>
-					<span class='incorrect-marker'
-						ng-show="question.score === 0">
-						<span class="icon icon-close" aria-hidden="true"></span>
-					</span>
+				<div class="question-container">
+					<div ng-repeat="question in category.items"
+						aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						role='button'
+						class='question'
+						ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
+						ng-click="selectQuestion(category, question)"
+						ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
+						ng-focus="highlightQuestion(category, question)">
+						<span ng-hide="question.answered">
+							{{ $index + 1 }}
+						</span>
+						<span class='correct-marker'
+							ng-show="question.score === 100">
+							&#x2713;
+						</span>
+						<span ng-show="question.score > 0 && question.score < 100"
+							aria-label="Correct">
+							{{ question.score }}&#x25;
+						</span>
+						<span class='incorrect-marker'
+							ng-show="question.score === 0">
+							<span class="icon icon-close" aria-hidden="true"></span>
+						</span>
+					</div>
 				</div>
 			</section>
 			<!-- wraparound button -->

@@ -13,6 +13,7 @@
 
 $blue: #111f2c;
 $dblue: #1a2b3f;
+$mobile_w_px: 576px;
 
 @font-face {
 	font-family: 'CorbelBold';
@@ -155,12 +156,12 @@ header {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='${blue}', endColorstr='${dblue}',GradientType=0 );
 
 	h1 {
-		width: calc(100% - 14px);
-		margin: 25px 0 0;
+		width: calc(60%);
+		margin: 8px 0px 8px 14px;
 		padding: 0;
-		margin-left: 14px;
+		margin-top: 15px;
 
-		line-height: 4rem;
+		line-height: 2rem;
 		font-size: 25px;
 		font-weight: normal;
 		span {
@@ -270,7 +271,7 @@ header {
 			position: relative;
 			float: left;
 			font-family: sans-serif;
-			margin: 0 0 0 5px;
+			margin: 0px;
 			height: 90px;
 			width: 90px;
 			text-align: center;
@@ -893,4 +894,64 @@ header {
 	overflow: hidden;
 	padding: 0;
 	position: absolute;
+}
+
+.question-container {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+}
+
+@media (width < $mobile_w_px) {
+	header {
+		h1 {
+			font-size: 20px;
+			margin-top: 15px;
+		}
+	}
+
+	.question-container {
+		width: 100%;
+	}
+	
+	.gameboard {
+		.category {
+			&:hover {
+				.title {
+					border: 0px transparent;
+					border-bottom: 2px solid white;
+					background-color: #ffffff44;
+					border-radius: 4px 4px 0px 0px;
+					
+				}
+			}
+
+			.title {
+				padding-top: 2px;
+				background-color: transparent;
+				border: 0px transparent;
+				color: white;
+				border-bottom: 2px solid white;
+				border-radius: 0px;
+				padding-bottom: 4px;
+				padding-left: 4px;
+				padding-right: 4px;
+				margin: 0px;
+				margin-bottom: 8px;
+				width: fit-content;
+				&:after {
+					content: '';
+					width: 0;
+					height: 0;
+					border: 0px transparent;
+					right: -11px;
+					top: 12px;
+					position: absolute;
+					transform: scale(1.0001);
+				}
+			}
+		}
+	}
+	
+	
 }
