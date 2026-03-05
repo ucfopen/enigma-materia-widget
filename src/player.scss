@@ -903,10 +903,14 @@ header {
 }
 
 @media (width < $mobile_w_px) {
+	#scorebox {
+		transform: scale(0.75);
+	}
+
 	header {
 		h1 {
 			font-size: 20px;
-			margin-top: 15px;
+			margin-top: 20px;
 		}
 	}
 
