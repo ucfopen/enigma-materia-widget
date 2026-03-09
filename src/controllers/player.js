@@ -48,7 +48,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	const forceRead = function(readString) {
 		$scope.ariaLive = readString;
 		if (!readString) { return; }
-		return document.getElementById('aria-live').innerHTML = readString;
+		document.getElementById('aria-live').innerHTML = readString;
 	};
 
 	// Called by Materia.Engine when your widget Engine should start the user experience.
@@ -80,10 +80,10 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		$scope.$apply();
 
 		// wait for content to render, then compute player height and pass it to the enginecore to update the height of the iframe
-		return $timeout(function() {
+		$timeout(function() {
 			const h = _getPlayerHeight();
 			Materia.Engine.setHeight(h);
-			return document.getElementById('tutorial-modal-dismiss').focus();
+			document.getElementById('tutorial-modal-dismiss').focus();
 		});
 	};
 
@@ -108,7 +108,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		// focus remains on previous screen after question is selected
 		if (setTabIndex == null) { setTabIndex = true; }
 		setTimeout((() => document.getElementById('show-question-keyboard-instructions-button').focus()), 100);
-		if (setTabIndex) { return $scope.setTabIndex(); }
+		if (setTabIndex) { $scope.setTabIndex(); }
 	};
 
 	const focusOnLightboxContent = () => setTimeout((function() {
@@ -116,19 +116,19 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
             document.getElementsByClassName('lightbox-video')[0].focus();
         }
         if ($scope.currentQuestion.options.asset.type === 'image') {
-            return document.getElementsByClassName('lightbox-close')[0].focus();
+            document.getElementsByClassName('lightbox-close')[0].focus();
         }
     }), 100);
 
 	$scope.dismissTutorial = function() {
 		$scope.showTutorial = false;
-		return $timeout(() => document.getElementById('show-keyboard-instructions-button').focus());
+		$timeout(() => document.getElementById('show-keyboard-instructions-button').focus());
 	};
 
 	$scope.handleWholePlayerKeyup = function(e) {
 		switch (e.code) {
 			case 'KeyH':
-				return forceRead("Keyboard instructions: Questions are sorted into categories. " +
+				forceRead("Keyboard instructions: Questions are sorted into categories. " +
 					"Use the Tab key to navigate through the game board to view and select questions. " +
 					"Answer all questions to complete the widget. " +
 					"Press the 'Q' key to automatically select the earliest unanswered question. " +
@@ -136,25 +136,30 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 					"Press the 'W' key to hear which question and category you currently have highlighted. " +
 					"Press the 'H' key to hear these instructions again."
 				);
-			case 'KeyQ': return $scope.selectEarliestUnanswered();
+				break;
+			case 'KeyQ': 
+				$scope.selectEarliestUnanswered();
+				break;
 			case 'KeyS':
 				if ($scope.allAnswered) {
-					return forceRead('All questions have been answered');
+					forceRead('All questions have been answered');
 				} else {
-					return forceRead(($scope.totalQuestions - $scope.answeredQuestions.length) +
+					forceRead(($scope.totalQuestions - $scope.answeredQuestions.length) +
 						' questions remaining, current score is ' +
 						$scope.percentCorrect + ' out of 100 points.'
 					);
 				}
+				break;
 			case 'KeyW':
 				if (!highlightedCategory) {
 					forceRead('You have not highlighted a question yet, please use the Tab key to progress to the game board.');
 					return;
 				}
-				return forceRead('Current location is question ' + (parseInt(highlightedQuestion.index, 10) + 1) + ' of ' +
+				forceRead('Current location is question ' + (parseInt(highlightedQuestion.index, 10) + 1) + ' of ' +
 					highlightedCategory.items.length + ' in category ' + (parseInt(highlightedCategory.index, 10) + 1) + ' of ' +
 					$scope.categories.length + ': ' + highlightedCategory.name + '. Press Space or Enter to select this question.'
 				);
+				break;
 		}
 	};
 
@@ -162,7 +167,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 
 	$scope.highlightQuestion = function(c, q) {
 		highlightedCategory = c;
-		return highlightedQuestion = q;
+		highlightedQuestion = q;
 	};
 
 	$scope.selectEarliestUnanswered = function() {
@@ -185,7 +190,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 			$scope.currentCategory = category;
 			$scope.currentQuestion = question;
 
-			return focusOnQuestionText();
+			focusOnQuestionText();
 		}
 	};
 
@@ -194,8 +199,8 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 
 	$scope.setLightboxTarget = function(val) {
 		$scope.lightboxTarget = val;
-		if (val < 0) { return focusOnQuestionText(false);
-		} else { return focusOnLightboxContent(); }
+		if (val < 0) { focusOnQuestionText(false);
+		} else { focusOnLightboxContent(); }
 	};
 
 	const moveAnswer = function(index) {
@@ -206,7 +211,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		}
 		const targetLi = document.getElementById('t-question-page')
 			.getElementsByClassName('question-li')[index];
-		return targetLi.focus();
+		targetLi.focus();
 	};
 
 	$scope.handleAudioKeyUp = function(event) {
@@ -214,9 +219,9 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		if ((event.code === 'Space') || (event.code === 'Enter')) {
 			event.preventDefault();
 			if (event.currentTarget.paused) {
-				return event.currentTarget.play();
+				event.currentTarget.play();
 			} else {
-				return event.currentTarget.pause();
+				event.currentTarget.pause();
 			}
 		}
 	};
@@ -251,7 +256,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 			case 'ArrowUp': moveAnswer($scope.currentQuestion.answers.length-1); break;
 			case 'ArrowDown': moveAnswer(0); break;
 		}
-		return event.stopPropagation();
+		event.stopPropagation();
 	};
 
 	$scope.handleAnswerKeyUp = function(event, index, answer) {
@@ -260,9 +265,9 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 			case 'ArrowUp': moveAnswer(index - 1); break;
 			case 'ArrowDown': moveAnswer(index + 1); break;
 			// allow these key events to bubble up to the question container, stop propagation for the rest
-			case 'KeyQ':case 'KeyS':case 'KeyH':case 'Escape': return; break;
+			case 'KeyQ':case 'KeyS':case 'KeyH':case 'Escape': return;
 		}
-		return event.stopPropagation();
+		event.stopPropagation();
 	};
 
 	// return focus to the top left corner of the gameboard, as if tabbing into it from the score indicator
@@ -271,7 +276,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	$scope.selectAnswer = function(answer) {
 		if (!$scope.currentQuestion) { throw Error('Select a question first!'); }
 		if (!$scope.currentQuestion.answered) { $scope.currentAnswer = answer; }
-		return forceRead('Answer ' + $scope.currentAnswer.text + ' selected');
+		forceRead('Answer ' + $scope.currentAnswer.text + ' selected');
 	};
 
 	$scope.cancelQuestion = function() {
@@ -287,7 +292,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		$scope.findQuestion();
 		$scope.setTabIndex();
 		// resets status div that gives answer feedback so it can't be tabbed to
-		return forceRead("");
+		forceRead("");
 	};
 
 	// function to find the first unanswered question in list and shift focus to it
@@ -328,11 +333,11 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 			document.getElementById('return').focus();
 
 			if (check.score === 100) {
-				return forceRead(check.text + " is correct!" + returnMessage);
+				forceRead(check.text + " is correct!" + returnMessage);
 			} else if ((check.score > 0) && (check.score < 100)) {
-				return forceRead(check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage);
+				forceRead(check.text + " is only partially correct. " + check.correct + " is the correct answer." + returnMessage);
 			} else {
-				return forceRead(check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage);
+				forceRead(check.text + " is incorrect. The correct answer was " + check.correct + "." + returnMessage);
 			}
 		} else {
 			throw Error('Submitted answer not in this question!');
@@ -348,11 +353,11 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	$scope.toggleInstructions = function() {
 		$scope.instructionsOpen = !$scope.instructionsOpen;
 		// wait for inert status to be removed/added properly before moving focus
-		return setTimeout((function() {
+		setTimeout((function() {
 			if ($scope.instructionsOpen) {
-				return document.getElementById('hide-keyboard-instructions-button').focus();
+				document.getElementById('hide-keyboard-instructions-button').focus();
 			} else {
-				return document.getElementById('show-keyboard-instructions-button').focus();
+				document.getElementById('show-keyboard-instructions-button').focus();
 			}
 		}), 100);
 	};
@@ -360,11 +365,11 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	$scope.toggleQuestionInstructions = function() {
 		$scope.questionInstructionsOpen = !$scope.questionInstructionsOpen;
 		// wait for inert status to be removed/added properly before moving focus
-		return setTimeout((function() {
+		setTimeout((function() {
 			if ($scope.questionInstructionsOpen) {
-				return document.getElementById('hide-question-keyboard-instructions-button').focus();
+				document.getElementById('hide-question-keyboard-instructions-button').focus();
 			} else {
-				return document.getElementById('show-question-keyboard-instructions-button').focus();
+				document.getElementById('show-question-keyboard-instructions-button').focus();
 			}
 		}), 100);
 	};
@@ -381,7 +386,7 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		$scope.percentIncorrect = answeredPercent - $scope.percentCorrect;
 
 		$scope.changingNumber = true;
-		return $timeout(() => $scope.changingNumber = false
+		$timeout(() => $scope.changingNumber = false
 		, 300);
 	};
 
@@ -411,11 +416,11 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 		$scope.finalTab = true;
 
 		// End, but don't show the score screen yet
-		return Materia.Engine.end(false);
+		Materia.Engine.end(false);
 	};
 
 	$scope.end = () => Materia.Engine.end(true);
 
-	return Materia.Engine.start($scope);
+	Materia.Engine.start($scope);
 }
 ]);

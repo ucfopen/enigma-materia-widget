@@ -1,11 +1,3 @@
-/*
- * decaffeinate suggestions:
- * DS101: Remove unnecessary use of Array.from
- * DS102: Remove unnecessary code created because of implicit returns
- * DS205: Consider reworking code to avoid use of IIFEs
- * DS207: Consider shorter variations of null checks
- * Full docs: https://github.com/decaffeinate/decaffeinate/blob/main/docs/suggestions.md
- */
 const Enigma = angular.module('enigmaCreator');
 
 Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($scope, $timeout, $sce) {
@@ -64,7 +56,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
             }
         };
         _buildScaffold();
-        return $scope.showIntroDialog = true;
+        $scope.showIntroDialog = true;
     });
 
 	$scope.initExistingWidget = function(title, widget, qset, version, baseUrl) {
@@ -92,10 +84,10 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 
 		if (i > 0) { $scope.step = 4; } // if this widget had some questions, assume the instructions are unnecessary
 
-		return $scope.$apply(function() {
+		$scope.$apply(function() {
 			$scope.title = title;
 			$scope.qset = qset;
-			return _buildScaffold();
+			_buildScaffold();
 		});
 	};
 
@@ -216,25 +208,25 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 
 	$scope.setTitle = function() {
 		$scope.title = $scope.introTitle || $scope.title;
-		return $scope.hideCover();
+		$scope.hideCover();
 	};
 
 	// responds to a number of stimuli to hide the intro screen
 	$scope.hideCover = function() {
 		if ($scope.step === 0) { $scope.step = 1; } // the widget has a title - bring up the instructions for adding the first category
-		return $scope.showIntroDialog = ($scope.showTitleDialog = false);
+		$scope.showIntroDialog = ($scope.showTitleDialog = false);
 	};
 
 	$scope.newCategory = function(index, category) {
 		category.isEditing = true;
-		if ($scope.step === 1) { return $scope.step = 2; } // the first category has been clicked - display instructions for giving it a name
+		if ($scope.step === 1) { $scope.step = 2; } // the first category has been clicked - display instructions for giving it a name
 	};
 
 	// editing a category
 	$scope.editCategory = function(category) {
 		category.isEditing = true;
 		_categoryTempName = category.name;
-		return $scope.curQuestion = false;
+		$scope.curQuestion = false;
 	};
 
 	// done editing a category
@@ -263,7 +255,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 			}
 		}
 		category.isEditing = false;
-		return _categoryTempName = '';
+		_categoryTempName = '';
 	};
 
 	$scope.deleteCategory = function(category) {
@@ -307,7 +299,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 		}
 
 		// if they're still in tutorial mode and they haven't added a question yet, step back
-		if (wasOnly && ($scope.step === 3)) { return $scope.step = 1; }
+		if (wasOnly && ($scope.step === 3)) { $scope.step = 1; }
 	};
 
 	$scope.categoryReorder = function(index, forward) {
@@ -316,12 +308,12 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 			$scope.qset.items[index] = $scope.qset.items[index+1];
 			$scope.qset.items[index].index = index;
 			$scope.qset.items[index+1] = temp;
-			return $scope.qset.items[index+1].index = index+1;
+			$scope.qset.items[index+1].index = index+1;
 		} else {
 			$scope.qset.items[index] = $scope.qset.items[index-1];
 			$scope.qset.items[index].index = index;
 			$scope.qset.items[index-1] = temp;
-			return $scope.qset.items[index-1].index = index-1;
+			$scope.qset.items[index-1].index = index-1;
 		}
 	};
 
@@ -358,7 +350,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 				}
 			}
 
-			if ($scope.step === 3) { return $scope.step = 4; } // the first question has been added - no further instructions
+			if ($scope.step === 3) { $scope.step = 4; } // the first question has been added - no further instructions
 		}
 	};
 
@@ -371,7 +363,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 
 		$scope.subMenu = false;
 		$scope.curCategory = false;
-		return $scope.curQuestion = false;
+		$scope.curQuestion = false;
 	};
 
 	// delete a question; removes question from the order completely
@@ -387,7 +379,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 		while (i < $scope.qset.items[$scope.curCategory.index].items.length) {
 			$scope.qset.items[$scope.curCategory.index].items[i].index = i++;
 		}
-		return $scope.curQuestion = false;
+		$scope.curQuestion = false;
 	};
 
 	// change the order of questions within a category
@@ -398,12 +390,12 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 			$scope.curCategory.items[currentIndex] = $scope.curCategory.items[currentIndex+1];
 			$scope.curCategory.items[currentIndex].index = currentIndex;
 			$scope.curCategory.items[currentIndex+1] = temp;
-			return $scope.curCategory.items[currentIndex+1].index = currentIndex+1;
+			$scope.curCategory.items[currentIndex+1].index = currentIndex+1;
 		} else {
 			$scope.curCategory.items[currentIndex] = $scope.curCategory.items[currentIndex-1];
 			$scope.curCategory.items[currentIndex].index = currentIndex;
 			$scope.curCategory.items[currentIndex-1] = temp;
-			return $scope.curCategory.items[currentIndex-1].index = currentIndex-1;
+			$scope.curCategory.items[currentIndex-1].index = currentIndex-1;
 		}
 	};
 
@@ -444,7 +436,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
     });
 
 	$scope.toggleCorrect = function(answer) {
-		if (answer.options.correct) { return answer.value = 100; } else { return answer.value =  0; }
+		if (answer.options.correct) { answer.value = 100; } else { answer.value =  0; }
 	};
 
 	// called when an answer's custom value is changed - makes sure no non-numbers are present
@@ -454,38 +446,38 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 		// constrain it between 0 and 100
 		if (~~answer.value > 100) { answer.value = 100; }
 		if (~~answer.value < 0) { answer.value = 0; }
-		return answer.options.correct = answer.value === 100;
+		answer.options.correct = answer.value === 100;
 	};
 
 	// Assets
 
 	$scope.showPopUp = function() {
 		$scope.mediaPopUp = true;
-		return $scope.hideVideoForm();
+		$scope.hideVideoForm();
 	};
 
 	$scope.hidePopUp = function() {
 		$scope.mediaPopUp = false;
-		return $scope.hideVideoForm();
+		$scope.hideVideoForm();
 	};
 
 	$scope.uploadAudio = function() {
 		$scope.curQuestion.mediaType = "audio";
 		$scope.hideVideoForm();
-		return Materia.CreatorCore.showMediaImporter(["audio"]);
+		Materia.CreatorCore.showMediaImporter(["audio"]);
 	};
 
 	$scope.uploadImage = function() {
 		$scope.curQuestion.mediaType = "image";
 		$scope.hideVideoForm();
-		return Materia.CreatorCore.showMediaImporter(["image"]);
+		Materia.CreatorCore.showMediaImporter(["image"]);
 	};
 
 	$scope.showVideoForm = () => $scope.videoForm = true;
 
 	$scope.hideVideoForm = function() {
 		$scope.videoForm = false;
-		return $scope.urlError = null;
+		$scope.urlError = null;
 	};
 
 	$scope.onMediaImportComplete = function(media) {
@@ -497,12 +489,12 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 			description: $scope.curQuestion.description
 		};
 		$scope.hidePopUp();
-		return $scope.$apply();
+		$scope.$apply();
 	};
 
 	$scope.removeMedia = function() {
 		$scope.url = null;
-		return delete $scope.curQuestion.options.asset;
+		delete $scope.curQuestion.options.asset;
 	};
 
 	$scope.formatUrl = function() {
@@ -525,7 +517,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 
 		$scope.hidePopUp();
 
-		return $scope.curQuestion.options.asset = {
+		$scope.curQuestion.options.asset = {
 			type: "video",
 			value: $sce.trustAsResourceUrl(embedUrl),
 			id: embedUrl,
@@ -642,7 +634,7 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 			$scope.incompleteMessage = incompleteMessage;
 			$scope.startFade = true;
 
-			return _alertTimer = $timeout(() => $scope.killAlert()
+			_alertTimer = $timeout(() => $scope.killAlert()
 			, 10000);
 		}
 	};
@@ -650,20 +642,20 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 	// hide the alert early if the user clicks on it
 	$scope.killAlert = function() {
 		$scope.incompleteMessage = false;
-		return $scope.warningMessage    = false;
+		$scope.warningMessage    = false;
 	};
 
 	// draw a tooltip near a question when the mouse is over it if that question is invalid
 	$scope.markQuestion = function(category, question) {
 		if (question.untouched) { return; }
 		$scope.hoverQuestion = question;
-		return $scope.hoverCategory = category;
+		$scope.hoverCategory = category;
 	};
 
 	// remove the tooltip indicating problems with a question
 	$scope.unmarkQuestion = function() {
 		$scope.hoverQuestion = false;
-		return $scope.hoverCategory = false;
+		$scope.hoverCategory = false;
 	};
 
 	$scope.onSaveClicked = function(mode) {
@@ -671,9 +663,9 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 		const qset = _buildSaveData();
 		const msg = mode === 'history' ? false : _validateQuestions(qset);
 		if (msg) {
-			return Materia.CreatorCore.cancelSave(msg);
+			Materia.CreatorCore.cancelSave(msg);
 		} else {
-			return Materia.CreatorCore.save($scope.title, qset);
+			Materia.CreatorCore.save($scope.title, qset);
 		}
 	};
 
@@ -744,6 +736,6 @@ Enigma.controller('enigmaCreatorCtrl', ['$scope', '$timeout', '$sce', function($
 
 	$scope.onSaveComplete = (title, widget, qset, version) => true;
 
-	return Materia.CreatorCore.start($scope);
+	Materia.CreatorCore.start($scope);
 }
 ]);
