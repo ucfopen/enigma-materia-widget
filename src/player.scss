@@ -233,6 +233,9 @@ header {
 
 .gameboard {
 	padding: 5px 5px 2em 5px;
+	max-width: fit-content;
+	margin: auto;
+	margin-top: 0px;
 	@include boxSizing();
 	.category {
 		clear:both;
@@ -250,6 +253,7 @@ header {
 			margin: 15px 5px 0 0;
 			position: relative;
 			min-height: 20px;
+			word-break: break-all;
 
 			&:after {
 				content: '';
@@ -354,6 +358,8 @@ header {
 	right: 0;
 	z-index: 100;
 	background: #2f3944;
+	outline: 3px solid white;
+	outline-offset: -10px;
 }
 
 .question-popup {
@@ -367,7 +373,8 @@ header {
 	padding: 20px;
 	padding-top: 67px;
 	padding-bottom: 0;
-	border: 3px solid #fff;
+	max-width: 730px;
+	margin: 0px auto;
 	z-index: 101;
 	overflow-y:auto;
 
@@ -430,6 +437,7 @@ header {
 	.question-text {
 		flex-grow: 2;
 		padding-right: 5px;
+		word-break: break-all;
 	}
 
 	.media {
@@ -580,7 +588,8 @@ header {
 		label {
 			padding-left: 10px;
 			width: 90%;
-			display: inline-block;
+			display: flex;
+			flex-direction: row;
 		}
 	}
 	.menu {
@@ -904,6 +913,7 @@ header {
 @media (width < $mobile_w_px) {
 	#scorebox {
 		transform: scale(0.75);
+		right: -8px;
 	}
 
 	audio {
@@ -932,6 +942,8 @@ header {
 
 	.question-popup {
 		padding-top: 40px;
+		padding-left: 10px;
+		padding-right: 10px;
 
 		h1 {
 			font-size: 20px;
@@ -951,11 +963,12 @@ header {
 			label {
 				display: flex;
 				flex-direction: row;
+				padding-left: 0px;
 			}
 			ul {
 				li {
 					p {
-						
+						margin-left: 4px;
 						width: 100%;
 					}
 				}
@@ -964,6 +977,7 @@ header {
 	}
 	
 	.gameboard {
+		margin: 0px;
 		.category {
 			&:hover {
 				.title {
