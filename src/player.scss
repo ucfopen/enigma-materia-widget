@@ -89,7 +89,7 @@ dialog.modal-dialog {
 	display: block;
 	position: absolute;
 	margin-top: 100px;
-	width: min(500px, calc(90vw));
+	width: min(500px, calc(85vw));
 	min-height: 225px;
 	
 	color: #fff;
@@ -526,6 +526,7 @@ header {
 				}
 				p {
 					display: inline-block;
+					word-wrap: break-word;
 					width: 500px;
 					margin: 1px 0 1px 26px;
 				}
@@ -905,6 +906,19 @@ header {
 		transform: scale(0.75);
 	}
 
+	audio {
+		width: 100%;
+	}
+
+	.lightbox {
+		display: flex;
+		.lightbox-content {
+			height: fit-content;
+			margin-top: auto;
+			margin-bottom: auto;
+		}
+	}
+
 	header {
 		h1 {
 			font-size: 20px;
@@ -914,6 +928,39 @@ header {
 
 	.question-container {
 		width: 100%;
+	}
+
+	.question-popup {
+		padding-top: 40px;
+
+		h1 {
+			font-size: 20px;
+		}
+
+		.media {
+			width: 100%;
+		}
+		.question-text-and-media {
+			flex-direction: column;
+		}
+		.question-text {
+			padding-right: 0;
+			padding-bottom: 5px;
+		}
+		.answers {
+			label {
+				display: flex;
+				flex-direction: row;
+			}
+			ul {
+				li {
+					p {
+						
+						width: 100%;
+					}
+				}
+			}
+		}
 	}
 	
 	.gameboard {
