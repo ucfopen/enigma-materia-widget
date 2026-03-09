@@ -270,6 +270,10 @@ header {
 		font-size: 15px;
 		line-height: 25px;
 
+		.instructions {
+			cursor: pointer;
+		}
+
 		.instructions:focus,
 		.instructions:hover {
 			text-decoration: underline;
@@ -434,6 +438,8 @@ header {
 		top: 10px;
 		left: 10px;
 		font-size: 13px;
+
+		cursor: pointer;
 
 		&:focus {
 			text-decoration: underline;
