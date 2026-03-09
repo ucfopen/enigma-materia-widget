@@ -25,7 +25,7 @@
 			class="clip"
 			aria-live="assertive"
 			tabindex="-1"></div>
-		<dialog id="tutorial" class="modal-dialog" ng-show="showTutorial" aria-modal="true">
+		<dialog id="tutorial" class="modal-dialog" aria-label="Tutorial" ng-show="showTutorial" aria-modal="true">
 			<div id="tutorial-content">
 				<header>How to Play</header>
 				<p>Enigma is a multiple-choice game with questions organized by category.</p>
@@ -84,32 +84,36 @@
 			</div>
 		</header>
 		<section id="keyboard-instructions-dialog"
-			class="notice"
+			class="keyboard-dialog"
 			ng-if="instructionsOpen">
-			<p>Questions are sorted into categories.</p>
-			<p>Use the 'Tab' key to navigate through the game board to view and select questions.</p>
-			<p>Answer all questions to complete the widget.</p>
-			<p>Press the 'Q' key to automatically select the earliest unanswered question.</p>
-			<button id="hide-keyboard-instructions-button"
-				class="instructions-button"
-				ng-click="toggleInstructions()">
-				Hide Keyboard Instructions
-			</button>
+			<dialog class="notice" aria-label="Keyboard Instructions" aria-modal="true">
+				<p>Questions are sorted into categories.</p>
+				<p>Use the 'Tab' key to navigate through the game board to view and select questions.</p>
+				<p>Answer all questions to complete the widget.</p>
+				<p>Press the 'Q' key to automatically select the earliest unanswered question.</p>
+				<button id="hide-keyboard-instructions-button"
+					class="instructions-button"
+					ng-click="toggleInstructions()">
+					Hide Keyboard Instructions
+				</button>
+			</dialog>
 		</section>
 		<section id="question-keyboard-instructions-dialog"
-			class="notice"
+			class="keyboard-dialog"
 			ng-if="questionInstructionsOpen">
-			<p>Use the 'Tab' key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, then to reach the 'Return' and 'Submit Final Answer' buttons.</p>
-			<p>The 'Up' and 'Down' arrow keys may also be used to navigate through answer options.</p>
-			<p>Press the 'Enter' or 'Space' key on an answer option to select it.</p>
-			<p>Pressing the 'Escape' key will leave this question and allow you to select another question.</p>
-			<p>Press the 'Q' key to hear the question again.</p>
-			<p>Press the 'S' key after selecting an answer to be taken to the Submit Final Answer button automatically.</p>
-			<button id="hide-question-keyboard-instructions-button"
-				class="instructions-button"
-				ng-click="toggleQuestionInstructions()">
-				Hide Keyboard Instructions
-			</button>
+			<dialog class="notice" aria-label="Keyboard Instructions" aria-modal="true">
+				<p>Use the 'Tab' key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, then to reach the 'Return' and 'Submit Final Answer' buttons.</p>
+				<p>The 'Up' and 'Down' arrow keys may also be used to navigate through answer options.</p>
+				<p>Press the 'Enter' or 'Space' key on an answer option to select it.</p>
+				<p>Pressing the 'Escape' key will leave this question and allow you to select another question.</p>
+				<p>Press the 'Q' key to hear the question again.</p>
+				<p>Press the 'S' key after selecting an answer to be taken to the Submit Final Answer button automatically.</p>
+				<button id="hide-question-keyboard-instructions-button"
+					class="instructions-button"
+					ng-click="toggleQuestionInstructions()">
+					Hide Keyboard Instructions
+				</button>
+			</dialog>
 		</section>
 		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			role="application"
