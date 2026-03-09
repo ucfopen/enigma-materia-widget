@@ -441,7 +441,7 @@ header {
 
 		cursor: pointer;
 
-		&:focus {
+		&:focus,&:hover {
 			text-decoration: underline;
 		}
 	}
