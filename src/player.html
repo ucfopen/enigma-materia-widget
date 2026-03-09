@@ -133,8 +133,8 @@
 				<!-- questions -->
 				<div class="question-container">
 					<div ng-repeat="question in category.items"
-						aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-						title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						aria-label="Question number {{ (question.index-0) + 1 }} in category {{ (category.index-0)+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						title="Question number {{ (question.index-0) + 1 }} in category {{ (category.index-0)+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
 						role='button'
 						class='question'
 						ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
