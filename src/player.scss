@@ -76,7 +76,9 @@ html, body {
 
 	&:focus {
 		opacity: 1;
-		height: 2em;
+		height: fit-content;
+		padding-top: 8px;
+		padding-bottom: 8px;
 		width: 90%;
 		left: 3%;
 		background: #eff0f2;
@@ -124,6 +126,11 @@ html, body {
 			background: #fff;
 			color: rgb(60,60,60);
 		}
+
+		&:focus {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
+		}
 	}
 }
 
@@ -168,6 +175,11 @@ html, body {
 		&:hover, &:focus {
 			background: #fff;
 			color: rgb(60,60,60);
+		}
+
+		&:focus {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
 		}
 	}
 }
@@ -278,6 +290,11 @@ header {
 		.instructions:hover {
 			text-decoration: underline;
 		}
+
+		.instructions:focus {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
+		}
 	}
 }
 
@@ -345,6 +362,11 @@ header {
 				background: #fff;
 				transform: scale(1.05);
 				transition: 200ms;
+			}
+
+			&:focus {
+				background: #4187c9;
+				color: #fff;
 			}
 			&:hover.wrong, &:hover.correct {
 				transform: none;
@@ -444,6 +466,11 @@ header {
 		&:focus,&:hover {
 			text-decoration: underline;
 		}
+
+		&:focus {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
+		}
 	}
 
 	h1 {
@@ -483,7 +510,8 @@ header {
 
 		&:focus-within {
 			background: #fff;
-			border: 3px solid #4187c9;
+			outline: 3px solid #4187c9;
+			outline-offset: 4px;
 		}
 	}
 
@@ -683,6 +711,12 @@ header {
 				border-color: #FFF;
 				color: #333;
 			}
+
+			&:focus {
+				outline: 2px #4187c9 solid;
+				outline-offset: 4px;
+			}
+
 			&.submit:disabled {
 				background: #494949;
 				color: #ccc;
@@ -744,9 +778,14 @@ header {
 
 			cursor: pointer;
 
-			&:hover,
+			&:hover {
+				background: #6c6c6c;
+			}
+
 			&:focus {
 				background: #6c6c6c;
+				outline: 2px #4187c9 solid;
+				outline-offset: 4px;
 			}
 		}
 

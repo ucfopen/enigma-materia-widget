@@ -133,7 +133,7 @@
 						class='question'
 						ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
 						ng-click="selectQuestion(category, question)"
-						ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
+						ng-keydown="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
 						ng-focus="highlightQuestion(category, question)">
 						<span ng-hide="question.answered">
 							{{ $index + 1 }}
