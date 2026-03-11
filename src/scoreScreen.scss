@@ -1,3 +1,5 @@
+$mobile_w_px: 576px;
+
 body {
   background: #3B4655;
   color: #fff;
@@ -39,6 +41,7 @@ h1 {
   flex-direction: column;
   gap: 24px; 
   width: 100%;
+  padding-inline-start: 0px;
 }
 
 .question-card {
@@ -46,6 +49,7 @@ h1 {
   color: #0A0A0A; 
   padding: 24px;
   text-align: left; 
+  list-style-type: none;
   border: 3px solid #697394 
 }
 
@@ -154,4 +158,26 @@ flex: 1;
 
 #scoreTableContainer {
     display: none;
+}
+
+@media (width < $mobile_w_px) {
+  body {
+    padding: 15px;
+  }
+
+  .question-card {
+    padding: 18px;
+  }
+
+  .question-text {
+    font-size: 1rem;
+  }
+
+  .headings {
+    font-size: 1.5rem;
+  }
+
+  .answers-area {
+    flex-direction: column;
+  }
 }
