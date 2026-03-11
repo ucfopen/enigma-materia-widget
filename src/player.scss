@@ -13,6 +13,7 @@
 
 $blue: #111f2c;
 $dblue: #1a2b3f;
+$mobile_w_px: 576px;
 
 @font-face {
 	font-family: 'CorbelBold';
@@ -73,9 +74,11 @@ html, body {
 	text-align: center;
 	pointer-events: none;
 
-	&:focus {
+	&:focus-within {
 		opacity: 1;
-		height: 2em;
+		height: fit-content;
+		padding-top: 8px;
+		padding-bottom: 8px;
 		width: 90%;
 		left: 3%;
 		background: #eff0f2;
@@ -83,15 +86,14 @@ html, body {
 	}
 }
 
-dialog.modal-dialog {
+.modal-dialog {
 	z-index: 999;
 	display: block;
 	position: absolute;
-	left: 50%;
-	margin-top: 100px;
-	margin-left: -269px;
-	width: 500px;
-	height: 225px;
+	margin: auto;
+	margin-top: 10vh;
+	width: min(500px, calc(85vw));
+	min-height: 225px;
 	
 	color: #fff;
 	background: #1a2b3f;
@@ -124,6 +126,61 @@ dialog.modal-dialog {
 			background: #fff;
 			color: rgb(60,60,60);
 		}
+
+		&:focus-within {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
+		}
+	}
+}
+
+.keyboard-dialog {
+	z-index: 999;
+	display: flex;
+	position: absolute;
+	margin: auto;
+	width: min(500px, calc(85vw));
+	min-height: 225px;
+
+	width: 100%;
+	height: 100%;
+	
+	color: #fff;
+	background: rgba(0,0,0,0.75);
+
+	header {
+		position: relative;
+		width: 100%;
+		height: auto;
+		background: none;
+
+		font-size: 21px;
+	}
+
+	button {
+		display: block;
+		margin: 25px auto 0px auto;
+		padding: 4px;
+
+		background: rgb(60, 60, 60);
+		border: 2px solid #fff;
+		
+		text-transform: uppercase;
+		color: #fff;
+		font-size: 13px;
+		font-weight: bold;
+		
+		cursor: hand; cursor: pointer;
+
+		&:hover, &:focus {
+			background: #fff;
+			color: rgb(60,60,60);
+		}
+
+		&:focus-within {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
+		}
 	}
 }
 
@@ -155,12 +212,12 @@ header {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='${blue}', endColorstr='${dblue}',GradientType=0 );
 
 	h1 {
-		width: calc(100% - 14px);
-		margin: 25px 0 0;
+		width: calc(60%);
+		margin: 8px 0px 8px 14px;
 		padding: 0;
-		margin-left: 14px;
+		margin-top: 15px;
 
-		line-height: 4rem;
+		line-height: 2rem;
 		font-size: 25px;
 		font-weight: normal;
 		span {
@@ -225,15 +282,27 @@ header {
 		font-size: 15px;
 		line-height: 25px;
 
+		.instructions {
+			cursor: pointer;
+		}
+
 		.instructions:focus,
 		.instructions:hover {
 			text-decoration: underline;
+		}
+
+		.instructions:focus-within {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
 		}
 	}
 }
 
 .gameboard {
 	padding: 5px 5px 2em 5px;
+	max-width: fit-content;
+	margin: auto;
+	margin-top: 0px;
 	@include boxSizing();
 	.category {
 		clear:both;
@@ -251,6 +320,7 @@ header {
 			margin: 15px 5px 0 0;
 			position: relative;
 			min-height: 20px;
+			word-break: break-all;
 
 			&:after {
 				content: '';
@@ -270,7 +340,7 @@ header {
 			position: relative;
 			float: left;
 			font-family: sans-serif;
-			margin: 0 0 0 5px;
+			margin: 0px;
 			height: 90px;
 			width: 90px;
 			text-align: center;
@@ -292,6 +362,11 @@ header {
 				background: #fff;
 				transform: scale(1.05);
 				transition: 200ms;
+			}
+
+			&:focus-within {
+				background: #4187c9;
+				color: #fff;
 			}
 			&:hover.wrong, &:hover.correct {
 				transform: none;
@@ -355,6 +430,8 @@ header {
 	right: 0;
 	z-index: 100;
 	background: #2f3944;
+	outline: 3px solid white;
+	outline-offset: -10px;
 }
 
 .question-popup {
@@ -368,7 +445,8 @@ header {
 	padding: 20px;
 	padding-top: 67px;
 	padding-bottom: 0;
-	border: 3px solid #fff;
+	max-width: 730px;
+	margin: 0px auto;
 	z-index: 101;
 	overflow-y:auto;
 
@@ -383,8 +461,15 @@ header {
 		left: 10px;
 		font-size: 13px;
 
-		&:focus {
+		cursor: pointer;
+
+		&:focus,&:hover {
 			text-decoration: underline;
+		}
+
+		&:focus-within {
+			outline: 2px #4187c9 solid;
+			outline-offset: 4px;
 		}
 	}
 
@@ -400,6 +485,7 @@ header {
 
 	input, .button-checked {
 		opacity: 0;
+		cursor: pointer;
 
 		-webkit-transition: opacity .1s ease-in-out;
 		   -moz-transition: opacity .1s ease-in-out;
@@ -424,13 +510,15 @@ header {
 
 		&:focus-within {
 			background: #fff;
-			border: 3px solid #4187c9;
+			outline: 3px solid #4187c9;
+			outline-offset: 4px;
 		}
 	}
 
 	.question-text {
 		flex-grow: 2;
 		padding-right: 5px;
+		word-break: break-all;
 	}
 
 	.media {
@@ -502,6 +590,9 @@ header {
 		padding: 10px;
 		margin-top: 10px;
 		border: 3px solid #697393;
+		label {
+			cursor: pointer;
+		}
 		ul {
 			list-style: none;
 			margin: 0;
@@ -509,6 +600,7 @@ header {
 			li {
 				position: relative;
 				padding:2px 5px;
+				cursor: pointer;
 				&.selected {
 					background: #d1d7e1;
 				}
@@ -527,6 +619,7 @@ header {
 				}
 				p {
 					display: inline-block;
+					word-wrap: break-word;
 					width: 500px;
 					margin: 1px 0 1px 26px;
 				}
@@ -580,7 +673,8 @@ header {
 		label {
 			padding-left: 10px;
 			width: 90%;
-			display: inline-block;
+			display: flex;
+			flex-direction: row;
 		}
 	}
 	.menu {
@@ -617,6 +711,12 @@ header {
 				border-color: #FFF;
 				color: #333;
 			}
+
+			&:focus-within {
+				outline: 2px #4187c9 solid;
+				outline-offset: 4px;
+			}
+
 			&.submit:disabled {
 				background: #494949;
 				color: #ccc;
@@ -632,6 +732,7 @@ header {
 
 .lightbox {
 	position: absolute;
+	display: flex;
 	z-index: -500;
 	width: 100%;
 	height: 100%;
@@ -650,7 +751,7 @@ header {
 		position: relative;
 		width: 90%;
 		height: 90%;
-		margin: 2.5% 5%;
+		margin: auto;
 		background: rgba(45,45,45,1);
 
 		cursor: default;
@@ -677,9 +778,14 @@ header {
 
 			cursor: pointer;
 
-			&:hover,
-			&:focus {
+			&:hover {
 				background: #6c6c6c;
+			}
+
+			&:focus-within {
+				background: #6c6c6c;
+				outline: 2px #4187c9 solid;
+				outline-offset: 4px;
 			}
 		}
 
@@ -693,6 +799,7 @@ header {
 			position: relative;
 			display: flex;
 			flex-direction: column;
+			justify-content: center;
 			height: calc(100% - 20px);
 			margin: 10px auto 10px auto;
 
@@ -726,23 +833,26 @@ header {
 
 .notice {
 	color: white;
-	display: block;
-	position: fixed;
-	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	width: min(500px, 95vw);
 	top: 0px;
-	background: #3a4655;
-	height: 100%;
-	border: 10px solid $blue;
+	background: #1a2b3f;
+	height: fit-content;
+	// border: 3px solid white;
 	padding: 20px;
 	text-align: center;
 	z-index: 1000;
+	margin: auto;
+	margin-top: 10vh;
 
 	@include boxSizing();
 	p {
 		display: block;
 		margin: 5px auto;
-		width: 75%;
-		text-align: left;
+		width: 100%;
+		text-align: center;
 	}
 
 	h1 {
@@ -893,4 +1003,110 @@ header {
 	overflow: hidden;
 	padding: 0;
 	position: absolute;
+}
+
+.question-container {
+	display: flex;
+	flex-direction: row;
+	gap: 5px;
+}
+
+@media (width < $mobile_w_px) {
+	#scorebox {
+		transform: scale(0.75);
+		right: -8px;
+	}
+
+	audio {
+		width: 100%;
+	}
+
+	header {
+		h1 {
+			font-size: 20px;
+			margin-top: 20px;
+		}
+	}
+
+	.question-container {
+		width: 100%;
+	}
+
+	.question-popup {
+		padding-top: 40px;
+		padding-left: 10px;
+		padding-right: 10px;
+
+		h1 {
+			font-size: 20px;
+		}
+
+		.media {
+			width: 100%;
+		}
+		.question-text-and-media {
+			flex-direction: column;
+		}
+		.question-text {
+			padding-right: 0;
+			padding-bottom: 5px;
+		}
+		.answers {
+			label {
+				display: flex;
+				flex-direction: row;
+				padding-left: 0px;
+			}
+			ul {
+				li {
+					p {
+						margin-left: 4px;
+						width: 100%;
+					}
+				}
+			}
+		}
+	}
+	
+	.gameboard {
+		margin: 0px;
+		.category {
+			&:hover {
+				.title {
+					border: 0px transparent;
+					border-bottom: 2px solid white;
+					background-color: #ffffff44;
+					border-radius: 4px 4px 0px 0px;
+					
+				}
+			}
+
+			.title {
+				padding-top: 2px;
+				background-color: transparent;
+				border: 0px transparent;
+				color: white;
+				border-bottom: 2px solid white;
+				border-radius: 0px;
+				padding-bottom: 4px;
+				padding-left: 4px;
+				padding-right: 4px;
+				margin: 0px;
+				margin-bottom: 8px;
+				width: fit-content;
+				&:after {
+					content: '';
+					width: 0;
+					height: 0;
+					border: 0px transparent;
+					right: -11px;
+					top: 12px;
+					position: absolute;
+					transform: scale(1.0001);
+				}
+			}
+		}
+	}
+	
+	
 }
