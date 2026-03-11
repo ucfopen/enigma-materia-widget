@@ -750,7 +750,7 @@ header {
 	.lightbox-content {
 		position: relative;
 		width: 90%;
-		height: fit-content;
+		height: 90%;
 		margin: auto;
 		background: rgba(45,45,45,1);
 
@@ -799,6 +799,7 @@ header {
 			position: relative;
 			display: flex;
 			flex-direction: column;
+			justify-content: center;
 			height: calc(100% - 20px);
 			margin: 10px auto 10px auto;
 
