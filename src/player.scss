@@ -698,6 +698,7 @@ header {
 
 .lightbox {
 	position: absolute;
+	display: flex;
 	z-index: -500;
 	width: 100%;
 	height: 100%;
@@ -715,8 +716,8 @@ header {
 	.lightbox-content {
 		position: relative;
 		width: 90%;
-		height: 90%;
-		margin: 2.5% 5%;
+		height: fit-content;
+		margin: auto;
 		background: rgba(45,45,45,1);
 
 		cursor: default;
@@ -978,15 +979,6 @@ header {
 
 	audio {
 		width: 100%;
-	}
-
-	.lightbox {
-		display: flex;
-		.lightbox-content {
-			height: fit-content;
-			margin-top: auto;
-			margin-bottom: auto;
-		}
 	}
 
 	header {
