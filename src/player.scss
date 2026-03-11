@@ -74,7 +74,7 @@ html, body {
 	text-align: center;
 	pointer-events: none;
 
-	&:focus {
+	&:focus-within {
 		opacity: 1;
 		height: fit-content;
 		padding-top: 8px;
@@ -127,7 +127,7 @@ html, body {
 			color: rgb(60,60,60);
 		}
 
-		&:focus {
+		&:focus-within {
 			outline: 2px #4187c9 solid;
 			outline-offset: 4px;
 		}
@@ -177,7 +177,7 @@ html, body {
 			color: rgb(60,60,60);
 		}
 
-		&:focus {
+		&:focus-within {
 			outline: 2px #4187c9 solid;
 			outline-offset: 4px;
 		}
@@ -291,7 +291,7 @@ header {
 			text-decoration: underline;
 		}
 
-		.instructions:focus {
+		.instructions:focus-within {
 			outline: 2px #4187c9 solid;
 			outline-offset: 4px;
 		}
@@ -364,7 +364,7 @@ header {
 				transition: 200ms;
 			}
 
-			&:focus {
+			&:focus-within {
 				background: #4187c9;
 				color: #fff;
 			}
@@ -467,7 +467,7 @@ header {
 			text-decoration: underline;
 		}
 
-		&:focus {
+		&:focus-within {
 			outline: 2px #4187c9 solid;
 			outline-offset: 4px;
 		}
@@ -712,7 +712,7 @@ header {
 				color: #333;
 			}
 
-			&:focus {
+			&:focus-within {
 				outline: 2px #4187c9 solid;
 				outline-offset: 4px;
 			}
@@ -782,7 +782,7 @@ header {
 				background: #6c6c6c;
 			}
 
-			&:focus {
+			&:focus-within {
 				background: #6c6c6c;
 				outline: 2px #4187c9 solid;
 				outline-offset: 4px;
