@@ -55,7 +55,7 @@
 					<circle cx='60' cy='60' r='60' fill='#444444'/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
-						stroke='#ac3434' stroke-width='20'
+						stroke='#f05959' stroke-width='20'
 						ng-style="{
 							'stroke-dasharray': circumference ,
 							'stroke-dashoffset' : circumference - ((percentIncorrect/100) * circumference),
@@ -63,7 +63,7 @@
 						}"/>
 					<circle cx='60' cy='60' r='50' fill='none'
 						class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
-						stroke='#2af0b1' stroke-width='20'
+						stroke='#4187c9' stroke-width='20'
 						ng-style="{
 							'stroke-dasharray': circumference ,
 							'stroke-dashoffset' : circumference - ((percentCorrect/100) * circumference),
@@ -258,7 +258,7 @@
 								</span>
 								<span class="wrong mark" ng-show="currentQuestion.score == 0">
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-										<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+										<path stroke="#f05959" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
 									</svg>
 								</span>
 							</span>
@@ -330,13 +330,14 @@
 				</section>
 			</div>
 		</section>
-		<section class='notice' ng-show="allAnswered">
+		<div id="modal-cover" ng-show="allAnswered"></div>
+		<dialog class='notice' aria-modal="true" ng-show="allAnswered">
 			<div class="remaining-box">
 				<div id='scorebox_final' class='score' role='status'>
 					<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
-						<circle cx='60' cy='60' r='60' fill='#ac3434'/>
+						<circle cx='60' cy='60' r='60' fill='#f05959'/>
 						<circle cx='60' cy='60' r='50' fill='none' class='correct-ring'
-							stroke='#2af0b1' stroke-width='20'
+							stroke='#4187c9' stroke-width='20'
 							ng-style="{
 								'stroke-dasharray': circumference,
 								'stroke-dashoffset': circumference - ((percentCorrect/100) * circumference)
@@ -353,11 +354,6 @@
 						ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">
 						%
 					</span>
-					<span aria-hidden="true"
-						class='percent-wrong'
-						ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">
-						{{ 100 - percentCorrect }}% Wrong
-					</span>
 				</div>
 			</div>
 			<h1 class="top-padded">All Questions Answered</h1>
@@ -366,6 +362,6 @@
 				ng-click="end()">
 				Submit for Review
 			</button>
-		</section>
+		</dialog>
 	</body>
 </html>

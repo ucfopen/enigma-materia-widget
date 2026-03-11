@@ -767,7 +767,7 @@ header {
 
 			border: none;
 			border-radius: 5px;
-
+			
 			color: #fff;
 			background: #e42b20;
 			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
@@ -892,7 +892,7 @@ header {
 		height: 120px;
 	}
 	.score {
-		color: rgb(42, 240, 177);
+		color: #ffffff;
 		position: absolute;
 		line-height: 90px;
 		font-size: 40px;
@@ -904,7 +904,7 @@ header {
 		}
 		.value {
 			position: absolute;
-			top: 5px;
+			top: 14px;
 			right: 47px;
 			backface-visibility: hidden;
 			&.all-correct {
@@ -912,7 +912,7 @@ header {
 				right: 38px;
 			}
 			&.all-wrong {
-				color: #b33434;
+				color: #ffffff;
 				font-size: 70px;
 				top: 11px;
 				right: 50px!important;
@@ -929,7 +929,7 @@ header {
 				right: 18px;
 			}
 			&.all-wrong {
-				color: #b33434;
+				color: #ffffff;
 				font-size: 30px;
 				top: 54px;
 				right: 22px;
