@@ -14,6 +14,7 @@
 $blue: #111f2c;
 $dblue: #1a2b3f;
 $mobile_w_px: 576px;
+$max_w_before_occlusion: 970px; 
 
 @font-face {
 	font-family: 'CorbelBold';
@@ -120,7 +121,7 @@ html, body {
 		font-size: 13px;
 		font-weight: bold;
 		
-		cursor: hand; cursor: pointer;
+		cursor: pointer;
 
 		&:hover, &:focus {
 			background: #fff;
@@ -170,7 +171,7 @@ html, body {
 		font-size: 13px;
 		font-weight: bold;
 		
-		cursor: hand; cursor: pointer;
+		cursor: pointer;
 
 		&:hover, &:focus {
 			background: #fff;
@@ -198,8 +199,8 @@ html, body {
 
 header {
 	display: flex;
-	flex-direction:column;
-	justify-content: flex-start;
+	flex-direction: row;
+	justify-content: center;
 	width: 100%;
 	background: $blue;
 	color: #fff;
@@ -210,6 +211,15 @@ header {
 	background: -ms-linear-gradient(top,  $blue 0%,$dblue 100%);
 	background: linear-gradient(to bottom,  $blue 0%,$dblue 100%);
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='${blue}', endColorstr='${dblue}',GradientType=0 );
+
+	.header-content {
+		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-start;
+		width: 100%;
+		max-width: 1000px;
+	}
 
 	h1 {
 		width: calc(60%);
@@ -271,9 +281,9 @@ header {
 		}
 	}
 	.divider {
-		background-color: #4d5355;
+		position: absolute;
+		bottom: -25px;
 		height: 25px;
-		top: 90px;
 		width: 100%;
 		padding-left: 10px;
 		text-align: left;
@@ -298,6 +308,10 @@ header {
 	}
 }
 
+#header {
+	border-bottom: solid 25px #4d5355;
+}
+
 .gameboard {
 	padding: 5px 5px 2em 5px;
 	max-width: fit-content;
@@ -305,19 +319,21 @@ header {
 	margin-top: 0px;
 	@include boxSizing();
 	.category {
-		clear:both;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
 		padding: 5px;
 		overflow: auto;
 		transition: 200ms;
 
 		.title {
-			float: left;
 			background: #fff;
 			border: 3px solid #fff;
 			border-radius: 5px;
 			width: 110px;
 			padding: 17px 10px;
-			margin: 15px 5px 0 0;
+			margin: 0 1em 0 0;
 			position: relative;
 			min-height: 20px;
 			word-break: break-all;
@@ -338,7 +354,6 @@ header {
 
 		.question {
 			position: relative;
-			float: left;
 			font-family: sans-serif;
 			margin: 0px;
 			height: 90px;
@@ -349,7 +364,7 @@ header {
 			border: 3px solid black;
 			font-weight: 800;
 			font-size: 40px;
-			cursor: hand; cursor: pointer;
+			cursor: pointer;
 			overflow: hidden;
 			transition: 200ms;
 
@@ -367,6 +382,10 @@ header {
 			&:focus-within {
 				background: #4187c9;
 				color: #fff;
+
+				&:hover {
+					background: #75abdf;
+				}
 			}
 			&:hover.wrong, &:hover.correct {
 				transform: none;
@@ -690,7 +709,7 @@ header {
 			text-transform: uppercase;
 			color: white;
 			font-size: 13px;
-			cursor: hand; cursor: pointer;
+			cursor: pointer;
 			font-weight: bold;
 			&.highlight {
 				background: #4187c9;
@@ -871,7 +890,7 @@ header {
 		margin: 5px auto;
 		text-transform: uppercase;
 		color: white;
-		cursor: hand; cursor: pointer;
+		cursor: pointer;
 		font-weight: bold;
 
 		&:hover, &:focus {
@@ -1011,11 +1030,16 @@ header {
 	gap: 5px;
 }
 
-@media (width < $mobile_w_px) {
+@media (width < $max_w_before_occlusion) {
 	#scorebox {
 		transform: scale(0.75);
 		right: -8px;
+		top: -8px;
 	}
+}
+
+@media (width < $mobile_w_px) {
+
 
 	audio {
 		width: 100%;
@@ -1055,7 +1079,6 @@ header {
 			label {
 				display: flex;
 				flex-direction: row;
-				padding-left: 0px;
 			}
 			ul {
 				li {
@@ -1071,6 +1094,8 @@ header {
 	.gameboard {
 		margin: 0px;
 		.category {
+			flex-wrap: wrap;
+
 			&:hover {
 				.title {
 					border: 0px transparent;
@@ -1082,6 +1107,7 @@ header {
 			}
 
 			.title {
+				flex-basis: 100%;
 				padding-top: 2px;
 				background-color: transparent;
 				border: 0px transparent;
