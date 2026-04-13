@@ -18,8 +18,8 @@ describe('scrollUp Directive', function() {
 
 		// load the required code
 		angular.mock.module('enigmaPlayer')
-		require('../modules/player.coffee')
-		require('./scroll.coffee')
+		require('../modules/player.js')
+		require('./scroll.js')
 
 		// initialize the angualr controller
 		inject(function(_$compile_, _$controller_, _$timeout_, _$rootScope_){

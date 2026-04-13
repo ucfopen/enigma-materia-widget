@@ -12,8 +12,8 @@ describe('focusMe Directive', function(){
 		// load the required code
 		angular.mock.module('enigmaCreator')
 		angular.module('dndLists', [])
-		require('../modules/creator.coffee')
-		require('./focus.coffee')
+		require('../modules/creator.js')
+		require('./focus.js')
 
 		// initialize the angualr controller
 		inject(function(_$compile_, _$controller_, _$timeout_, _$rootScope_){

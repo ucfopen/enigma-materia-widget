@@ -1,8 +1,8 @@
 ---
 general:
   name: Enigma
-  height: 548
-  width: 750
+  height: 0
+  width: 0
   in_catalog: Yes
   is_editable: Yes
   is_playable: Yes
@@ -17,10 +17,11 @@ files:
   creator_guide: guides/creator.html
   player_guide: guides/player.html
   flash_version: 0
+  score_screen: scoreScreen.html
 score:
   is_scorable: Yes
   score_module: EnigmaGS
-  # score_screen: scoreScreen.html disabled until score screen is complete
+  score_screen: scoreScreen.html
 meta_data:
   accessibility_keyboard: Full
   accessibility_reader: Full

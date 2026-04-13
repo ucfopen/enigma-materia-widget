@@ -25,7 +25,7 @@
 			class="clip"
 			aria-live="assertive"
 			tabindex="-1"></div>
-		<dialog id="tutorial" class="modal-dialog" ng-show="showTutorial" aria-modal="true">
+		<dialog id="tutorial" class="modal-dialog" aria-label="Tutorial" ng-show="showTutorial" aria-modal="true">
 			<div id="tutorial-content">
 				<header>How to Play</header>
 				<p>Enigma is a multiple-choice game with questions organized by category.</p>
@@ -38,54 +38,55 @@
 		<header aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			id="header"
 			ng-attr-inert="{{ showTutorial || currentQuestion || instructionsOpen == true || finalTab ? 'true' : undefined}}">
-			<h1>{{ title }}</h1>
-			<div class='divider'>
-				<span id="show-keyboard-instructions-button"
-					class="instructions"
-					tabindex="0"
-					role="text"
-					ng-click="toggleInstructions()"
-					aria-label="Welcome to Enigma! Now playing: {{ title }}. Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining. Press the 'W' key to hear which question and category you currently have highlighted. Press the 'H' key to hear these instructions again.">
-					Show Keyboard Instructions
-				</span>
-			</div>
-			<div id='scorebox' class='score'>
-				<svg xmlns="http://www.w3.org/2000/svg"
-					class='percent-ring parent-ring'>
-					<circle cx='60' cy='60' r='60' fill='#444444'/>
-					<circle cx='60' cy='60' r='50' fill='none'
-						class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
-						stroke='#ac3434' stroke-width='20'
-						ng-style="{
-							'stroke-dasharray': circumference ,
-							'stroke-dashoffset' : circumference - ((percentIncorrect/100) * circumference),
-							'transform': 'rotate(' + percentCorrect/100 + 'turn)'
-						}"/>
-					<circle cx='60' cy='60' r='50' fill='none'
-						class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
-						stroke='#2af0b1' stroke-width='20'
-						ng-style="{
-							'stroke-dasharray': circumference ,
-							'stroke-dashoffset' : circumference - ((percentCorrect/100) * circumference),
-						}"
-						/>
-					<circle cx='60' cy='60' r='50' fill='#333333'/>
-				</svg>
-
-				<div class='remaining-box'>
-					<span></span>
-					<span class='hidden'>Score:</span>
-					<span aria-hidden="true" class='value'
-						ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
-						{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
+			<div class='header-content'>
+				<h1>{{ title }}</h1>
+				<div class='divider'>
+					<span id="show-keyboard-instructions-button"
+						class="instructions"
+						tabindex="0"
+						role="text"
+						ng-click="toggleInstructions()"
+						aria-label="Welcome to Enigma! Now playing: {{ title }}. Keyboard instructions: Questions are sorted into categories. Use the Tab key to navigate through the game board to view and select questions. Answer all questions to complete the widget. Press the 'Q' key to automatically select the earliest unanswered question. Press the 'S' key to hear your current score and how many unanswered questions are remaining. Press the 'W' key to hear which question and category you currently have highlighted. Press the 'H' key to hear these instructions again.">
+						Show Keyboard Instructions
 					</span>
-					<div aria-hidden="true" class='remaining'>remaining</div>
+				</div>
+				<div id='scorebox' class='score'>
+					<svg xmlns="http://www.w3.org/2000/svg"
+						class='percent-ring parent-ring'>
+						<circle cx='60' cy='60' r='60' fill='#444444'/>
+						<circle cx='60' cy='60' r='50' fill='none'
+							class='percent-ring incorrect-ring' ng-class="{animated: answeredQuestions.length > 0}"
+							stroke='#f05959' stroke-width='20'
+							ng-style="{
+								'stroke-dasharray': circumference ,
+								'stroke-dashoffset' : circumference - ((percentIncorrect/100) * circumference),
+								'transform': 'rotate(' + percentCorrect/100 + 'turn)'
+							}"/>
+						<circle cx='60' cy='60' r='50' fill='none'
+							class='percent-ring correct-ring' ng-class="{animated: answeredQuestions.length > 0}"
+							stroke='#4187c9' stroke-width='20'
+							ng-style="{
+								'stroke-dasharray': circumference ,
+								'stroke-dashoffset' : circumference - ((percentCorrect/100) * circumference),
+							}"
+							/>
+						<circle cx='60' cy='60' r='50' fill='#333333'/>
+					</svg>
+
+					<div class='remaining-box'>
+						<span></span>
+						<span class='hidden'>Score:</span>
+						<span aria-hidden="true" class='value'
+							ng-class="{numberExit: changingNumber, numberEnter: !changingNumber, doubleDigit: totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) > 9 }">
+							{{ totalQuestions - answeredQuestions.length + (changingNumber ? 1 : 0) }}
+						</span>
+						<div aria-hidden="true" class='remaining'>remaining</div>
+					</div>
 				</div>
 			</div>
 		</header>
-		<section id="keyboard-instructions-dialog"
-			class="notice"
-			ng-if="instructionsOpen">
+		<div id="modal-cover" ng-show="instructionsOpen" ng-click="toggleInstructions()"></div>
+		<dialog class="notice" ng-if="instructionsOpen" aria-label="Keyboard Instructions" aria-modal="true">
 			<p>Questions are sorted into categories.</p>
 			<p>Use the 'Tab' key to navigate through the game board to view and select questions.</p>
 			<p>Answer all questions to complete the widget.</p>
@@ -95,10 +96,9 @@
 				ng-click="toggleInstructions()">
 				Hide Keyboard Instructions
 			</button>
-		</section>
-		<section id="question-keyboard-instructions-dialog"
-			class="notice"
-			ng-if="questionInstructionsOpen">
+		</dialog>
+		<div id="modal-cover" ng-show="questionInstructionsOpen" ng-click="toggleQuestionInstructions()"></div>
+		<dialog class="notice" aria-label="Keyboard Instructions" ng-if="questionInstructionsOpen" aria-modal="true">
 			<p>Use the 'Tab' key to navigate {{ currentQuestion.options.asset ? 'to the associated media, then' : '' }} through answer options, then to reach the 'Return' and 'Submit Final Answer' buttons.</p>
 			<p>The 'Up' and 'Down' arrow keys may also be used to navigate through answer options.</p>
 			<p>Press the 'Enter' or 'Space' key on an answer option to select it.</p>
@@ -110,7 +110,7 @@
 				ng-click="toggleQuestionInstructions()">
 				Hide Keyboard Instructions
 			</button>
-		</section>
+		</dialog>
 		<section aria-hidden="{{ finalTab ? 'true' : 'false' }}"
 			role="application"
 			aria-label='Game Board'
@@ -127,30 +127,32 @@
 					</span>
 				</div>
 				<!-- questions -->
-				<div ng-repeat="question in category.items"
-					aria-label="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-					title="Question number {{ $index + 1 }} in category {{$index+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
-					role='button'
-					class='question'
-					ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
-					ng-click="selectQuestion(category, question)"
-					ng-keyup="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
-					ng-focus="highlightQuestion(category, question)">
-					<span ng-hide="question.answered">
-						{{ $index + 1 }}
-					</span>
-					<span class='correct-marker'
-						ng-show="question.score === 100">
-						&#x2713;
-					</span>
-					<span ng-show="question.score > 0 && question.score < 100"
-						aria-label="Correct">
-						{{ question.score }}&#x25;
-					</span>
-					<span class='incorrect-marker'
-						ng-show="question.score === 0">
-						<span class="icon icon-close" aria-hidden="true"></span>
-					</span>
+				<div class="question-container">
+					<div ng-repeat="question in category.items"
+						aria-label="Question number {{ (question.index-0) + 1 }} in category {{ (category.index-0)+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						title="Question number {{ (question.index-0) + 1 }} in category {{ (category.index-0)+1}} of {{categories.length}}: {{ category.name }}: {{ !question.answered ? 'Unanswered' : question.score === 0 ? 'Answered Incorrectly' : question.score === 100 ? 'Answered Correctly' : 'Partial Credit' }}"
+						role='button'
+						class='question'
+						ng-class="{correct: question.score > 0, wrong: question.score === 0, partial: question.score > 0 && question.score < 100}"
+						ng-click="selectQuestion(category, question)"
+						ng-keydown="$event.code == 'Enter' || $event.code == 'Space' ? selectQuestion(category, question) : null"
+						ng-focus="highlightQuestion(category, question)">
+						<span ng-hide="question.answered">
+							{{ $index + 1 }}
+						</span>
+						<span class='correct-marker'
+							ng-show="question.score === 100">
+							&#x2713;
+						</span>
+						<span ng-show="question.score > 0 && question.score < 100"
+							aria-label="Correct">
+							{{ question.score }}&#x25;
+						</span>
+						<span class='incorrect-marker'
+							ng-show="question.score === 0">
+							<span class="icon icon-close" aria-hidden="true"></span>
+						</span>
+					</div>
 				</div>
 			</section>
 			<!-- wraparound button -->
@@ -258,7 +260,7 @@
 								</span>
 								<span class="wrong mark" ng-show="currentQuestion.score == 0">
 									<svg height="20px" width="20px" xmlns="http://www.w3.org/2000/svg" version="1.1">
-										<path stroke="#AC3434" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
+										<path stroke="#f05959" stroke-width="4" d="M 4 4 L 16 16 M 16 4 L 4 16 Z" />
 									</svg>
 								</span>
 							</span>
@@ -330,13 +332,14 @@
 				</section>
 			</div>
 		</section>
-		<section class='notice' ng-show="allAnswered">
+		<div id="modal-cover" ng-show="allAnswered"></div>
+		<dialog class='notice' aria-modal="true" ng-show="allAnswered">
 			<div class="remaining-box">
 				<div id='scorebox_final' class='score' role='status'>
 					<svg xmlns="http://www.w3.org/2000/svg" class='percent-ring parent-ring'>
-						<circle cx='60' cy='60' r='60' fill='#ac3434'/>
+						<circle cx='60' cy='60' r='60' fill='#f05959'/>
 						<circle cx='60' cy='60' r='50' fill='none' class='correct-ring'
-							stroke='#2af0b1' stroke-width='20'
+							stroke='#4187c9' stroke-width='20'
 							ng-style="{
 								'stroke-dasharray': circumference,
 								'stroke-dashoffset': circumference - ((percentCorrect/100) * circumference)
@@ -353,11 +356,6 @@
 						ng-class="{'all-wrong': percentCorrect === 0, 'all-correct': percentCorrect === 100}">
 						%
 					</span>
-					<span aria-hidden="true"
-						class='percent-wrong'
-						ng-show="percentCorrect &lt; 100 && percentCorrect &gt; 0">
-						{{ 100 - percentCorrect }}% Wrong
-					</span>
 				</div>
 			</div>
 			<h1 class="top-padded">All Questions Answered</h1>
@@ -366,6 +364,6 @@
 				ng-click="end()">
 				Submit for Review
 			</button>
-		</section>
+		</dialog>
 	</body>
 </html>

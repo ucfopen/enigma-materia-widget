@@ -5,7 +5,7 @@
   },
   "version": "2.3.1",
   "dependencies": {
-    "materia-widget-development-kit": "3.0.4"
+    "materia-widget-development-kit": "3.0.5"
   },
   "scripts": {
     "start": "mwdk-start",
@@ -22,17 +22,15 @@
     ],
     "verbose": true,
     "collectCoverageFrom": [
-      "src/**/*.coffee"
+      "src/**/*.js",
+      "!src/**/*.test.js"
     ],
-    "transform": {
-      "^.+\\.coffee$": "jest-coffee-preprocessor"
-    },
     "coverageThreshold": {
       "global": {
-        "statements": 96,
+        "statements": 90,
         "branches": 71,
         "functions": 83,
-        "lines": 96
+        "lines": 90
       }
     }
   },

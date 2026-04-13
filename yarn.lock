@@ -1679,6 +1679,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/emscripten@^1.41.4":
+  version "1.41.5"
+  resolved "https://registry.yarnpkg.com/@types/emscripten/-/emscripten-1.41.5.tgz#5670e4b52b098691cb844b84ee48c9176699b68d"
+  integrity sha512-cMQm7pxu6BxtHyqJ7mQZ2kXWV5SLmugybFdHCBbJ5eHzOo6VhBckEgAT3//rP5FwPHNPeEiq4SmQ5ucBwsOo4Q==
+
 "@types/eslint-scope@^3.7.3":
   version "3.7.6"
   resolved "https://registry.yarnpkg.com/@types/eslint-scope/-/eslint-scope-3.7.6.tgz#585578b368ed170e67de8aae7b93f54a1b2fdc26"
@@ -6755,15 +6760,15 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-materia-widget-dependencies@0.4.2:
-  version "0.4.2"
-  resolved "https://registry.yarnpkg.com/materia-widget-dependencies/-/materia-widget-dependencies-0.4.2.tgz#d6664f7c525ae624a0ca87579865b1864c53a2d7"
-  integrity sha512-JyyeE9HSRC9tyEPmsEC+UsfC51z+Y6xT8qzn+2PGvj6T/Mda/hFK/Uqw0WA5pE42+SpjYOaJ2B8CK0bT9rZ21A==
+materia-widget-dependencies@0.5.1:
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/materia-widget-dependencies/-/materia-widget-dependencies-0.5.1.tgz#45dad52e1e2366bbafa7c3f5ee15d34be7690479"
+  integrity sha512-/CN3vfULbC3gB9XWqV0JtUzuivqbpAl/y83exnzg/+NlbSpYLrqFzzcCKdqG9LYIbBtZNggwBxLwteir9qmpHQ==
 
-materia-widget-development-kit@3.0.4:
-  version "3.0.4"
-  resolved "https://registry.yarnpkg.com/materia-widget-development-kit/-/materia-widget-development-kit-3.0.4.tgz#5fdea73976aa83463ca3c278d5fd8f2ac4830446"
-  integrity sha512-iwinME3Kh3WsIr/XMpIuxNadPkLzsWkFxsJAI5JiSr2VpWkgznUvKT/KNisWD1vdwF1QQQrRXaFbE0lMG5FNMQ==
+materia-widget-development-kit@3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/materia-widget-development-kit/-/materia-widget-development-kit-3.0.5.tgz#f8d5fa21e484551900228ca78512eab5300215e9"
+  integrity sha512-geH2iC8JQF+zTX1vY2WPzzja8IQT+0pNi1fdfKyI0tngrZEYxKiRQgKZXfbQW+DrLEvEpMsLu+FwTxuCMAHx3A==
   dependencies:
     "@babel/core" "^7.22.17"
     "@babel/preset-env" "^7.20.2"
@@ -6786,7 +6791,7 @@ materia-widget-development-kit@3.0.4:
     hbs "^4.2.0"
     html-loader "^4.2.0"
     html-webpack-plugin "^5.5.3"
-    materia-widget-dependencies "0.4.2"
+    materia-widget-dependencies "0.5.1"
     mini-css-extract-plugin "^2.7.2"
     npm-check-updates "^16.10.9"
     path "^0.12.7"
@@ -6795,6 +6800,7 @@ materia-widget-development-kit@3.0.4:
     postcss-preset-env "^9.1.3"
     postcss-scss "^4.0.8"
     prettier "^3.0.3"
+    pyodide "^0.29.0"
     raw-loader "^4.0.2"
     react "^18.2.0"
     react-dom "^18.2.0"
@@ -8598,6 +8604,14 @@ pupa@^3.1.0:
   integrity sha512-FLpr4flz5xZTSJxSeaheeMKN/EDzMdK7b8PTOC6a5PYFKTucWbdqjgqaEyH0shFiSJrVB1+Qqi4Tk19ccU6Aug==
   dependencies:
     escape-goat "^4.0.0"
+
+pyodide@^0.29.0:
+  version "0.29.3"
+  resolved "https://registry.yarnpkg.com/pyodide/-/pyodide-0.29.3.tgz#555ec43c09983a3cf3794c778e40084de24cfb95"
+  integrity sha512-22UBuhOJawj7vKUnS7/F3xK+515LJdjiMAHoCfuS6/PbHiOrSQVnYwDe+2sbVwiOZ3sMMexdXICew6NqOMQGgA==
+  dependencies:
+    "@types/emscripten" "^1.41.4"
+    ws "^8.5.0"
 
 qs@~6.14.0:
   version "6.14.0"
@@ -10816,6 +10830,11 @@ ws@^8.18.0:
   version "8.18.3"
   resolved "https://registry.yarnpkg.com/ws/-/ws-8.18.3.tgz#b56b88abffde62791c639170400c93dcb0c95472"
   integrity sha512-PEIGCY5tSlUt50cqyMXfCzX+oOPqN0vuGqWzbcJ2xvnkzkq46oOpz7dQaTDBdfICb4N14+GARUDw2XV2N4tvzg==
+
+ws@^8.5.0:
+  version "8.20.0"
+  resolved "https://registry.yarnpkg.com/ws/-/ws-8.20.0.tgz#4cd9532358eba60bc863aad1623dfb045a4d4af8"
+  integrity sha512-sAt8BhgNbzCtgGbt2OxmpuryO63ZoDk/sqaB/znQm94T4fCEsy/yV+7CdC1kJhOU9lboAEU7R3kquuycDoibVA==
 
 wsl-utils@^0.1.0:
   version "0.1.0"
