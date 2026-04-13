@@ -13,8 +13,8 @@ describe('ngEnter Directive', function(){
 		// load the required code
 		angular.mock.module('enigmaCreator')
 		angular.module('dndLists', [])
-		require('../modules/creator.coffee')
-		require('./enter.coffee')
+		require('../modules/creator.js')
+		require('./enter.js')
 
 		// initialize the angualr controller
 		inject(function(_$compile_, _$controller_, _$timeout_, _$rootScope_){

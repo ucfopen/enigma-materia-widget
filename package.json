@@ -22,11 +22,9 @@
     ],
     "verbose": true,
     "collectCoverageFrom": [
-      "src/**/*.coffee"
+      "src/**/*.js",
+      "!src/**/*.test.js"
     ],
-    "transform": {
-      "^.+\\.coffee$": "jest-coffee-preprocessor"
-    },
     "coverageThreshold": {
       "global": {
         "statements": 96,

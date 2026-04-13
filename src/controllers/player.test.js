@@ -52,8 +52,8 @@ describe('Player Controller', function() {
 
 		// load the required code
 		angular.mock.module('enigmaPlayer');
-		require('../modules/player.coffee');
-		require('./player.coffee');
+		require('../modules/player.js');
+		require('./player.js');
 
 		// mock scope
 		$scope = {

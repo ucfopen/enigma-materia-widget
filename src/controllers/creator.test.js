@@ -37,8 +37,8 @@ describe('Creator Controller', function() {
 		// load the required code
 		angular.mock.module('enigmaCreator')
 		angular.module('dndLists', [])
-		require('../modules/creator.coffee')
-		require('./creator.coffee')
+		require('../modules/creator.js')
+		require('./creator.js')
 
 		// mock scope
 		$scope = {
