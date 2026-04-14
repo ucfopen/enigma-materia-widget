@@ -48,13 +48,12 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	const forceRead = function(readString) {
 		const liveRegion = document.getElementById('aria-live')
 		while (liveRegion.firstChild) liveRegion.removeChild(liveRegion.firstChild)
+		$scope.ariaLive = readString;
 
 		setTimeout(function() {
 			var content = document.createTextNode(readString)
 			liveRegion.append(content)
 		}, 250)
-
-		$scope.ariaLive = '';
 	};
 
 	// Called by Materia.Engine when your widget Engine should start the user experience.
