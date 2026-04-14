@@ -46,9 +46,15 @@ Enigma.controller('enigmaPlayerCtrl', ['$scope', '$timeout', '$sce', function($s
 	// keeping the scope variable for now so tests don't have to be completely rewritten
 	$scope.ariaLive = '';
 	const forceRead = function(readString) {
-		$scope.ariaLive = readString;
-		if (!readString) { return; }
-		document.getElementById('aria-live').innerHTML = readString;
+		const liveRegion = document.getElementById('aria-live')
+		while (liveRegion.firstChild) liveRegion.removeChild(liveRegion.firstChild)
+
+		setTimeout(function() {
+			var content = document.createTextNode(readString)
+			liveRegion.append(content)
+		}, 250)
+
+		$scope.ariaLive = '';
 	};
 
 	// Called by Materia.Engine when your widget Engine should start the user experience.
